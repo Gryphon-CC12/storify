@@ -11,6 +11,7 @@ import StoryPreview from './Components/storypreview/StoryPreview.js'
 import StoryList from './Components/storylist/StoryList.js'
 import AddEntry from './Components/addentry/AddEntry.js'
 import About from './Components/about/About.js'
+import  from './Components/about/About.js'
 
 function App() {
   return (
@@ -26,22 +27,14 @@ function App() {
 
   <Switch>
     <Route path="/about" component={About} />
+    <Route path="/story" component={DisplayStory} />
       <div className="row">
-        <div className="col-2">
-          <SideMenu />
-        </div>
-        <div className="col-10">
           <StoryList />
-        </div>
       </div>
-      
-  </Switch>
-        <div className="row">
         <div className="col-12">
           <AddEntry />
         </div>
-      </div>
-      </div>
+      
       
 </Router>
   );
