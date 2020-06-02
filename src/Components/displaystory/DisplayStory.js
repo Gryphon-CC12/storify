@@ -12,7 +12,8 @@ function DisplayStory() {
 
 	const [ textArr, setTextArr ] = useState([]);
 	const [ storyArr, setStoryArr ] = useState([]);
-  
+  let newArr2 = [];
+
   async function fetchEntryText(id) {
   	let output = [];
     db.collection('Entries').where('id', '==', id).get()
@@ -34,9 +35,14 @@ function DisplayStory() {
         // doc.data() is never undefined for query doc snapshots
 				output = doc.data().entries.map((id) => fetchEntryText(id))
 				console.log("OUTPUTS for storyArr", output);
-				setStoryArr(output[0]);
-				console.log("storyArr",storyArr)
-			})})
+        Promise.all(output).then((output)=>{
+          setStoryArr(output);
+          newArr2.push(output)
+          console.log("storyArr",storyArr)
+        })
+        console.log("storyArr is",storyArr)
+        console.log("newArr2 is", newArr2)    
+    })})
 	};
 // console.log("storyArr",storyArr)
 
@@ -52,7 +58,7 @@ function DisplayStory() {
 	return (
 		<div className="DisplayStory">
 			Here is a story from Display Story:
-      <p>{storyArr[0]}</p>
+      <p>{newArr2}</p>
 			{/* <p>{fetchEntriesIdsForStory("7AHzkX74jsjsjsjsjsjsjs")}</p> */}
       {/* {fetchEntriesIdsForStory("7AHzkX74jsjsjsjsjsjsjs").map((item) => {
 				return <p key={uuidv4()}>{item}</p>;
