@@ -15,7 +15,7 @@ function APITest() {
         });
         console.log(resp);
         console.log(resp.output)
-        receiveStory(resp.output);
+        await receiveStory(resp.output);
     })()
   }
   

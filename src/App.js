@@ -1,64 +1,49 @@
 import React from 'react';
 import logo from './logo.svg';
-import './App.css';
+import './App.scss';
 import firebase from './firebaseConfig';
 import APITest from './Components/APITest';
-//const db = firebase.firestore();
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
-
-//var promptStory = prompt("Please enter your prompt", "Harry Potter");
-
-
-// function savetoDatabase(promptStory) {
-//   db.collection("Entries").add({
-//           text: promptStory,
-//       })
-//       .then(function () {
-//           console.log("Document successfully written!");
-//           //window.location = "/";
-//           alert("Game successfully saved!")
-//       })
-//       .catch(function (error) {
-//           console.error("Error writing document: ", error);
-//       });
-// }
-
-  
-
-//setTimeout(function(){ savetoDatabase(promptStory) }, 3000);
-
-
-
-function TestDB() {
-  return (
-    <div>
-    <APITest />
-    <form>
-      <label>
-        Name:
-        <input type="text" name="name" />
-      </label>
-      <input type="submit" value="Submit" />
-    </form>
-    </div>
-  )
-}
-
+import Navbar from './Components/navbar/Navbar.js'
+import SideMenu from './Components/sidemenu/SideMenu.js'
+import StoryPreview from './Components/storypreview/StoryPreview.js'
+import StoryList from './Components/storylist/StoryList.js'
+import AddEntry from './Components/addentry/AddEntry.js'
+import About from './Components/about/About.js'
 
 function App() {
-
-
-
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Hello World!
-        </p>
-        <TestDB />
-      </header>
-    </div>
+
+<Router>
+    <div className="App container-fluid">
+      <div className="row">
+        <div className="col">
+          <Navbar />
+          
+        </div>
+      </div>
+
+  <Switch>
+    <Route path="/about" component={About} />
+      <div className="row">
+        <div className="col-2">
+          <SideMenu />
+        </div>
+        <div className="col-10">
+          <StoryList />
+        </div>
+      </div>
+      
+  </Switch>
+        <div className="row">
+        <div className="col-12">
+          <AddEntry />
+        </div>
+      </div>
+      </div>
+      
+</Router>
   );
 }
 

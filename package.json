@@ -9,9 +9,12 @@
     "deepai": "^1.0.15",
     "dotenv": "^8.2.0",
     "firebase": "^7.14.6",
+    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "3.4.1",
+    "uuidv4": "^6.1.0"
   },
   "scripts": {
     "start": "react-scripts start",
