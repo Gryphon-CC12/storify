@@ -51,7 +51,7 @@ const pushToStory = (story_id, entry_id) => {
     querySnapshot.forEach(function(doc) {
         console.log(doc.id, " => ", doc.data());
         // Build doc ref from doc.id
-        db.collection("StoryDatabase").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(50)});
+        db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
     });
 }
 )}
