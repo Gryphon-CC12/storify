@@ -33,14 +33,6 @@ const db = firebase.firestore();
 
 const STORY_ID = "d5f485a7-bf1f-4c3f-8ad9-5b37cc46cb00"
 
-// const pushToStory = (story_id, entry_id) => {
-//   console.log("entry_id", entry_id)
-//   console.log("story_id", story_id)
-//   db.collection('StoryDatabase').where('id', '==', story_id)
-//   .set({entries: firebase.firestore.FieldValue.arrayUnion(entry_id)})
-// }
-
-
 const pushToStory = (story_id, entry_id) => {
   console.log("entry_id", entry_id);
   console.log("story_id", story_id);
@@ -53,29 +45,7 @@ const pushToStory = (story_id, entry_id) => {
         // Build doc ref from doc.id
         db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
     });
-}
-)}
-
-// var washingtonRef = db.collection('cities').doc('DC');
-
-// // Atomically increment the population of the city by 50.
-// washingtonRef.update({
-//     population: firebase.firestore.FieldValue.increment(50)
-// });
-
-
-// const const arrayUnion = firebase.firestore.FieldValue.arrayUnion;
-// doc.update({
-//     items: arrayUnion('coco puffs')
-// });
-
-
-// var washingtonRef = db.collection("cities").doc("DC");
-// // Atomically add a new region to the "regions" array field.
-// washingtonRef.update({
-//     regions: firebase.firestore.FieldValue.arrayUnion("greater_virginia")
-// });
-
+})}
 
 function AddEntry() {
     const inputEl = useRef(null);

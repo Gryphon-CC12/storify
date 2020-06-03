@@ -4,11 +4,12 @@ import firebase from '../../firebaseConfig';
 import {v4 as uuidv4} from "uuid";
 const db = firebase.firestore();
 
-function DisplayStory() {
+function DisplayStory(props) {
 	const [ storyArr, setStoryArr ] = useState([]);
 
   useEffect(() => {
-    fetchEntriesIdsForStory("7AHzkX74jsjsjsjsjsjsjs");
+    console.log("PROPS", props.match.params.id)
+    fetchEntriesIdsForStory(props.match.params.id);
 	},[])
 
   function fetchEntriesIdsForStory(id) {

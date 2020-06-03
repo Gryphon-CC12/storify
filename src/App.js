@@ -22,7 +22,7 @@ function App() {
         </div>
       <Switch>
         <Route path="/about" component={About} />
-        <Route path="/displaystory" component={DisplayStory} />
+        <Route name="displaystory" path="/displaystory/:id" component={DisplayStory} />
         <Route path="/createstory" component={CreateStory} />
       </Switch>
       <div className="row">
