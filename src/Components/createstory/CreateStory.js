@@ -3,15 +3,19 @@ import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
 
+
+// import { storage } from "../../firebaseConfig"
+import 'firebase/storage'
+
 const db = firebase.firestore();
 
-// d5f485a7-bf1f-4c3f-8ad9-5b37cc46cb00
-function saveToStories(event, id, author) {
+function saveToStories(event, id, author, title) {
     //event.preventDefault();
     console.log("e for stories", id);
     db.collection("StoryDatabase").add({
         id: uuidv4(),
         dateCreated: new Date(),
+        title: title,
         likes: 0,
         author: author,
         isPrompt: true,
@@ -30,29 +34,78 @@ function saveToStories(event, id, author) {
         }); 
 }
 
+/////FOR IMAGE UPLOAD TO GOOGLE BUCKET
+// console.log(imageAsFile)
+//  const handleImageAsFile = (e) => {
+//       const image = e.target.files[0]
+//       setImageAsFile(imageFile => (image))
+//   }
+//////
+
+
 function CreateStory() {
+
+    ////For google image upload
+    // const allInputs = {imgUrl: ''}
+    // const [imageAsFile, setImageAsFile] = useState('')
+    // const [imageAsUrl, setImageAsUrl] = useState(allImputs)
+    /////
+
+
     const inputEl = useRef(null);
     const id = uuidv4();
     const author = "Harry Potter newest"
+    const titleEl = useRef(null)
     console.log("IDDD", id)
+    
     const onButtonClick = (event) => {
-        // event.preventDefault();
+    event.preventDefault();
       // `current` points to the mounted text input element
+      console.log("TITLE", titleEl.current.value)
       saveToEntries(inputEl.current.value, id, author);
-      saveToStories(inputEl.current.value, id, author);
+      saveToStories(inputEl.current.value, id, author, titleEl.current.value);
       console.log("test: is getting data from button?", inputEl, id);
     };
     return (
         <>
-        
-            <form>
+            <form className="col-8">
+                <div className="form-group">
+                    <label for="exampleFormControlInput1">Enter a title for your story!</label>
+                    <input type="text" className="form-control" id="story-title" placeholder="Title" ref={titleEl}/>
+                </div>
                 <div className="form-group">
                     <label htmlFor="prompt-input">Enter story prompt</label>
-                    <div>{id}</div>
                     <textarea className="form-control" ref={inputEl} type="text" rows="10" />
-                    <button id="entry-input" onClick={onButtonClick}>Submit</button>
+                    <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
+                </div>
+                <div className="form-group">
+                    <label for="artwork-input">Upload some art to go with your story!</label>
+                    <input type="file" className="form-control-file" id="artwork-input" />
+                </div>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" />
+                    <label class="form-check-label" for="defaultCheck1">
+                        Use Robot as a player?
+                    </label>
+                </div>
+                 <div class="form-group">
+                    <label for="select-deadline">Submission Deadline</label>
+                    <select select class = "form-control" id = "exampleFormControlSelect1" >
+                    <option>5 minutes</option>
+                    <option>15 minutes</option>
+                    <option>30 minutes</option>
+                    <option>1 hour</option>
+                    <option>3 hours</option>
+                    <option>12 hours</option>
+                    <option>1 day</option>
+                    <option>1 week</option>
+                    </select>
                 </div>
             </form>
+            
+            {/* <form>
+                <p>Test Upload to Google Bucket</p><input type="file" onChange={handleImageAsFile}/>
+            </form> */}
         </>
     );
 }

@@ -5,31 +5,30 @@ import firebase from '../../firebaseConfig';
 import {v4 as uuidv4} from "uuid";
 const db = firebase.firestore();
 
-
 function StoryList() {
   const [stories, setStories] = useState([]);
 
   useEffect(() => {
-    retreiveAllStories();
+    retrieveAllStories();
   }, [])
 
-  const retreiveAllStories = async () => {
+  const retrieveAllStories = async () => {
     const data = await db.collection('StoryDatabase').orderBy('dateCreated').get();
-    setStories(stories => stories.concat(data.docs.map((doc) => doc.data().id)));
+    setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
   };
   
-  console.log("STORIEEEES", stories)
 
   return (
-		<div className="DisplayStory">
-      Here is a story from Display Story:
-      {stories.map((storyId) => { 
+    <div className="DisplayStory">
+      <div className="row">
+      {stories.map((story) => {         
         return (
-          <div className="col-4" key={uuidv4()}>
-            <StoryPreview storyId={storyId}/>
+          <div className="col" key={uuidv4()}>
+            <StoryPreview storyProp={story}/>
           </div>
         )
       })}
+        </div>
 		</div>
   );
 }

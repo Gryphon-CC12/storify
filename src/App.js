@@ -1,13 +1,11 @@
 import React from 'react';
 import './App.scss';
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import DisplayStory from './Components/displaystory/DisplayStory';
 import CreateStory from './Components/createstory/CreateStory';
 import Navbar from './Components/navbar/Navbar.js';
 // import SideMenu from './Components/sidemenu/SideMenu.js';
-// import StoryPreview from './Components/storypreview/StoryPreview.js';
 import StoryList from './Components/storylist/StoryList.js';
-import AddEntry from './Components/addentry/AddEntry.js';
 import About from './Components/about/About.js';
 
 function App() {
@@ -19,24 +17,14 @@ function App() {
               <Navbar />
             </div>
           </div>
-        </div>
       <Switch>
+        <Route exact path="/" component={StoryList} />
         <Route path="/about" component={About} />
-        <Route name="displaystory" path="/displaystory/:id" component={DisplayStory} />
+        <Route exact name="displaystory" path="/displaystory/:id" component={DisplayStory} />
         <Route path="/createstory" component={CreateStory} />
       </Switch>
-      <div className="row">
-        <StoryList />
       </div>
-      <div className="col-10">
-          <AddEntry />
-      </div>
-      <div>
-        <Link to="/createstory">
-          <button>Create Story</button>
-        </Link>
-      </div>
-      </Router>
+    </Router>
   );
 }
 
