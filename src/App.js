@@ -1,41 +1,42 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.scss';
-import firebase from './firebaseConfig';
-import APITest from './Components/APITest';
-import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
-import DisplayStory from './Components/displaystory/DisplayStory'
-import Navbar from './Components/navbar/Navbar.js'
-import SideMenu from './Components/sidemenu/SideMenu.js'
-import StoryPreview from './Components/storypreview/StoryPreview.js'
-import StoryList from './Components/storylist/StoryList.js'
-import AddEntry from './Components/addentry/AddEntry.js'
-import About from './Components/about/About.js'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import DisplayStory from './Components/displaystory/DisplayStory';
+import CreateStory from './Components/createstory/CreateStory';
+import Navbar from './Components/navbar/Navbar.js';
+// import SideMenu from './Components/sidemenu/SideMenu.js';
+// import StoryPreview from './Components/storypreview/StoryPreview.js';
+import StoryList from './Components/storylist/StoryList.js';
+import AddEntry from './Components/addentry/AddEntry.js';
+import About from './Components/about/About.js';
 
 function App() {
   return (
-
-<Router>
-    <div className="App container-fluid">
-      <div className="row">
-        <div className="col">
-          <Navbar />
-          
+    <Router>
+        <div className="App container-fluid">
+          <div className="row">
+            <div className="col">
+              <Navbar />
+            </div>
+          </div>
         </div>
-      </div>
-    </div>
-  <Switch>
-    <Route path="/about" component={About} />
-    <Route path="/displaystory" component={DisplayStory} />
-    </Switch>
+      <Switch>
+        <Route path="/about" component={About} />
+        <Route path="/displaystory" component={DisplayStory} />
+        <Route path="/createstory" component={CreateStory} />
+      </Switch>
       <div className="row">
-          <StoryList />
+        <StoryList />
       </div>
-      <div className="col-12">
-        <AddEntry />
+      <div className="col-10">
+          <AddEntry />
       </div>
-  </Router>
-
+      <div>
+        <Link to="/createstory">
+          <button>Create Story</button>
+        </Link>
+      </div>
+      </Router>
   );
 }
 
