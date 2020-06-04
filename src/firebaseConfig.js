@@ -1,4 +1,7 @@
 import firebase from "firebase"
+import "firebase/auth";
+import "firebase/firestore";
+
   // Your web app’s Firebase configuration
   var firebaseConfig = {
     apiKey: "AIzaSyBtkdQm-zOXuSOPR0MSXdFLFrUurxGuqyc",
@@ -13,7 +16,52 @@ import firebase from "firebase"
   firebase.initializeApp(firebaseConfig);
 
   const storage = firebase.storage()
+  
+  export const generateUserDocument = async (user, additionalData) => {
+    if (!user) return;
+    const userRef = firestore.doc(`users/${user.uid}`);
+    const snapshot = await userRef.get();
+    if (!snapshot.exists) {
+      const { email, displayName, photoURL } = user;
+      try {
+        await userRef.set({
+          displayName,
+          email,
+          photoURL,
+          ...additionalData
+        });
+      } catch (error) {
+        console.error("Error creating user document", error);
+      }
+    }
+    return getUserDocument(user.uid);
+  };
+  const getUserDocument = async uid => {
+    if (!uid) return null;
+    try {
+      const userDocument = await firestore.doc(`users/${uid}`).get();
+      return {
+        uid,
+        ...userDocument.data()
+      };
+    } catch (error) {
+      console.error("Error fetching user", error);
+    }
+  };
 
+  const provider = new firebase.auth.GoogleAuthProvider();
+  export const signInWithGoogle = () => {
+    auth.signInWithPopup(provider);
+  };
+
+
+  export const auth = firebase.auth();
+  export const firestore = firebase.firestore();
   export  {
     storage, firebase as default
   }
+
+
+///// Google OAUTH CREDENTIALS
+//Client ID: 336851866169-pgf0mr1e3is106a8ptuu19h3urf8tp7n.apps.googleusercontent.com
+//Your Client Secret: Zr7rSOskrN5tvH7MrQyEfOz_

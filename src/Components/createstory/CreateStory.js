@@ -1,4 +1,4 @@
-import React, { useRe,useState,useRef } from 'react';
+import React, { useState,useRef } from 'react';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
@@ -148,24 +148,3 @@ const handleFireBaseUpload = e => {
 
 export default CreateStory;
 
-// function AddEntry() {
-//   const inputEl = useRef(null);
-//   const onButtonClick = () => {
-//     // `current` points to the mounted text input element
-//     saveToEntries(inputEl.current.value);
-//     console.log("test: is getting data from button?", inputEl);
-//   };
-
-//   return (
-//   <>
-//   <form>
-//       <div className="form-group">
-//           <label htmlFor="entry-input">Type your entry here</label>
-//           <textarea className="form-control" ref={inputEl} type="text" rows="10" />
-//             <button id="entry-input" onClick={onButtonClick}>Focus the input</button>
-//       </div>
-//   </form>
-//   <button id="entry-input" onClick={deleteAllEntries}>Delete All Entries</button>
-//   </>
-//   )
-// }
