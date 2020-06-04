@@ -101,7 +101,7 @@ const handleFireBaseUpload = e => {
         <>
             <form className="col-8">
                 <div className="form-group">
-                    <label for="exampleFormControlInput1">Enter a title for your story!</label>
+                    <label htmlFor="exampleFormControlInput1">Enter a title for your story!</label>
                     <input type="text" className="form-control" id="story-title" placeholder="Title" ref={titleEl}/>
                 </div>
                 <div className="form-group">
@@ -110,18 +110,18 @@ const handleFireBaseUpload = e => {
                     <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
                 </div>
                 <div className="form-group">
-                    <label for="artwork-input">Upload some art to go with your story!</label>
+                    <label htmlFor="artwork-input">Upload some art to go with your story!</label>
                     <input type="file" className="form-control-file" id="artwork-input" />
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" />
-                    <label class="form-check-label" for="defaultCheck1">
+                <div className="form-check">
+                    <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" />
+                    <label className="form-check-label" htmlFor="defaultCheck1">
                         Use Robot as a player?
                     </label>
                 </div>
-                 <div class="form-group">
-                    <label for="select-deadline">Submission Deadline</label>
-                    <select select class = "form-control" id = "exampleFormControlSelect1" >
+                 <div className="form-group">
+                    <label htmlFor="select-deadline">Submission Deadline</label>
+                    <select select="true" className = "form-control" id = "exampleFormControlSelect1" >
                     <option>5 minutes</option>
                     <option>15 minutes</option>
                     <option>30 minutes</option>

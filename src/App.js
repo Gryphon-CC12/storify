@@ -10,6 +10,7 @@ import About from './Components/about/About.js';
 import Login from './Components/login/Login'
 import Logout from './Components/logout/Logout'
 
+import ProfilePage from './Components/profilepage/ProfilePage'
 import Application from "./Components/application/Application";
 import UserProvider from "./providers/UserProvider";
 
@@ -31,6 +32,7 @@ function App() {
   //           </div>
   //         </div>
   //         <ProfilePage />
+  //         <CreateStory/>
   //     <Switch>
   //       {/* <Route exact path="/" component={Login} /> */}
   //       <Route exact path="/storylist" component={StoryList} />
@@ -44,13 +46,13 @@ function App() {
   //     :
   //     {/* <Router> */}
   //       <Switch>
-  //         <SignUp path="signUp" component={SignUp} />
+  //         {/* <SignUp path="signUp" component={SignUp} />
   //         <SignIn path="/" component={SignIn}/>
-  //         <PasswordReset path = "passwordReset" component={PasswordReset} />
+  //         <PasswordReset path = "passwordReset" component={PasswordReset} /> */}
   //       </Switch>
   //     </Router>
 
-  // </>
+  // </> 
   // );
 }
 

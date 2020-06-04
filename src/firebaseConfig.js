@@ -16,7 +16,7 @@ import "firebase/firestore";
   firebase.initializeApp(firebaseConfig);
 
   const storage = firebase.storage()
-  
+
   export const generateUserDocument = async (user, additionalData) => {
     if (!user) return;
     const userRef = firestore.doc(`users/${user.uid}`);
@@ -28,7 +28,11 @@ import "firebase/firestore";
           displayName,
           email,
           photoURL,
-          ...additionalData
+          "likedEntries": [], 
+          "linkToEntries" :[], 
+          "linkToStories" : [], 
+          "upVotesStories" : [], 
+          "date" : new Date()
         });
       } catch (error) {
         console.error("Error creating user document", error);
