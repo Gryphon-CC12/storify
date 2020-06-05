@@ -12,7 +12,7 @@ import 'firebase/storage'
 
 const db = firebase.firestore();
 
-function saveToStories(event, id, author, title) {
+function saveToStories(event, id, author, title, imageAsUrl) {
     //event.preventDefault();
     console.log("e for stories", id);
     db.collection("StoryDatabase").add({
@@ -28,7 +28,7 @@ function saveToStories(event, id, author, title) {
         upvotes: 0,
         entries: [id],
         useRobotAsPlayer: false,
-        imageUrl : "https://cdn.pixabay.com/photo/2016/06/08/19/46/cereal-1444495_960_720.jpg"
+        imageUrl : imageAsUrl,
     })
         .then(function () {
             console.log("Document successfully written!");
@@ -43,48 +43,62 @@ function CreateStory() {
     ////For google image upload
     const allInputs = {imgUrl: ''}
     const [imageAsFile, setImageAsFile] = useState('')
-    const [imageAsUrl, setImageAsUrl] = useState(allInputs)
+    // const [imageAsUrl, setImageAsUrl] = useState("")
     const author = useContext(UserContext);
-
+    let imageAsUrl = ""
     /////
 
 /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
     console.log(imageAsFile)
-    const handleImageAsFile = (e) => {
-        const image = e.target.files[0]
-        setImageAsFile(imageFile => (image))
-    }
+    // const handleImageAsFile = (e) => {
+    //     // e.preventDefault();
+    //     const image = e.target.files[0]
+    //     setImageAsFile(imageFile => (image));
+    //     // await handleFireBaseUpload(e);
+    // }
 //////////////
-
+    
 ////For IMAGE UPLOAD TO GOOGLE BUCKET///
-    const handleFireBaseUpload = e => {
-        e.preventDefault()
-    console.log('start of upload')
-    // async magic goes here...
-    if(imageAsFile === '' ) {
-        console.error(`not an image, the image file is a ${typeof(imageAsFile)}`)
-    }
-    const uploadTask = storage.ref(`/images/${imageAsFile.name}`).put(imageAsFile)
-        //initiates the firebase side uploading 
+    const handleFireBaseUpload = (arenderSynce) => {
+        arenderSynce.preventDefault()
+        const image = arenderSynce.target.files[0]
+        console.log('start of upload')
+        // async magic goes here...
+        if(image === '' ) {
+            console.error(`not an image, the image file is a ${typeof(image)}`);
+            return;
+        }
+        const uploadTask = storage.ref(`/images/${image}.name}`).put(image);
+            //initiates the firebase side uploading 
         uploadTask.on('state_changed', 
-        (snapShot) => {
-        //takes a snap shot of the process as it is happening
-        console.log(snapShot)
-        }  , (err) => {
-        //catches the errors
-        console.log(err)
-        }, () => {
-        // gets the functions from storage refences the image storage in firebase by the children
-        // gets the download url then sets the image from firebase as the value for the imgUrl key:
-        storage.ref('images').child(imageAsFile.name).getDownloadURL()
-            .then(fireBaseUrl => {
-            setImageAsUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
-        })
-        })
-        console.log("ImageAsUrl",imageAsUrl)
+            (snapShot) => {
+            //takes a snap shot of the process as it is happening
+            console.log("Snapshot", snapShot)
+            }  , (err) => {
+            //catches the errors
+            console.log("err", err)
+            }, () => {
+            // gets the functions from storage refences the image storage in firebase by the children
+            // gets the download url then sets the image from firebase as the value for the imgUrl key:
+            console.log("image.name", image.name)
+            storage.ref('images').child(image.name).getDownloadURL()
+                .then(fireBaseUrl => {
+                console.log('fireBaseUrl', fireBaseUrl);
+                imageAsUrl = fireBaseUrl;
+                // setImageAsUrl(imageAsUrl => ({...imageAsUrl, imgUrl: fireBaseUrl}))
+                console.log("ImageAsUrl",imageAsUrl)
+            })
+            });
+        setTimeout(() => {
+                onButtonClick(arenderSynce)
+            }, 3000);
+        
     }
-//////////////      
 
+// https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2F200x200bb.jpg?alt=media&token=fe0b6307-93e0-4ea7-98ba-3f597dc79439
+ 
+// bucket:   seniorgryphon-df706.appspot.com   path   images/200x200bb.jpg
+//////////////      
 
     const inputEl = useRef(null);
     const id = uuidv4();
@@ -92,12 +106,18 @@ function CreateStory() {
     console.log("IDDD", id)
     
     const onButtonClick = (event) => {
-    event.preventDefault();
-      // `current` points to the mounted text input element
-      console.log("TITLE", titleEl.current.value)
-      saveToEntries(inputEl.current.value, id, author);
-      saveToStories(inputEl.current.value, id, author, titleEl.current.value);
-      console.log("test: is getting data from button?", inputEl, id);
+        event.preventDefault();
+        console.log('imageAsUrl in ButtonClick', imageAsUrl);
+        
+        // `current` points to the mounted text input element
+        // await handleFireBaseUpload(event);
+        //   setTimeout(async() => {
+        console.log("waiiitinng! for ", imageAsUrl.imgUrl)
+        saveToEntries(inputEl.current.value, id, author);
+        saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
+        console.log("TITLE", titleEl.current.value)
+        console.log("test: is getting data from button?", inputEl, id);
+        // }, 2500);
     };
     return (
         <>
@@ -109,11 +129,9 @@ function CreateStory() {
                 <div className="form-group">
                     <label htmlFor="prompt-input">Enter story prompt</label>
                     <textarea className="form-control" ref={inputEl} type="text" rows="10" />
-                    <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
+                    <button id="entry-input" onClick={handleFireBaseUpload} className="btn btn-dark">Submit</button>
                 </div>
                 <div className="form-group">
-                    <label htmlFor="artwork-input">Upload some art to go with your story!</label>
-                    <input type="file" className="form-control-file" id="artwork-input" />
                 </div>
                 <div className="form-check">
                     <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" />
@@ -135,18 +153,16 @@ function CreateStory() {
                     </select>
                 </div>
             </form>
-            <p>Test Upload to Google Bucket</p>
-            <form onSubmit={handleFireBaseUpload}>
+            <form>
+            {/* <form onSubmit={handleFireBaseUpload}> */}
                 <input 
                     type="file"
-                    onChange={handleImageAsFile}
+                    onChange={handleFireBaseUpload}
                 />
-            <button>upload to firebase</button>
-            </form>
-            <img src={imageAsUrl.imgUrl} alt="image tag" />
+                </form>
+            {/* <button>Upload your art to firebase Which one is this?</button> */}
+            <img src={imageAsUrl} alt="image tag" />
         </>
     );
 }
-
 export default CreateStory;
-

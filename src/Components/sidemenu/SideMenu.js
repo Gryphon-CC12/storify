@@ -1,6 +1,7 @@
 import React from 'react';
 import './SideMenu.styles.scss';
 import { Link } from 'react-router-dom';
+import { auth } from "../../firebaseConfig";
 
 function SideMenu() {
 	return (
@@ -21,27 +22,31 @@ function SideMenu() {
 						</li>
 						<li>
 							<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
-								Pages
+								{/* This probably requires bootstrap jquery/JS plugin to work properly */}
+								Rankings
 							</a>
 							<ul className="collapse list-unstyled" id="pageSubmenu">
 								<li>
-									<a href="#">Page 1</a>
+									<a href="#">Most Liked</a>
 								</li>
 								<li>
-									<a href="#">Page 2</a>
+									<a href="#">Newest</a>
 								</li>
 								<li>
-									<a href="#">Page 3</a>
+									<a href="#">Browse by Genre</a>
 								</li>
 							</ul>
 						</li>
-						<Link to="/profile">
-							<li>
-								<a href="/profile">Profile</a>
-							</li>
-						</Link>
 						<li>
-							<a href="#">Contact</a>
+							<Link to="/profile">Profile</Link>
+						</li>
+						<li>
+							<Link to="/">[TODO] Check for open stories</Link>
+						</li>
+						<li>
+							<Link to="/">
+								<button className="btn btn-sm btn-info" onClick ={() => {auth.signOut()}}>Sign out</button>
+							</Link>
 						</li>
 					</ul>
 				</nav>

@@ -5,6 +5,7 @@ import SignUp from "../signup/SignUp";
 import ProfilePage from "../profilepage/ProfilePage";
 import PasswordReset from "../passwordreset/PasswordReset";
 import Navbar from '../navbar/Navbar.js';
+import history from '../../history.js'
 // import UserProvider from "../../providers/UserProvider";
 import { UserContext } from "../../providers/UserProvider";
 import StoryList from "../../Components/storylist/StoryList"
@@ -12,14 +13,15 @@ import DisplayStory from '../../Components/displaystory/DisplayStory';
 import CreateStory from '../../Components/createstory/CreateStory';
 import SideMenu from '../../Components/sidemenu/SideMenu';
 import About from '../../Components/about/About';
+// import Footer from '../../Components/footer/Footer';
 
 function Application() {
   const user = useContext(UserContext);
   
   return (
       user ?
-      <Router>
-        <div className="container">
+      <Router history={history}>
+        <div className="container-fluid">
           <div className="row">
             <Navbar />
           </div>
@@ -36,7 +38,10 @@ function Application() {
                 <Route path="/createstory" component={CreateStory} />   
               </Switch>
             </div>
-          </div> 
+          </div>
+          <div className="row">
+            {/* <Footer /> */}
+          </div>
         </div>
       </Router>
       :    

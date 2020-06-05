@@ -23,7 +23,7 @@ function StoryList() {
       <div className="row">
       {stories.map((story) => {         
         return (
-          <div className="col" key={uuidv4()}>
+          <div className="col col-sm-12 col-md-4 col-lg-3 col-xl-3" key={uuidv4()}>
             <StoryPreview storyProp={story}/>
           </div>
         )

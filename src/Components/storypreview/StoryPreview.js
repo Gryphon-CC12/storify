@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './StoryPreview.styles.scss';
-// import DisplayStory from '../displaystory/DisplayStory';
 import firebase from "../../firebaseConfig";
 
 const db = firebase.firestore();
@@ -21,12 +20,9 @@ function StoryPreview(props) {
       return ids_array[0][0];
     })
     .then(async id => {
-      // console.log("ids_array", id)
       const data = await db.collection('Entries').where('id', '==', id).get();
-      // console.log("DATA IS HERE?", data) 
-      setStoryText(data.docs.map((doc) => {
-        // console.log(doc.data().text)   
-        return doc.data().text
+      setStoryText(data.docs.map((doc) => {  
+        return doc.data().text.split('.')[0] + ".";   // Returns previous only till the first .
       }));
     })
  };
@@ -42,23 +38,16 @@ function StoryPreview(props) {
 const fetchImageURL = async (id) => {
   const db = firebase.firestore();
   const data = await db.collection('StoryDatabase').where('id', '==', id).get();
-  //console.log("IMAGE URL", data.docs;
   setImageURL(data.docs.map((doc) => doc.data().imageUrl));
-  //setImageURL(data.docs.map((doc) => doc.data()));
 };
 
-
-  // console.log("STORY PROPS??", props)
   return (
     <div className="card">
-      {/* <img src="..." className="card-img-top" alt="..." /> */}
       <div className="preview-body" >
+        <img alt="user-uploaded story artwork" src={imageURL} width="200" height="150" />
         <h5 className="preview-title">{props.storyProp.title}</h5>
         <p className="preview-text"> {storyText} </p>
-        <img alt="user-uploaded story artwork" src={imageURL} width="200" height="150" />
-        <Link to={{pathname: `/displaystory/${props.storyProp.id}`}}>
-          <p>See full story</p>
-        </Link>
+        <Link to={{pathname: `/displaystory/${props.storyProp.id}`}}>Read more</Link>
         </div>
     </div>
   );
