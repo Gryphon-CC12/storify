@@ -59,7 +59,7 @@ const fetchImageURL = async (id) => {
 console.log("StoryARR", storyArr)
 
 function addLike(id){
-
+///.
   db.collection('Entries').where("id", "==", id)
   .get()
   .then(function(querySnapshot) {
