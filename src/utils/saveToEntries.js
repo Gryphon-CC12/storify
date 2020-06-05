@@ -9,7 +9,8 @@ export default function saveToEntries(event, id, author) {
             text: event,
             date: new Date(),
             likes: 0,
-            author: author,
+            author: author.displayName,
+            email: author.email
         })
         .then(function () {
             console.log("Document successfully written!");

@@ -48,16 +48,28 @@ const fetchImageURL = async (id) => {
 
 	return (
 		<div className="container DisplayStory">
-      <div className="row">
+      <div className="row image-row">
         <img alt="user-uploaded story artwork" src={imageURL} width="600" height="400" />
+      </div>
+      <div className="row">
+        <h1>Story Title</h1>
+      </div>
         {storyArr.map((item) => { 
           return (
-            <div className="col-2">
-              <p key={uuidv4()}>{item}</p>
-            </div>
+            <>
+              <div className="row">
+                <div className="col">
+                  <p key={uuidv4()}>{item}</p>
+                </div>
+              </div>
+              <div className="row">
+                <div className="col">
+                  <p className="author">username</p>
+                </div>    
+              </div>
+            </>
           )
         })}
-      </div>
       <div className="row">
         <div className="col">
           <AddEntry id={props.match.params.id}/>

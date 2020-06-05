@@ -10,7 +10,7 @@ import { UserContext } from "../../providers/UserProvider";
 import StoryList from "../../Components/storylist/StoryList"
 import DisplayStory from '../../Components/displaystory/DisplayStory';
 import CreateStory from '../../Components/createstory/CreateStory';
-// import SideMenu from './Components/sidemenu/SideMenu.js';
+// import SideMenu from '../../Components/sidemenu/SideMenu.js';
 import About from '../../Components/about/About';
 
 function Application() {
@@ -21,7 +21,7 @@ function Application() {
   return (
       user ?
       <Router>
-        <Route exact path="/" component={Navbar} />
+        <Navbar />
         <Switch> 
         <Route exact path="/" component={ProfilePage} />
         <Route exact path="/storylist" component={StoryList} />

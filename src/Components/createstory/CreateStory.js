@@ -1,8 +1,11 @@
-import React, { useState,useRef } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
 import {storage} from "../../firebaseConfig"
+
+import { UserContext } from "../../providers/UserProvider";
+
 
 // import { storage } from "../../firebaseConfig"
 import 'firebase/storage'
@@ -17,7 +20,8 @@ function saveToStories(event, id, author, title) {
         dateCreated: new Date(),
         title: title,
         likes: 0,
-        author: author,
+        author: author.displayName,
+        emails: [author.email],
         isPrompt: true,
         maxEntries: 1,
         maxUsers: 1,
@@ -34,58 +38,56 @@ function saveToStories(event, id, author, title) {
         }); 
 }
 
-
-
-
 function CreateStory() {
 
     ////For google image upload
     const allInputs = {imgUrl: ''}
     const [imageAsFile, setImageAsFile] = useState('')
     const [imageAsUrl, setImageAsUrl] = useState(allInputs)
+    const author = useContext(UserContext);
+
     /////
 
 /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
-console.log(imageAsFile)
- const handleImageAsFile = (e) => {
-      const image = e.target.files[0]
-      setImageAsFile(imageFile => (image))
-  }
+    console.log(imageAsFile)
+    const handleImageAsFile = (e) => {
+        const image = e.target.files[0]
+        setImageAsFile(imageFile => (image))
+    }
 //////////////
 
 ////For IMAGE UPLOAD TO GOOGLE BUCKET///
-const handleFireBaseUpload = e => {
-    e.preventDefault()
-  console.log('start of upload')
-  // async magic goes here...
-  if(imageAsFile === '' ) {
-    console.error(`not an image, the image file is a ${typeof(imageAsFile)}`)
-  }
-  const uploadTask = storage.ref(`/images/${imageAsFile.name}`).put(imageAsFile)
-    //initiates the firebase side uploading 
-    uploadTask.on('state_changed', 
-    (snapShot) => {
-    //takes a snap shot of the process as it is happening
-    console.log(snapShot)
-    }  , (err) => {
-    //catches the errors
-    console.log(err)
-    }, () => {
-    // gets the functions from storage refences the image storage in firebase by the children
-    // gets the download url then sets the image from firebase as the value for the imgUrl key:
-    storage.ref('images').child(imageAsFile.name).getDownloadURL()
-        .then(fireBaseUrl => {
-        setImageAsUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
-    })
-    })
-    console.log("ImageAsUrl",imageAsUrl)
-}
-//////////////
+    const handleFireBaseUpload = e => {
+        e.preventDefault()
+    console.log('start of upload')
+    // async magic goes here...
+    if(imageAsFile === '' ) {
+        console.error(`not an image, the image file is a ${typeof(imageAsFile)}`)
+    }
+    const uploadTask = storage.ref(`/images/${imageAsFile.name}`).put(imageAsFile)
+        //initiates the firebase side uploading 
+        uploadTask.on('state_changed', 
+        (snapShot) => {
+        //takes a snap shot of the process as it is happening
+        console.log(snapShot)
+        }  , (err) => {
+        //catches the errors
+        console.log(err)
+        }, () => {
+        // gets the functions from storage refences the image storage in firebase by the children
+        // gets the download url then sets the image from firebase as the value for the imgUrl key:
+        storage.ref('images').child(imageAsFile.name).getDownloadURL()
+            .then(fireBaseUrl => {
+            setImageAsUrl(prevObject => ({...prevObject, imgUrl: fireBaseUrl}))
+        })
+        })
+        console.log("ImageAsUrl",imageAsUrl)
+    }
+//////////////      
 
 
     const inputEl = useRef(null);
     const id = uuidv4();
-    const author = "Harry Potter newest"
     const titleEl = useRef(null)
     console.log("IDDD", id)
     
