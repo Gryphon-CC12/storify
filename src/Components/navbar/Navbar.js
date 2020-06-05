@@ -1,26 +1,105 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import './Navbar.styles.scss';
-import deleteAllEntries from '../../utils/deleteAllEntries';
-import deleteAllStoryDatabase from '../../utils/deleteAllStories';
-import deleteAllUserDatabase from '../../utils/deleteAllUserDatabase';
+import React from "react";
+import { Link } from "react-router-dom";
+import "./Navbar.styles.scss";
+import deleteAllEntries from "../../utils/deleteAllEntries";
+import deleteAllStoryDatabase from "../../utils/deleteAllStories";
+import deleteAllUserDatabase from "../../utils/deleteAllUserDatabase";
+import { Layout, Header, Navigation, Drawer, Content } from "react-mdl";
 
 function Navbar() {
   return (
-    <nav className="navbar navbar-dark bg-dark">
-        <Link to="/">Storify</Link>
-        <Link to="/createstory">
-          <button className="btn btn-success btn-sm">Create Story</button>
-        </Link>
-        <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllEntries}>Delete All Entries</button>
-        <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllUserDatabase}>Delete All Users</button>
-        <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllStoryDatabase} > Delete All Story Database</button> 
-        <form className="form-inline">
-            <input className="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-            <button className="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-        </form>
-    </nav>
+    <div className="demo-big-content">
+      <Layout>
+        <Header title="STORIFY" scroll>
+          <Navigation>
+            <Link to="/createstory">Create Story</Link>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+            <Link to="/profile">Profile</Link>
+          </Navigation>
+        </Header>
+        <Drawer title="STORIFY">
+          <Navigation>
+            <Link to="/createstory">Create Story</Link>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+            <Link to="/profile">Profile</Link>
+          </Navigation>
+        </Drawer>
+        <Content>
+          <div className="page-content" />
+        </Content>
+      </Layout>
+    </div>
   );
 }
 
 export default Navbar;
+
+// import React from "react";
+// import * as ReactBootStrap from "react-bootstrap";
+// import { BrowserRouter as Router, Link } from "react-router-dom";
+
+// const NavBar = () => {
+//   return (
+//     <div className="App">
+//       <ReactBootStrap.Navbar
+//         collapseOnSelect
+//         expand="xl"
+//         bg="danger"
+//         variant="dark"
+//       >
+//         <ReactBootStrap.Navbar.Brand href="#home">
+//           THICC BOIS HOURS
+//         </ReactBootStrap.Navbar.Brand>
+//         <ReactBootStrap.Navbar.Toggle aria-controls="responsive-navbar-nav" />
+//         <ReactBootStrap.Navbar.Collapse id="responsive-navbar-nav">
+//           <ReactBootStrap.Nav className="mr-auto">
+//             <Link to="/features">
+//               <ReactBootStrap.Nav.Link href="#features">
+//                 Features
+//               </ReactBootStrap.Nav.Link>
+//             </Link>
+//             <Link to="/pricing">
+//               <ReactBootStrap.Nav.Link href="#pricing">
+//                 Pricing
+//               </ReactBootStrap.Nav.Link>
+//             </Link>
+//             <ReactBootStrap.NavDropdown
+//               title="YEET"
+//               id="collasible-nav-dropdown"
+//             >
+//               <ReactBootStrap.NavDropdown.Item href="#action/3.1">
+//                 Action
+//               </ReactBootStrap.NavDropdown.Item>
+//               <ReactBootStrap.NavDropdown.Item href="#action/3.2">
+//                 Another action
+//               </ReactBootStrap.NavDropdown.Item>
+//               <ReactBootStrap.NavDropdown.Item href="#action/3.3">
+//                 Something
+//               </ReactBootStrap.NavDropdown.Item>
+//               <ReactBootStrap.NavDropdown.Divider />
+//               <ReactBootStrap.NavDropdown.Item href="#action/3.4">
+//                 Separated link
+//               </ReactBootStrap.NavDropdown.Item>
+//             </ReactBootStrap.NavDropdown>
+//           </ReactBootStrap.Nav>
+//           <ReactBootStrap.Nav>
+//             <Link to="/deets">
+//               <ReactBootStrap.Nav.Link href="#deets">
+//                 More deets
+//               </ReactBootStrap.Nav.Link>
+//             </Link>
+//             <Link to="/dankmemes">
+//               <ReactBootStrap.Nav.Link eventKey={2} href="#memes">
+//                 Dank memes
+//               </ReactBootStrap.Nav.Link>
+//             </Link>
+//           </ReactBootStrap.Nav>
+//         </ReactBootStrap.Navbar.Collapse>
+//       </ReactBootStrap.Navbar>
+//     </div>
+//   );
+// };
+
+// export default NavBar;
