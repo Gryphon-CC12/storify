@@ -33,8 +33,6 @@ function StoryPreview(props) {
   fetchFirstEntryForStory(props.storyProp.id);
   fetchImageURL(props.storyProp.id);
 }, [props.storyProp.id])
- 
-
 
 // READ FROM DB
 const fetchImageURL = async (id) => {

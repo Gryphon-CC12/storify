@@ -37,7 +37,7 @@ function CreateStory() {
 
 function saveToStories(event, id, author, title, imageAsUrl) {
     //event.preventDefault();
-    console.log("e for stories", id);
+    console.log("imageAsUrl for stories", imageAsUrl);
     db.collection("StoryDatabase").add({
         id: uuidv4(),
         dateCreated: new Date(),
@@ -74,7 +74,7 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             console.error(`not an image, the image file is a ${typeof(image)}`);
             return;
         }
-        const uploadTask = storage.ref(`/images/${image}.name}`).put(image);
+        const uploadTask = storage.ref(`/images/${image.name}`).put(image);
             //initiates the firebase side uploading 
         uploadTask.on('state_changed', 
             (snapShot) => {
@@ -86,8 +86,8 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             }, () => {
             // gets the functions from storage refences the image storage in firebase by the children
             // gets the download url then sets the image from firebase as the value for the imgUrl key:
-            console.log("image.name", image.name)
-            storage.ref('images').child(image.name).getDownloadURL()
+                console.log("image.name", image.name)
+                storage.ref('images').child(image.name).getDownloadURL()
                 .then(fireBaseUrl => {
                 console.log('fireBaseUrl', fireBaseUrl);
                 imageAsUrl = fireBaseUrl;
@@ -130,7 +130,7 @@ function saveToStories(event, id, author, title, imageAsUrl) {
         // `current` points to the mounted text input element
         // await handleFireBaseUpload(event);
         //   setTimeout(async() => {
-        console.log("waiiitinng! for ", imageAsUrl.imgUrl)
+        console.log("waiiitinng! for ", imageAsUrl)
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
         console.log("TITLE", titleEl.current.value)
