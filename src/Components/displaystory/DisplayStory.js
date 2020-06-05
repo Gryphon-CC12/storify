@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import './DisplayStory.styles.scss';
 import firebase from '../../firebaseConfig';
 import AddEntry from '../../Components/addentry/AddEntry'
 import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
+import _ from 'lodash'
 
 const db = firebase.firestore();
 
@@ -13,6 +14,7 @@ function DisplayStory(props) {
 	const [storyArr, setStoryArr ] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("")
+  const idLikesRef = useRef();
 
   useEffect(() => {
     // console.log("PROPS", props.match.params.id);
@@ -20,8 +22,8 @@ function DisplayStory(props) {
     fetchImageURL(props.match.params.id);
 	},[props.match.params.id])
 
-  function fetchEntriesForStory(id) {
-    db.collection('StoryDatabase').where('id', '==', id).get()
+  function fetchEntriesForStory(story_id) {
+    db.collection('StoryDatabase').where('id', '==', story_id).get()
     .then(function(querySnapshot) {
       let ids_array = [];
 			querySnapshot.forEach(function(doc) {
@@ -39,7 +41,7 @@ function DisplayStory(props) {
               let thisText = doc.data().text;
               let thisLikes = doc.data().likes;
               let thisId = doc.data().id
-              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "id" : thisId}]));
+              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "entry_id" : thisId, "story_id": story_id}]));
               // setAuthorArr(authorArr => authorArr.concat(doc.data().text))
             })
           })
@@ -58,22 +60,31 @@ const fetchImageURL = async (id) => {
 
 console.log("StoryARR", storyArr)
 
-function addLike(id){
-
-  db.collection('Entries').where("id", "==", id)
+let addLike = async (entry_id, story_id) => {
+  db.collection('Entries').where("id", "==", entry_id)
   .get()
   .then(function(querySnapshot) {
     querySnapshot.forEach(function(doc) {
-        // Build doc ref from doc.id
+         console.log('id',entry_id);  
         db.collection("Entries").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(1)});
     });
-// db.collection('Entries').where('id', '==', id).get().update({"likes": firebase.firestore.FieldValue.increment()});
   })
+
+  db.collection('StoryDatabase').where("id", "==", story_id)
+  .get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+         console.log('id',story_id);  
+        db.collection("StoryDatabase").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(1)});
+    });
+  })
+
   }
+  
 	return (
 		<div className="container DisplayStory">
       <div className="row image-row justify-center">
-        <img alt="user-uploaded story artwork" src={imageURL} class="img-fluid" width="600" height="400" />
+        <img alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
       </div>
       <div className="row">
         <h1 className="story-title">{title}</h1>
@@ -81,7 +92,7 @@ function addLike(id){
       {/* const = {author, text} = props  */}
       {storyArr.map((item) => { 
           return (
-            <>
+            <div key={uuidv4()}>
               <div className="story-container row">
                 <div className="col">
                   <p className="story-text">{item.text}</p>
@@ -89,10 +100,10 @@ function addLike(id){
               </div>
               <div className="row">
                 <div className="col">
-                  <span><p className="story-author" key={uuidv4()}>{item.author}</p><button onClick={addLike(item.id)}>Like ❤️</button><p>{item.likes} Likes</p></span>
+                  <span><p className="story-author" key={item.id}>{item.author}</p><button onClick={() => addLike(item.entry_id, item.story_id)}>Like ❤️</button><p>{item.likes} Likes</p></span>
                 </div>
               </div>
-            </>
+            </div>
           )
         })}
         <div className="row">

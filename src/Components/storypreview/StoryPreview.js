@@ -10,13 +10,15 @@ function StoryPreview(props) {
 	const [ storyText, setStoryText ] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [genre, setGenre] = useState("");
-  
+  const [likes, setLikes] = useState(0);
+
   function fetchFirstEntryForStory(id) {
     db.collection('StoryDatabase').where('id', '==', id).get()
     .then(function(querySnapshot) {
       let ids_array = [];
 			querySnapshot.forEach(function(doc) {
         setGenre(doc.data().genre);
+        setLikes(doc.data().likes);
         ids_array.push(doc.data().entries)
       })
       return ids_array[0][0];
@@ -48,6 +50,7 @@ const fetchImageURL = async (id) => {
         <h5 className="preview-title">{props.storyProp.title}</h5>
         <p className="preview-text"> {storyText} </p>
         <p className="preview-genre"> {genre} </p>
+        <p className="preview-likes"> Likes {likes} </p>
         <Link to={{pathname: `/displaystory/${props.storyProp.id}`}}>Read more</Link>
         </div>
     </div>

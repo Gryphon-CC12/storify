@@ -48,7 +48,6 @@ function saveToStories(event, id, author, title, imageAsUrl) {
         isPrompt: true,
         maxEntries: maxEntries.current.value,
         maxUsers: maxCollaborators.current.value,
-        upvotes: 0,
         entries: [id],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl : imageAsUrl,
