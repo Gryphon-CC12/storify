@@ -28,7 +28,6 @@ function DisplayStory(props) {
       ids_array.push(doc.data().entries)
       setTitle(doc.data().title);
       })
-      
       return ids_array[0];
     })
     .then(ids_array => {
@@ -38,7 +37,9 @@ function DisplayStory(props) {
 		      	querySnapshot2.forEach(function(doc) {
               let thisAuthor = doc.data().author;
               let thisText = doc.data().text;
-              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText}]));
+              let thisLikes = doc.data().likes;
+              let thisId = doc.data().id
+              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "id" : thisId}]));
               // setAuthorArr(authorArr => authorArr.concat(doc.data().text))
             })
           })
@@ -57,6 +58,18 @@ const fetchImageURL = async (id) => {
 
 console.log("StoryARR", storyArr)
 
+function addLike(id){
+
+  db.collection('Entries').where("id", "==", id)
+  .get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(function(doc) {
+        // Build doc ref from doc.id
+        db.collection("Entries").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(1)});
+    });
+// db.collection('Entries').where('id', '==', id).get().update({"likes": firebase.firestore.FieldValue.increment()});
+  })
+  }
 	return (
 		<div className="container DisplayStory">
       <div className="row image-row justify-center">
@@ -76,7 +89,7 @@ console.log("StoryARR", storyArr)
               </div>
               <div className="row">
                 <div className="col">
-                  <p className="story-author" key={uuidv4()}>{item.author}</p>
+                  <span><p className="story-author" key={uuidv4()}>{item.author}</p><button onClick={addLike(item.id)}>Like ❤️</button><p>{item.likes} Likes</p></span>
                 </div>
               </div>
             </>

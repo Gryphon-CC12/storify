@@ -95,7 +95,6 @@ function saveToStories(event, id, author, title, imageAsUrl) {
                 console.log("ImageAsUrl",imageAsUrl)
             })
             });
-
         // setTimeout(() => {
         //     onButtonClick(arenderSynce)
         // }, 3000);
