@@ -8,10 +8,10 @@ import deleteAllUserDatabase from '../../utils/deleteAllUserDatabase';
 function Navbar() {
   return (
     <nav className="navbar navbar-dark bg-dark">
-        <div id="nav-title">Storify</div>
+        <Link to="/">Storify</Link>
         <Link to="/createstory">
           <button className="btn btn-success btn-sm">Create Story</button>
-      </Link>
+        </Link>
         <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllEntries}>Delete All Entries</button>
         <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllUserDatabase}>Delete All Users</button>
         <button className="btn btn-sm btn-danger" id="entry-input" onClick={deleteAllStoryDatabase} > Delete All Story Database</button> 

@@ -1,39 +1,24 @@
 import React from 'react';
 import './SideMenu.styles.scss';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function SideMenu() {
 	return (
 		<div className="SideMenu">
 			<div className="wrapper">
 				<nav id="sidebar">
-					<div className="sidebar-header">
+					{/* <div className="sidebar-header">
 						<h3>Bootstrap Sidebar</h3>
-					</div>
+					</div> */}
 
 					<ul className="list-unstyled components">
-						<p>Dummy Heading</p>
+					<p>Quick Links</p>
 						<li className="active">
-							<a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
-								Home
-							</a>
-							<ul className="collapse list-unstyled" id="homeSubmenu">
-								<li>
-									<a href="#">Home 1</a>
-								</li>
-								<li>
-									<a href="#">Home 2</a>
-								</li>
-								<li>
-									<a href="#">Home 3</a>
-								</li>
-							</ul>
+							<Link to="/">Home</Link>
 						</li>
-						<Link to='/about'>
 						<li>
-							<a href="#">About</a>
+							<Link to='/about'>About</Link>
 						</li>
-						</Link>
 						<li>
 							<a href="#pageSubmenu" data-toggle="collapse" aria-expanded="false" className="dropdown-toggle">
 								Pages
@@ -50,9 +35,11 @@ function SideMenu() {
 								</li>
 							</ul>
 						</li>
-						<li>
-							<a href="#">Portfolio</a>
-						</li>
+						<Link to="/profile">
+							<li>
+								<a href="/profile">Profile</a>
+							</li>
+						</Link>
 						<li>
 							<a href="#">Contact</a>
 						</li>

@@ -48,8 +48,8 @@ const fetchImageURL = async (id) => {
 
 	return (
 		<div className="container DisplayStory">
-      <div className="row image-row">
-        <img alt="user-uploaded story artwork" src={imageURL} width="600" height="400" />
+      <div className="row image-row justify-center">
+        <img alt="user-uploaded story artwork" src={imageURL} class="img-fluid" width="600" height="400" />
       </div>
       <div className="row">
         <h1>Story Title</h1>
