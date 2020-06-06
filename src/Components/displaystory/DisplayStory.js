@@ -232,7 +232,7 @@ console.log('isUserInTurn',isUserInTurn);
           <p>User in turn: {userInTurn} </p>
         :
         isMaxContributors ?
-            <p>Sorry this story is full</p>  
+            <p>Sorry this story has max Contributors already</p>  
         :
         <button onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Click to Join Story</button>
         }
