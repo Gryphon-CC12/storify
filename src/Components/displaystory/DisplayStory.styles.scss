@@ -1,22 +1,15 @@
-.story-container {
-    background: rgb(245, 249, 250);
-    // border: 1px solid rgb(128, 173, 179);
+#story-title, #story-text {
+    font-family: 'Roboto Slab', serif;
 }
 
-.story-title {
-    font-size: 1.5em;
+#story-author {
+    font-size: 0.8em;
 }
 
-.story-text {
-    font-size: 0.9em;   
+#likes {
+    margin-left: 5%;
 }
 
-.story-author {
-    font-size: 0.7em;
-    text-align: end;
-    margin-right: 5%;
-}
-
-.image-row {
-    align-self: center;
+FavoriteIcon {
+    font-size: small;
 }
