@@ -14,21 +14,27 @@ function DisplayStory(props) {
 	const [storyArr, setStoryArr ] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("")
-  const idLikesRef = useRef();
+  const [isContributor, setIsContributor] = useState(false)
+  const [isMaxContributors, setIsMaxContributors] = useState(true)
+
+  //const idLikesRef = useRef();
 
   useEffect(() => {
     // console.log("PROPS", props.match.params.id);
-    fetchEntriesForStory(props.match.params.id);
+    fetchEntriesForStory(props.match.params.id, user.email);
     fetchImageURL(props.match.params.id);
 	},[props.match.params.id])
 
-  function fetchEntriesForStory(story_id) {
+  function fetchEntriesForStory(story_id, user_email) {
     db.collection('StoryDatabase').where('id', '==', story_id).get()
     .then(function(querySnapshot) {
       let ids_array = [];
 			querySnapshot.forEach(function(doc) {
       ids_array.push(doc.data().entries)
+      console.log("Carlos's email?", doc.data().emails.includes(user_email))
+      setIsContributor(doc.data().emails.includes(user_email))
       setTitle(doc.data().title);
+      
       })
       return ids_array[0];
     })
@@ -49,7 +55,7 @@ function DisplayStory(props) {
     })
  };
 
-// READ FROM DB
+// READ FROM DB ///
 const fetchImageURL = async (id) => {
   const db = firebase.firestore();
   const data = await db.collection('StoryDatabase').where('id', '==', id).get();
@@ -60,6 +66,7 @@ const fetchImageURL = async (id) => {
 
 console.log("StoryARR", storyArr)
 
+////ADD LIKES FUNCTION///
 let addLike = async (entry_id, story_id) => {
   db.collection('Entries').where("id", "==", entry_id)
   .get()
@@ -80,9 +87,45 @@ let addLike = async (entry_id, story_id) => {
   })
 
   }
+
+  async function addToContributors(email, story_id){
+    console.log("StoryArray", storyArr[0].story_id)
+    console.log('story_id for Contributors', story_id);
+
+    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+    // setIsMaxContributors(data.docs.map((doc) => doc.data().imageUrl));
+    let maxUsers = data.docs[0].data().maxUsers; 
+    let currentUsers = data.docs[0].data().emails.length; 
+    console.log('currentUsers', currentUsers);
+    if (currentUsers < maxUsers) {
+      setIsMaxContributors(false)
+    }
+    else {
+      setIsMaxContributors(true)
+    }
+    console.log('isMaxContributors', isMaxContributors);
+    
+    if (currentUsers < maxUsers){
+      db.collection('StoryDatabase').where("id", "==", story_id)
+      .get()
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+            console.log('id',story_id);
+            //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+            console.log('doc', doc.id);
+            //console.log("maxUsers", maxUsers)
+            db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(email)});
+            // const data = await db.collection('StoryDatabase').where('id', '==', story_id).get().update({"emails": firebase.firestore.FieldValue.arrayUnion(email)});
+            console.log("Contributor Added")
+          });
+      })
+    }
+
+  }
+
   
 	return (
-		<div className="container DisplayStory">
+    <div className="container DisplayStory">
       <div className="row image-row justify-center">
         <img alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
       </div>
@@ -106,12 +149,23 @@ let addLike = async (entry_id, story_id) => {
             </div>
           )
         })}
+
+
+        {isContributor ?
+      
         <div className="row">
         <div className="col">
           <AddEntry id={props.match.params.id}/>
         </div>
-      </div>
-		</div>
+        </div>
+        :
+        isMaxContributors ?
+            <p>Sorry this story is full</p>  
+        :
+        <button onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Click to Join Story</button>
+        }
+    </div>
+        
   );
 }
 
