@@ -6,13 +6,10 @@ import {storage} from "../../firebaseConfig"
 
 import { UserContext } from "../../providers/UserProvider";
 
-
 // import { storage } from "../../firebaseConfig"
 import 'firebase/storage'
 
 const db = firebase.firestore();
-
-
 
 function CreateStory() {
 
@@ -34,10 +31,12 @@ function CreateStory() {
     // }
 //////////////
 
-
 function saveToStories(event, id, author, title, imageAsUrl) {
     //event.preventDefault();
     console.log("imageAsUrl for stories", imageAsUrl);
+    if (imageAsUrl === ""){
+        imageAsUrl = "https://bit.ly/2MEQ1yJ"
+    }
     db.collection("StoryDatabase").add({
         id: uuidv4(),
         dateCreated: new Date(),
@@ -61,7 +60,6 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             console.error("Error writing document: ", error);
         }); 
 }
-
     
 ////For IMAGE UPLOAD TO GOOGLE BUCKET///
     const handleFireBaseUpload = (arenderSynce) => {

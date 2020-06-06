@@ -19,7 +19,7 @@ const db = firebase.firestore();
 function DisplayStory(props) {
   const user = useContext(UserContext);
 	const [storyArr, setStoryArr ] = useState([]);
-  const [imageURL, setImageURL] = useState("");
+  const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
   const [title, setTitle] = useState("")
   const [isContributor, setIsContributor] = useState(false)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
@@ -103,18 +103,18 @@ let addLike = async (entry_id, story_id) => {
 }
 
 
-async function checkTurns(email,story_id){ 
+async function checkTurns(email, story_id){ 
   const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
   let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
   let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-  let currentEntriesList = data.docs[0].data().entries;  //fetch current user number of story from database
+  // let currentEntriesList = data.docs[0].data().entries;  //fetch current user number of story from database
   
-  let turnNumber = currentEntriesNum%currentUsersNum;
+  let turnNumber = currentEntriesNum % currentUsersNum;
 
   for (let user in currentUsersList) {
-      if (turnNumber == user) {
-        if (currentUsersList[user] == email)
+      if (turnNumber === user) {
+        if (currentUsersList[user] === email)
         {
           setIsUserInTurn(true);
         } else {
@@ -222,7 +222,6 @@ console.log('isUserInTurn',isUserInTurn);
             </div>
           )
         })}
-
         {isContributor ?
           isMaxEntries ?
           <p>This story is finished</p>  
