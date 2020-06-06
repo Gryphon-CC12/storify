@@ -2,8 +2,6 @@
 // Remaining TODOs for MVP
 // - Implement time limit mechanics (if time is exceeded skip to next user), reset time upon new entry.
 // - Implement email notification to user in turn.
-// - Implement Genre
-// - If no image is uploaded, add a default image
 //****************** */
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import './DisplayStory.styles.scss';

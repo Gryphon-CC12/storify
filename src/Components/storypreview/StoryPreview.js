@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
+
 const db = firebase.firestore();
 
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +26,7 @@ const useStyles = makeStyles((theme) => ({
     maxWidth: '100%',
     maxHeight: '100%',
   },
+
 }));
 
 function StoryPreview(props) {
@@ -33,6 +35,8 @@ function StoryPreview(props) {
   const [imageURL, setImageURL] = useState("");
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
+
+
 
   function fetchFirstEntryForStory(id) {
     db.collection('StoryDatabase').where('id', '==', id).get()
