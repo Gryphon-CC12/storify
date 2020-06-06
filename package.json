@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^7.1.2",
     "deepai": "^1.0.15",
     "dotenv": "^8.2.0",
+    "emailjs-com": "^2.4.1",
     "firebase": "^7.14.6",
     "firebase-tools": "8.4.2",
     "node-sass": "^4.14.1",
