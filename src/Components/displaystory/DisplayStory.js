@@ -16,6 +16,7 @@ function DisplayStory(props) {
   const [title, setTitle] = useState("")
   const [isContributor, setIsContributor] = useState(false)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
+  const [isMaxEntries, setIsMaxEntries] = useState(true)
 
   //const idLikesRef = useRef();
 
@@ -23,6 +24,7 @@ function DisplayStory(props) {
     // console.log("PROPS", props.match.params.id);
     fetchEntriesForStory(props.match.params.id, user.email);
     fetchImageURL(props.match.params.id);
+    checkMaxContributors(user.email, props.match.params.id)
 	},[props.match.params.id])
 
   function fetchEntriesForStory(story_id, user_email) {
@@ -66,7 +68,7 @@ const fetchImageURL = async (id) => {
 
 console.log("StoryARR", storyArr)
 
-////ADD LIKES FUNCTION///
+////ADD LIKES FUNCTION////
 let addLike = async (entry_id, story_id) => {
   db.collection('Entries').where("id", "==", entry_id)
   .get()
@@ -85,28 +87,35 @@ let addLike = async (entry_id, story_id) => {
         db.collection("StoryDatabase").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(1)});
     });
   })
+}
 
+async function checkMaxContributors(email, story_id){
+  console.log("story_id for max Contributors", story_id)
+
+  const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+  // setIsMaxContributors(data.docs.map((doc) => doc.data().imageUrl));
+  let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+  let currentUsers = data.docs[0].data().emails.length;  //fetch current user number of story from database
+  console.log('currentUsers', currentUsers);
+  if (currentUsers < maxUsers) {    //if current users is not maxed set the state accordingly
+    setIsMaxContributors(false)
   }
+  else {
+    setIsMaxContributors(true)
+  }
+  console.log('isMaxContributors', isMaxContributors);
+}
 
-  async function addToContributors(email, story_id){
+
+//// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
+async function addToContributors(email, story_id){
+    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
     console.log("StoryArray", storyArr[0].story_id)
     console.log('story_id for Contributors', story_id);
-
-    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    // setIsMaxContributors(data.docs.map((doc) => doc.data().imageUrl));
-    let maxUsers = data.docs[0].data().maxUsers; 
+    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
     let currentUsers = data.docs[0].data().emails.length; 
-    console.log('currentUsers', currentUsers);
-    if (currentUsers < maxUsers) {
-      setIsMaxContributors(false)
-    }
-    else {
-      setIsMaxContributors(true)
-    }
-    console.log('isMaxContributors', isMaxContributors);
-    
-    if (currentUsers < maxUsers){
-      db.collection('StoryDatabase').where("id", "==", story_id)
+    if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
+      db.collection('StoryDatabase').where("id", "==", story_id)  
       .get()
       .then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
@@ -123,7 +132,6 @@ let addLike = async (entry_id, story_id) => {
 
   }
 
-  
 	return (
     <div className="container DisplayStory">
       <div className="row image-row justify-center">
@@ -150,9 +158,7 @@ let addLike = async (entry_id, story_id) => {
           )
         })}
 
-
         {isContributor ?
-      
         <div className="row">
         <div className="col">
           <AddEntry id={props.match.params.id}/>
@@ -165,7 +171,6 @@ let addLike = async (entry_id, story_id) => {
         <button onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Click to Join Story</button>
         }
     </div>
-        
   );
 }
 
