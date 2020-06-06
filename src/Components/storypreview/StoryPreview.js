@@ -6,7 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
-import ButtonBase from '@material-ui/core/ButtonBase';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const db = firebase.firestore();
 
@@ -92,12 +92,12 @@ function StoryPreview(props) {
                   </p>
                 </Grid>
                 <Grid item>
-                  <p className="details" style={{ cursor: 'pointer' }}>
-                    {likes}
+                  <p className="details likes" style={{ cursor: 'pointer' }}>
+                    <FavoriteIcon id="heart" /> {likes}
                   </p>
                 </Grid>
                 <Grid item>
-                  <Link className="details" to={{ pathname: `/displaystory/${props.storyProp.id}` }}><p>Read more</p></Link>
+                  <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp.id}` }}><p>Read more</p></Link>
                 </Grid>
               </Grid>
               
