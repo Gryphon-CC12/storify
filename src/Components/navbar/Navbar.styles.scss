@@ -1,16 +1,28 @@
 #navbar {
-    margin-bottom: 90px;
+    margin-bottom: 75px;
 }
 
 a {
     text-decoration: none;
-    color: black;
+    color: #B1B1B8;
+}
+
+a:hover {
+    text-decoration: none;
+    color: #B1B1B8;
 }
 
 #app-title {
-    color: white;
+    color: #06E49B;
+    font-family: 'Pacifico', cursive;
+    font-size: 1.6em;
 }
 
-#app-title > a:hover {
-    
+#AppBar {
+    background-color: #000;
+}
+
+#log-out {
+    align-self: flex-end;
+    font-size: 0.7em;
 }

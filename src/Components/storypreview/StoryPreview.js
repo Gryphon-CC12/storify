@@ -36,8 +36,6 @@ function StoryPreview(props) {
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
 
-
-
   function fetchFirstEntryForStory(id) {
     db.collection('StoryDatabase').where('id', '==', id).get()
       .then(function (querySnapshot) {
@@ -73,42 +71,40 @@ function StoryPreview(props) {
 
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
-        <Grid id="preview" container spacing={2}>
-          <Grid item>
-            <img className={classes.img} alt="user-uploaded story artwork" src={imageURL} width="200" height="150" />
-          </Grid>
-          <Grid item xs={12} sm container>
-            <Grid item xs container direction="column" spacing={2}>
-              <Grid id="story" item xs>
-                <Typography gutterBottom variant="title">
-                  {props.storyProp.title}
-                </Typography>
-                <Typography variant="body2" gutterBottom>
-                  {storyText}
-                </Typography>
-                
+      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp.id}` }}>
+        <Paper className={classes.paper}>
+          <Grid id="preview" container spacing={2}>
+            <Grid item>
+              <img className={classes.img} alt="user-uploaded story artwork" src={imageURL} width="200" height="150" />
+            </Grid>
+            <Grid item xs={12} sm container>
+              <Grid item xs container direction="column" spacing={2}>
+                <Grid id="story" item xs>
+                  <Typography gutterBottom variant="subtitle1">
+                    {props.storyProp.title}
+                  </Typography>
+                  <Typography variant="body2" gutterBottom>
+                    {storyText}
+                  </Typography>
+                  
+                </Grid>
+                <Grid item xs container direction="row" spacing={2}>
+                  <Grid item>
+                    <p className="details">
+                      {genre}
+                    </p>
+                  </Grid>
+                  <Grid item>
+                    <p className="details likes" style={{ cursor: 'pointer' }}>
+                      <FavoriteIcon id="heart" /> {likes}
+                    </p>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs container direction="row" spacing={2}>
-                <Grid item>
-                  <p className="details">
-                    {genre}
-                  </p>
-                </Grid>
-                <Grid item>
-                  <p className="details likes" style={{ cursor: 'pointer' }}>
-                    <FavoriteIcon id="heart" /> {likes}
-                  </p>
-                </Grid>
-                <Grid item>
-                  <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp.id}` }}><p>Read more</p></Link>
-                </Grid>
-              </Grid>
-              
             </Grid>
           </Grid>
-        </Grid>
-      </Paper>
+        </Paper>
+      </Link>
     </div>
   );
 }

@@ -17,7 +17,6 @@ const useStyles = makeStyles({
 
 function PageFooter() {
     const classes = useStyles();
-    const [value, setValue] = React.useState(0);
 
     return (
         <BottomNavigation className={classes.root}>

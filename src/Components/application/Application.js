@@ -1,5 +1,8 @@
 import React, { useContext } from "react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { ThemeProvider } from '@material-ui/core/styles'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import theme from '../../theme';
 
 import Navbar from '../navbar/Navbar.js';
 import ProfilePage from "../profilepage/ProfilePage";
@@ -21,6 +24,8 @@ function Application() {
   return (
       user ?
       <Router history={history}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
         <Navbar />
         <Switch> 
             <Route exact path="/profile" component={ProfilePage} />
@@ -30,6 +35,7 @@ function Application() {
             <Route path="/createstory" component={CreateStory} />   
         </Switch>
         <PageFooter />
+        </ThemeProvider>
       </Router>
       :    
       <Router>

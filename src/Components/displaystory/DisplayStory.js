@@ -3,14 +3,14 @@
 // - Implement time limit mechanics (if time is exceeded skip to next user), reset time upon new entry.
 // - Implement email notification to user in turn.
 //****************** */
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
 import firebase from '../../firebaseConfig';
 import AddEntry from '../../Components/addentry/AddEntry'
 import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
-import _ from 'lodash'
+// import _ from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -31,16 +31,14 @@ function DisplayStory(props) {
   const [numOfEntries, setNumOfEntries] = useState(0)
   const [userInTurn, setUserInTurn] = useState("")
   const [isUserInTurn, setIsUserInTurn] = useState(false)
-  //const idLikesRef = useRef();
 
   useEffect(() => {
-    // console.log("PROPS", props.match.params.id);
     fetchEntriesForStory(props.match.params.id, user.email);
     fetchImageURL(props.match.params.id);
     checkMaxContributors(user.email, props.match.params.id)
     checkMaxEntries(user.email, props.match.params.id)
     checkTurns(user.email, props.match.params.id)
-	},[props.match.params.id])
+	},[user.email, props.match.params.id])
 
   function fetchEntriesForStory(story_id, user_email) {
     db.collection('StoryDatabase').where('id', '==', story_id).get()
@@ -48,7 +46,6 @@ function DisplayStory(props) {
       let ids_array = [];
 			querySnapshot.forEach(function(doc) {
       ids_array.push(doc.data().entries)
-      console.log("Carlos's email?", doc.data().emails.includes(user_email))
       setIsContributor(doc.data().emails.includes(user_email))
       setTitle(doc.data().title);
       
@@ -65,9 +62,7 @@ function DisplayStory(props) {
               let thisLikes = doc.data().likes;
               let thisId = doc.data().id
               let thisEmail = doc.data().email;
-              // console.log('thisEmail', thisEmail);
               setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "entry_id" : thisId, "story_id": story_id, "user_email": thisEmail}]));
-              // setAuthorArr(authorArr => authorArr.concat(doc.data().text))
             })
           })
         })
@@ -78,9 +73,7 @@ function DisplayStory(props) {
 const fetchImageURL = async (id) => {
   const db = firebase.firestore();
   const data = await db.collection('StoryDatabase').where('id', '==', id).get();
-  //console.log("IMAGE URL", data.docs;
   setImageURL(data.docs.map((doc) => doc.data().imageUrl));
-  //setImageURL(data.docs.map((doc) => doc.data()));
 };
 
 ////ADD LIKES FUNCTION////
@@ -108,7 +101,6 @@ async function checkTurns(email, story_id){
   let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
   let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-  // let currentEntriesList = data.docs[0].data().entries;  //fetch current user number of story from database
   
   let turnNumber = currentEntriesNum % currentUsersNum;
 
@@ -129,7 +121,6 @@ async function checkTurns(email, story_id){
   async function checkMaxContributors(email, story_id){
 
     const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    // setIsMaxContributors(data.docs.map((doc) => doc.data().imageUrl));
     let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
     let currentUsers = data.docs[0].data().emails.length;  //fetch current user number of story from database
 
@@ -145,7 +136,6 @@ async function checkTurns(email, story_id){
   async function checkMaxEntries(email, story_id){
 
     const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    // setIsMaxContributors(data.docs.map((doc) => doc.data().imageUrl));
     let maxEntries = data.docs[0].data().maxEntries;   //fetch max Users limit from database
     let currentEntries = data.docs[0].data().entries.length;  //fetch current user number of story from database
 
@@ -156,7 +146,6 @@ async function checkTurns(email, story_id){
     else {
       setIsMaxEntries(true)
     }
-    // console.log('isMaxEntries', isMaxEntries);
   }
 
 
@@ -172,7 +161,6 @@ async function checkTurns(email, story_id){
           querySnapshot.forEach(function(doc) {
               //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
               db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(email)});
-              // const data = await db.collection('StoryDatabase').where('id', '==', story_id).get().update({"emails": firebase.firestore.FieldValue.arrayUnion(email)});
             });
         })
       }

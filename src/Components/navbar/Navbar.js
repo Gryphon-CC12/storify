@@ -14,7 +14,7 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Button from '@material-ui/core/Button';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -24,14 +24,16 @@ import PostAddIcon from '@material-ui/icons/PostAdd';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import theme from '../../theme'
 
 import './Navbar.styles.scss';
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     display: 'flex',
+    flexGrow: 1,
   },
   appBar: {
     transition: theme.transitions.create(['margin', 'width'], {
@@ -98,7 +100,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Navbar() {
   const classes = useStyles();
-  const theme = useTheme();
+
   const [open, setOpen] = React.useState(false);
 
   const handleDrawerOpen = () => {
@@ -117,9 +119,10 @@ export default function Navbar() {
     <ClickAwayListener onClickAway={handleClickAway}>
     <div id="navbar" className={classes.root}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        className={clsx(classes.appBar, {
+        <AppBar
+          id="AppBar"
+          position="fixed"
+          className={clsx(classes.appBar, {
           [classes.appBarShift]: open,
         })}
       >
@@ -138,7 +141,13 @@ export default function Navbar() {
                 Storify
             </Typography>
           </Link>
-        </Toolbar>
+            <Button
+              onClick={() => { auth.signOut() }}
+              color="inherit"
+
+            >LOG OUT</Button>
+          </Toolbar>
+          
       </AppBar>
       
       <Drawer
@@ -152,7 +161,7 @@ export default function Navbar() {
       >
         <div className={classes.drawerHeader}>
           <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+             <ChevronLeftIcon />
           </IconButton>
         </div>
         <Divider />
@@ -178,7 +187,7 @@ export default function Navbar() {
               <ListItemIcon> <PostAddIcon /> </ListItemIcon>
               <ListItemText primary="My Entries" />
             </ListItem>
-          {/* </Link> */}
+            {/* </Link> */}
         </List>
 
         <Divider />

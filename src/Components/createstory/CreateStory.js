@@ -1,12 +1,10 @@
-import React, { useState, useRef, useContext } from 'react';
+import React, { useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
 import {storage} from "../../firebaseConfig"
 
 import { UserContext } from "../../providers/UserProvider";
-
-// import { storage } from "../../firebaseConfig"
 import 'firebase/storage'
 
 const db = firebase.firestore();
@@ -14,15 +12,13 @@ const db = firebase.firestore();
 function CreateStory() {
 
     ////For google image upload
-    const allInputs = {imgUrl: ''}
-    const [imageAsFile, setImageAsFile] = useState('')
-    // const [imageAsUrl, setImageAsUrl] = useState("")
+    // const allInputs = {imgUrl: ''}
+    // const [imageAsFile, setImageAsFile] = useState('')
     const author = useContext(UserContext);
     let imageAsUrl = ""
     /////
 
 /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
-    console.log(imageAsFile)
     // const handleImageAsFile = (e) => {
     //     // e.preventDefault();
     //     const image = e.target.files[0]
@@ -32,8 +28,6 @@ function CreateStory() {
 //////////////
 
 function saveToStories(event, id, author, title, imageAsUrl) {
-    //event.preventDefault();
-    console.log("imageAsUrl for stories", imageAsUrl);
     if (imageAsUrl === ""){
         imageAsUrl = "https://bit.ly/2MEQ1yJ"
     }
@@ -65,7 +59,6 @@ function saveToStories(event, id, author, title, imageAsUrl) {
     const handleFireBaseUpload = (arenderSynce) => {
         arenderSynce.preventDefault()
         const image = arenderSynce.target.files[0]
-        console.log('start of upload')
         // async magic goes here...
         if(image === '' ) {
             console.error(`not an image, the image file is a ${typeof(image)}`);
@@ -83,24 +76,12 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             }, () => {
             // gets the functions from storage refences the image storage in firebase by the children
             // gets the download url then sets the image from firebase as the value for the imgUrl key:
-                console.log("image.name", image.name)
                 storage.ref('images').child(image.name).getDownloadURL()
                 .then(fireBaseUrl => {
-                console.log('fireBaseUrl', fireBaseUrl);
                 imageAsUrl = fireBaseUrl;
-                // setImageAsUrl(imageAsUrl => ({...imageAsUrl, imgUrl: fireBaseUrl}))
-                console.log("ImageAsUrl",imageAsUrl)
             })
             });
-        // setTimeout(() => {
-        //     onButtonClick(arenderSynce)
-        // }, 3000);
     }
-
-// https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2F200x200bb.jpg?alt=media&token=fe0b6307-93e0-4ea7-98ba-3f597dc79439
- 
-// bucket:   seniorgryphon-df706.appspot.com   path   images/200x200bb.jpg
-//////////////      
 
     const inputEl = useRef();
     const id = uuidv4();
@@ -111,27 +92,12 @@ function saveToStories(event, id, author, title, imageAsUrl) {
     const storyGenre = useRef("Other");
     const deadline = useRef("5 minutes");
 
-    console.log("IDDD", id)
     
     const onButtonClick = (event) => {
         event.preventDefault();
         
-        console.log("UseRobot", useRobot.current.checked)
-        console.log("maxEntries", maxEntries.current.value)
-        console.log("maxCollaborators", maxCollaborators.current.value)
-        console.log("storyGenre", storyGenre.current.value)
-        console.log("deadline", deadline.current.value)
-
-        console.log('imageAsUrl in ButtonClick', imageAsUrl);
-        // `current` points to the mounted text input element
-        // await handleFireBaseUpload(event);
-        //   setTimeout(async() => {
-        console.log("waiiitinng! for ", imageAsUrl)
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
-        console.log("TITLE", titleEl.current.value)
-        console.log("test: is getting data from button?", inputEl, id);
-        // }, 2500);
     };
     return (
         <>
@@ -197,11 +163,6 @@ function saveToStories(event, id, author, title, imageAsUrl) {
                     </select>
                 </div>
             </form>
-            {/* <form> */}
-            {/* <form onSubmit={onButtonClick}> */}
-            {/* </form> */}
-            {/* <button>Upload your art to firebase Which one is this?</button> */}
-            {/* <img src={imageAsUrl} alt="preview" height="50"  width="100"/> */}
             <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
         </>
     );
