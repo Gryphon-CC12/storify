@@ -18,6 +18,8 @@ function DisplayStory(props) {
   const [isMaxContributors, setIsMaxContributors] = useState(true)
   const [isMaxEntries, setIsMaxEntries] = useState(true)
   const [numOfEntries, setNumOfEntries] = useState(0)
+  const [userInTurn, setUserInTurn] = useState("")
+  const [isUserInTurn, setIsUserInTurn] = useState(false)
   //const idLikesRef = useRef();
 
   useEffect(() => {
@@ -26,6 +28,7 @@ function DisplayStory(props) {
     fetchImageURL(props.match.params.id);
     checkMaxContributors(user.email, props.match.params.id)
     checkMaxEntries(user.email, props.match.params.id)
+    checkTurns(user.email, props.match.params.id)
 	},[props.match.params.id])
 
   function fetchEntriesForStory(story_id, user_email) {
@@ -50,7 +53,9 @@ function DisplayStory(props) {
               let thisText = doc.data().text;
               let thisLikes = doc.data().likes;
               let thisId = doc.data().id
-              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "entry_id" : thisId, "story_id": story_id}]));
+              let thisEmail = doc.data().email;
+              // console.log('thisEmail', thisEmail);
+              setStoryArr(storyArr => storyArr.concat([{"author": thisAuthor, "text": thisText, "likes" : thisLikes, "entry_id" : thisId, "story_id": story_id, "user_email": thisEmail}]));
               // setAuthorArr(authorArr => authorArr.concat(doc.data().text))
             })
           })
@@ -88,6 +93,33 @@ let addLike = async (entry_id, story_id) => {
         db.collection("StoryDatabase").doc(doc.id).update({"likes": firebase.firestore.FieldValue.increment(1)});
     });
   })
+}
+
+
+async function checkTurns(email,story_id){ 
+  const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+  let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
+  let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
+  let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
+  let currentEntriesList = data.docs[0].data().entries;  //fetch current user number of story from database
+  
+  let turnNumber = currentEntriesNum%currentUsersNum;
+
+  for (let user in currentUsersList) {
+      if (turnNumber == user) {
+        if (currentUsersList[user] == email)
+        {
+          setIsUserInTurn(true);
+        } else {
+          setIsUserInTurn(false);
+        }
+        console.log("turn", currentUsersList[user], email)
+        setUserInTurn(currentUsersList[user])
+      } else {
+        console.log("not turn", currentUsersList[user], email)
+        
+      }
+    }
 }
 
 async function checkMaxContributors(email, story_id){
@@ -155,6 +187,10 @@ async function addToContributors(email, story_id){
 
   }
 
+console.log('userInTurn',userInTurn);
+console.log('isUserInTurn',isUserInTurn);
+
+
 	return (
     <div className="container DisplayStory">
       <div className="row image-row justify-center">
@@ -183,14 +219,17 @@ async function addToContributors(email, story_id){
 
         {isContributor ?
           isMaxEntries ?
-          <p>Sorry this story is finished</p>  
+          <p>This story is finished</p>  
           :
-          <div className="row">
-          <div className="col">
-            <p>This story has {numOfEntries} entries left</p>
-            <AddEntry id={props.match.params.id}/>
-          </div>
-          </div>
+          isUserInTurn ?
+            <div className="row">
+            <div className="col">
+              <p>This story has {numOfEntries} entries left</p>
+              <AddEntry id={props.match.params.id}/>
+            </div>
+            </div>
+          :
+          <p>User in turn: {userInTurn} </p>
         :
         isMaxContributors ?
             <p>Sorry this story is full</p>  
