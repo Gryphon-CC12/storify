@@ -1,8 +1,11 @@
+.full-width {
+    width: 100%;
+    margin-bottom: 100px;
+}
+
 #footer {
     font-size: 0.8em;
     color: grey;
-    background: black;
-    width: 100%;
 }
 
 a {
@@ -19,4 +22,11 @@ a:hover {
 
 #copyright {
     font-size: 0.7em;
+}
+
+#container {
+    display: flex;
+    // min-height: 100vh;
+    flex-direction: column;
+    width: 100%
 }

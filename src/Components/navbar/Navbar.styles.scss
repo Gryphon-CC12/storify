@@ -1,5 +1,26 @@
+#app-title {
+    color: #1282A2;
+    font-family: 'Pacifico', cursive;
+    font-size: 1.6em;
+    align-self: center;
+}
+
+.menu-icon {
+    color: #034078;
+}
+
+#AppBar {
+    background-color: rgb(255, 255, 255);
+}
+
 #navbar {
     margin-bottom: 75px;
+}
+
+.navbar-link {
+    color: #034078;
+    font-size: 0.7em;
+    text-align: end;
 }
 
 a {
@@ -9,20 +30,10 @@ a {
 
 a:hover {
     text-decoration: none;
-    color: #B1B1B8;
+    color: #000;
 }
 
-#app-title {
-    color: #06E49B;
-    font-family: 'Pacifico', cursive;
-    font-size: 1.6em;
+.side-link:hover {
+    color: #000;
 }
 
-#AppBar {
-    background-color: #000;
-}
-
-#log-out {
-    align-self: flex-end;
-    font-size: 0.7em;
-}

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import clsx from 'clsx';
 import { auth } from "../../firebaseConfig";
 import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import AppBar from '@material-ui/core/AppBar';
@@ -25,6 +25,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import theme from '../../theme'
+import ListAlt from '@material-ui/icons/ListAlt';
 
 import './Navbar.styles.scss';
 
@@ -117,18 +118,19 @@ export default function Navbar() {
 
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
-    <div id="navbar" className={classes.root}>
+    <div id="navbar">
       <CssBaseline />
-        <AppBar
-          id="AppBar"
-          position="fixed"
-          className={clsx(classes.appBar, {
-          [classes.appBarShift]: open,
-        })}
+      <AppBar
+        id="AppBar"
+        position="fixed"
+        className={clsx({
+        [classes.appBarShift]: open,
+      })}
       >
         <Toolbar>
-          <IconButton
-            color="inherit"
+            <IconButton
+            classes={{ label: 'menu-icon' }}
+            color="#034078"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
             edge="start"
@@ -141,13 +143,22 @@ export default function Navbar() {
                 Storify
             </Typography>
           </Link>
-            <Button
-              onClick={() => { auth.signOut() }}
-              color="inherit"
 
-            >LOG OUT</Button>
+          <Link to="/">
+              <Button
+                classes={{ label: 'navbar-link' }}
+                color="#034078"
+              >HOME</Button>
+          </Link>
+
+          <Link to="/">
+            <Button
+              classes={{ label: 'navbar-link' }}
+              onClick={() => { auth.signOut() }}
+              color="#034078"
+              >LOG OUT</Button>
+          </Link>
           </Toolbar>
-          
       </AppBar>
       
       <Drawer
@@ -168,44 +179,60 @@ export default function Navbar() {
 
         <Divider />
         <List>
-          <Link to="/profile">
+            <Link
+              className="side-link"
+              to="/profile"
+              onClick={handleDrawerClose}>
             <ListItem button key="profile">
                 <ListItemIcon> <AccountCircleIcon /> </ListItemIcon>
                 <ListItemText primary="My Profile" />
             </ListItem>
           </Link>
           
-          {/* <Link to=""> */}
-            <ListItem button key="stories">
+          {/* <Link className="side-link" to=""> */}
+            <ListItem button key="stories"
+            onClick={handleDrawerClose}>
               <ListItemIcon> <BorderColorIcon /> </ListItemIcon>
               <ListItemText primary="My Stories" />
             </ListItem>
           {/* </Link> */}
 
-          {/* <Link to=""> */}
-            <ListItem button key="entries">
-              <ListItemIcon> <PostAddIcon /> </ListItemIcon>
+          {/* <Link className="side-link" to=""> */}
+            <ListItem button key="entries"
+            onClick={handleDrawerClose}>
+              <ListItemIcon> <ListAlt /> </ListItemIcon>
               <ListItemText primary="My Entries" />
             </ListItem>
-            {/* </Link> */}
+          {/* </Link> */}
+
+          <Link className="side-link" to="/createstory">
+              <ListItem button key="create"
+              onClick={handleDrawerClose}>
+                <ListItemIcon> <PostAddIcon /> </ListItemIcon>
+              <ListItemText primary="Create A Story" />
+            </ListItem>
+            </Link>
         </List>
 
         <Divider />
 
-        <List>
-          <ListItem button key="liked">
+        <List className="side-link">
+            <ListItem button key="liked"
+            onClick={handleDrawerClose}>
             <ListItemIcon> <FavoriteIcon /> </ListItemIcon>
             <ListItemText primary="Most Liked Stories" />
           </ListItem>
 
-          <Link to='/about'>
-            <ListItem button key="about">
+          <Link className="side-link" to='/about'>
+              <ListItem button key="about"
+              onClick={handleDrawerClose}>
               <ListItemIcon> <InfoIcon /> </ListItemIcon>
               <ListItemText primary="About Storify" />
             </ListItem>
           </Link>
 
-          <ListItem button key="logout">
+            <ListItem button key="logout"
+            onClick={handleDrawerClose}>
             <ListItemIcon> <ExitToAppIcon /> </ListItemIcon>
             <ListItemText onClick={() => { auth.signOut() }} primary="Log Out" />
           </ListItem>

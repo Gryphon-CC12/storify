@@ -1,4 +1,5 @@
 import React, { useRef, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
@@ -6,6 +7,24 @@ import {storage} from "../../firebaseConfig"
 
 import { UserContext } from "../../providers/UserProvider";
 import 'firebase/storage'
+import DisplayStory from '../displaystory/DisplayStory';
+import { Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import NativeSelect from '@material-ui/core/NativeSelect';
+
+const useStyles = makeStyles((theme) => ({
+    formControl: {
+      margin: theme.spacing(1),
+      minWidth: 120,
+    },
+    selectEmpty: {
+      marginTop: theme.spacing(2),
+    },
+  }));
 
 //import emailjs from 'emailjs-com';
 //require('dotenv').config()
@@ -13,7 +32,8 @@ import 'firebase/storage'
 
 const db = firebase.firestore();
 
-function CreateStory() {
+function CreateStory(props) {
+    const classes = useStyles();
 
     ////For google image upload
     // const allInputs = {imgUrl: ''}
@@ -109,78 +129,84 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             } else {
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
+        // props.history.push(`/displaystory/${id}`);
+        // return <Redirect  to="/" />
+        console.log(id);
+
           }
     };
     return (
         <>
-            <form className="col-8">
-                <div className="form-group">
-                    <label htmlFor="exampleFormControlInput1">Enter a title for your story!</label>
-                    <input type="text" className="form-control" id="story-title" placeholder="Title" ref={titleEl}/>
+            <div className="container">
+            <div className="col-12">
+                <form>
+                    <div className="form-group">
+                        <label htmlFor="exampleFormControlInput1">Enter a title for your story!</label>
+                        <input type="text" className="form-control" id="story-title" placeholder="Title" ref={titleEl}/>
+                    </div>
+                    <input 
+                        
+                        type="file"
+                        onChange={handleFireBaseUpload}
+                    />
+                    <div className="form-group">
+                        <label htmlFor="prompt-input">Enter story prompt</label>
+                        <textarea className="form-control" ref={inputEl} type="text" rows="10" />
+                    </div>
+                    <div className="form-group">
+                    </div>
+                    <div className="form-check">
+                        <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" ref={useRobot} />
+                        <label className="form-check-label" htmlFor="defaultCheck1">
+                            Use Robot as a player?
+                        </label>
+                    </div>
+                    <div>
+                        <label className="form-check-label" htmlFor="defaultCheck1">
+                            Max number of Entries?
+                        </label>
+                        <input className="form-control" type="number" min="1" step="1" ref={maxEntries} />
+                    </div>
+                    <div>
+                        <label className="form-check-label" htmlFor="defaultCheck1">
+                            Max number of Collaborators?
+                        </label>
+                        <input className="form-control" type="number" min="1" step="1" ref={maxCollaborators}/>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="select-deadline">Submission Deadline</label>
+                        <select select="true" className = "form-control" id = "exampleFormControlSelect1" ref={deadline}>
+                        <option>5 minutes</option>
+                        <option>15 minutes</option>
+                        <option>30 minutes</option>
+                        <option>1 hour</option>
+                        <option>3 hours</option>
+                        <option>12 hours</option>
+                        <option>1 day</option>
+                        <option>1 week</option>
+                        </select>
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="select-deadline">Story Genre</label>
+                        <select select="true" className = "form-control" id = "exampleFormControlSelect1" ref={storyGenre}>
+                            <option>Crime</option>
+                            <option>Fan fiction</option>
+                            <option>Fantasy</option>
+                            <option>Historical</option>
+                            <option>Horror</option>
+                            <option>Humor</option>
+                            <option>Romance</option>
+                            <option>Sci-fi</option>
+                            <option>Thriller</option>
+                            <option>Other</option>
+                        </select>
+                    </div>
+                    
+                        <button id="entry-input" onClick={onButtonClick} className="btn btn-dark"><Link to={{ pathname: `/displaystory/${id}` }}>Submit</Link></button>
+                    
+                </form>
                 </div>
-                <input 
-                    type="file"
-                    onChange={handleFireBaseUpload}
-                />
-                <div className="form-group">
-                    <label htmlFor="prompt-input">Enter story prompt</label>
-                    <textarea className="form-control" ref={inputEl} type="text" rows="10" />
                 </div>
-                <div className="form-group">
-                </div>
-                <div className="form-check">
-                    <input className="form-check-input" type="checkbox" value="" id="defaultCheck1" ref={useRobot} />
-                    <label className="form-check-label" htmlFor="defaultCheck1">
-                        Use Robot as a player?
-                    </label>
-                </div>
-                <div>
-                    <label className="form-check-label" htmlFor="defaultCheck1">
-                        Max number of Entries?
-                    </label>
-                    <input type="number" min="1" step="1" ref={maxEntries} />
-                </div>
-                <div>
-                    <label className="form-check-label" htmlFor="defaultCheck1">
-                        Max number of Collaborators?
-                    </label>
-                    <input type="number" min="1" step="1" ref={maxCollaborators}/>
-                </div>
-                 <div className="form-group">
-                    <label htmlFor="select-deadline">Submission Deadline</label>
-                    <select select="true" className = "form-control" id = "exampleFormControlSelect1" ref={deadline}>
-                    <option>5 minutes</option>
-                    <option>15 minutes</option>
-                    <option>30 minutes</option>
-                    <option>1 hour</option>
-                    <option>3 hours</option>
-                    <option>12 hours</option>
-                    <option>1 day</option>
-                    <option>1 week</option>
-                    </select>
-                </div>
-                <div className="form-group">
-                    <label htmlFor="select-deadline">Story Genre</label>
-                    <select select="true" className = "form-control" id = "exampleFormControlSelect1" ref={storyGenre}>
-                    <option>Crime</option>
-                    <option>Fan fiction</option>
-                    <option>Fantasy</option>
-                    <option>Historical</option>
-                    <option>Horror</option>
-                    <option>Humor</option>
-                    <option>Romance</option>
-                    <option>Sci-fi</option>
-                    <option>Thriller</option>
-                    <option>Other</option>
-                    </select>
-                </div>
-            </form>
-            {/* <form> */}
-            {/* <form onSubmit={onButtonClick}> */}
-            {/* </form> */}
-            {/* <button>Upload your art to firebase Which one is this?</button> */}
-            {/* <img src={imageAsUrl} alt="preview" height="50"  width="100"/> */}
-            <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
         </>
     );
 }
