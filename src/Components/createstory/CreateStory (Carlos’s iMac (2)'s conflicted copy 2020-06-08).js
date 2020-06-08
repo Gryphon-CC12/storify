@@ -1,28 +1,37 @@
-import React, { useRef, useContext } from 'react';
+import React, { useState, useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
 import {storage} from "../../firebaseConfig"
 
 import { UserContext } from "../../providers/UserProvider";
+
+// import { storage } from "../../firebaseConfig"
 import 'firebase/storage'
 
-//import emailjs from 'emailjs-com';
-//require('dotenv').config()
-//const {SERVICE_ID,TEMPLATE_ID,USER_ID} = process.env;
+import emailjs from 'emailjs-com';
+
+require('dotenv').config()
+
+const {SERVICE_ID,TEMPLATE_ID,USER_ID} = process.env;
 
 const db = firebase.firestore();
+
+
+
 
 function CreateStory() {
 
     ////For google image upload
-    // const allInputs = {imgUrl: ''}
-    // const [imageAsFile, setImageAsFile] = useState('')
+    const allInputs = {imgUrl: ''}
+    const [imageAsFile, setImageAsFile] = useState('')
+    // const [imageAsUrl, setImageAsUrl] = useState("")
     const author = useContext(UserContext);
     let imageAsUrl = ""
     /////
 
 /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
+    console.log(imageAsFile)
     // const handleImageAsFile = (e) => {
     //     // e.preventDefault();
     //     const image = e.target.files[0]
@@ -32,6 +41,8 @@ function CreateStory() {
 //////////////
 
 function saveToStories(event, id, author, title, imageAsUrl) {
+    //event.preventDefault();
+    console.log("imageAsUrl for stories", imageAsUrl);
     if (imageAsUrl === ""){
         imageAsUrl = "https://bit.ly/2MEQ1yJ"
     }
@@ -58,12 +69,59 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             console.error("Error writing document: ", error);
         }); 
 
+
+
+        //////  SEND EMAIL  ////
+        let template_params = {
+            "email": "chesswikipedia@gmail.com",  //send to email address
+            "reply_to": "storify.io@gmail.com",
+            "from_name": "Storify Team",
+            "to_name": "Author", //name of next author
+            "message_html": "<h1>Your turn!</h1>"
+         }
+         
+         emailjs.send('storify_io_gmail_com', 'storifytest', template_params, 'user_70NWDG8bnJ3Vr3RmVjtBT')
+            .then(function(response) {
+               console.log('SUCCESS!', response.status, response.text);
+            }, function(error) {
+               console.log('FAILED...', error);
+            });
+
+        // ServiceId: storify_io_gmail_com
+        // UserId: user_70NWDG8bnJ3Vr3RmVjtBT
+        // templateID: storifytest
+
+        // let template_params = {
+        //     "email": "gymnast1979@gmail.com",
+        //     "reply_to": "storify.io@gmail.com",
+        //     "from_name": "Carloooos",
+        //     "to_name": "Gizmo",
+        //     "message_html": "message_html_value"
+        //  }
+         
+        //  var service_id = "default_service";
+        //  var template_id = "template_vIZ8pRhu";
+        //  emailjs.send('storify_io_gmail_com', 'storifytest', template_params, 'user_70NWDG8bnJ3Vr3RmVjtBT');
+
+
+        // var template_params = {
+        //     "reply_to": "storify.io@gmail.com",
+        //     "from_name": "storify.io@gmail.com",
+        //     "to_name": "to_name_value",
+        //     "message_html": "message_html_value"
+        //  }
+         
+        //  var service_id = "storify_io_gmail_com";
+        //  var template_id = "template_vIZ8pRhu";
+        //  emailjs.send(service_id, template_id, template_params);
+
 }
     
 ////For IMAGE UPLOAD TO GOOGLE BUCKET///
     const handleFireBaseUpload = (arenderSynce) => {
         arenderSynce.preventDefault()
         const image = arenderSynce.target.files[0]
+        console.log('start of upload')
         // async magic goes here...
         if(image === '' ) {
             console.error(`not an image, the image file is a ${typeof(image)}`);
@@ -81,12 +139,24 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             }, () => {
             // gets the functions from storage refences the image storage in firebase by the children
             // gets the download url then sets the image from firebase as the value for the imgUrl key:
+                console.log("image.name", image.name)
                 storage.ref('images').child(image.name).getDownloadURL()
                 .then(fireBaseUrl => {
+                console.log('fireBaseUrl', fireBaseUrl);
                 imageAsUrl = fireBaseUrl;
+                // setImageAsUrl(imageAsUrl => ({...imageAsUrl, imgUrl: fireBaseUrl}))
+                console.log("ImageAsUrl",imageAsUrl)
             })
             });
+        // setTimeout(() => {
+        //     onButtonClick(arenderSynce)
+        // }, 3000);
     }
+
+// https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2F200x200bb.jpg?alt=media&token=fe0b6307-93e0-4ea7-98ba-3f597dc79439
+ 
+// bucket:   seniorgryphon-df706.appspot.com   path   images/200x200bb.jpg
+//////////////      
 
     const inputEl = useRef();
     const id = uuidv4();
@@ -97,12 +167,27 @@ function saveToStories(event, id, author, title, imageAsUrl) {
     const storyGenre = useRef("Other");
     const deadline = useRef("5 minutes");
 
+    console.log("IDDD", id)
     
     const onButtonClick = (event) => {
         event.preventDefault();
         
+        console.log("UseRobot", useRobot.current.checked)
+        console.log("maxEntries", maxEntries.current.value)
+        console.log("maxCollaborators", maxCollaborators.current.value)
+        console.log("storyGenre", storyGenre.current.value)
+        console.log("deadline", deadline.current.value)
+
+        console.log('imageAsUrl in ButtonClick', imageAsUrl);
+        // `current` points to the mounted text input element
+        // await handleFireBaseUpload(event);
+        //   setTimeout(async() => {
+        console.log("waiiitinng! for ", imageAsUrl)
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
+        console.log("TITLE", titleEl.current.value)
+        console.log("test: is getting data from button?", inputEl, id);
+        // }, 2500);
     };
     return (
         <>

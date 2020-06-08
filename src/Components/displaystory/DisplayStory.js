@@ -104,8 +104,18 @@ async function checkTurns(email, story_id){
   
   let turnNumber = currentEntriesNum % currentUsersNum;
 
+  console.log('email in checkTurns', email);
+  console.log('currentUsersNum', currentUsersNum);
+  console.log('currentEntriesNum', currentEntriesNum);
+  console.log('currentUsersList', currentUsersList);
+  
+  // console.log('turnNumber', turnNumber);
+
+
   for (let user in currentUsersList) {
-      if (turnNumber === user) {
+    console.log('turnNumber', turnNumber);
+    console.log('user in turnNumber', user);
+      if (turnNumber == user) {
         if (currentUsersList[user] === email)
         {
           setIsUserInTurn(true);
@@ -134,7 +144,6 @@ async function checkTurns(email, story_id){
 
 ///// check max number of entries
   async function checkMaxEntries(email, story_id){
-
     const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
     let maxEntries = data.docs[0].data().maxEntries;   //fetch max Users limit from database
     let currentEntries = data.docs[0].data().entries.length;  //fetch current user number of story from database
@@ -182,6 +191,10 @@ async function checkTurns(email, story_id){
     },
   }));
   const classes = useStyles();
+  
+
+
+  console.log('userInTurn',userInTurn);
   
   return (
     <Container maxWidth="md">
