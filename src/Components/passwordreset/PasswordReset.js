@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {auth} from "../../firebaseConfig";
-import firebase from '../../firebaseConfig';
 
 const PasswordReset = () => {
   const [email, setEmail] = useState("");

@@ -4,7 +4,6 @@ import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
-import DisplayStory from '../displaystory/DisplayStory'
 const db = firebase.firestore();
 
 const pushToStory = (story_id, entry_id, author) => {
@@ -17,8 +16,6 @@ const pushToStory = (story_id, entry_id, author) => {
         db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
     });
 })}
-
-//<Link to={{pathname: `/displaystory/${props.storyProp.id}`}}>Read more</Link>
 
 function AddEntry(props) {
     const author = useContext(UserContext);

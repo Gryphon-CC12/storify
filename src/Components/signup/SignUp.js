@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {auth} from "../../firebaseConfig";
-import firebase from '../../firebaseConfig';
 import {generateUserDocument} from "../../firebaseConfig";
 
 const SignUp = () => {
@@ -10,13 +9,6 @@ const SignUp = () => {
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState(null);
 
-
-  //const createUserWithEmailAndPasswordHandler = (event, email, password) => {
-  //   event.preventDefault();
-  //   setEmail("");
-  //   setPassword("");
-  //   setDisplayName("");
-  // };
   const onChangeHandler = event => {
     const { name, value } = event.currentTarget;
     if (name === "userEmail") {
