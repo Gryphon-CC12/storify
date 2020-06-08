@@ -1,5 +1,26 @@
+#app-title {
+    color: #1282A2;
+    font-family: 'Pacifico', cursive;
+    font-size: 1.6em;
+    align-self: center;
+}
+
+.menu-icon {
+    color: #034078;
+}
+
+#AppBar {
+    background-color: rgb(255, 255, 255);
+}
+
 #navbar {
     margin-bottom: 75px;
+}
+
+.navbar-link {
+    color: #034078;
+    font-size: 0.7em;
+    text-align: end;
 }
 
 a {
@@ -16,22 +37,3 @@ a:hover {
     color: #000;
 }
 
-#app-title {
-    color: #06E49B;
-    font-family: 'Pacifico', cursive;
-    font-size: 1.6em;
-}
-
-#AppBar {
-    background-color: #000;
-}
-
-#log-out {
-    align-self: flex-end;
-    
-}
-
-.navbar-link {
-    color: white;
-    font-size: 0.7em;
-}

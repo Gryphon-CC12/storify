@@ -21,6 +21,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 const db = firebase.firestore();
 
 function DisplayStory(props) {
+  console.log('UserContext:', UserContext)
   const user = useContext(UserContext);
 	const [storyArr, setStoryArr ] = useState([]);
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
@@ -243,7 +244,7 @@ async function checkTurns(email, story_id){
           isMaxContributors ?
               <p></p>  
           :
-          <button onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
+          <button className="btn btn-dark" onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
           }
 
       </Grid>

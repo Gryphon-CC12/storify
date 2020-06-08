@@ -27,7 +27,6 @@ function Application() {
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Navbar />
-          <Container maxWidth="lg">
             <Switch> 
                 <Route exact path="/profile" component={ProfilePage} />
                 <Route exact path="/" component={StoryList} />
@@ -35,8 +34,7 @@ function Application() {
                 <Route exact name="displaystory" path="/displaystory/:id" component={DisplayStory} />
                 <Route exact path="/createstory" component={CreateStory} />   
                 </Switch>
-            </Container>
-        <PageFooter />
+        {/* <PageFooter /> */}
         </ThemeProvider>
       </Router>
       :    

@@ -4,7 +4,7 @@ import BottomNavigation from '@material-ui/core/BottomNavigation';
 import Typography from '@material-ui/core/Typography';
 import './PageFooter.styles.scss';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles({
     root: {
@@ -15,19 +15,25 @@ const useStyles = makeStyles({
     },
 });
 
+//TODO fix overlapping
 
 function PageFooter() {
     const classes = useStyles();
 
     return (
-        <Container id="container">
-            <BottomNavigation id="footer-component" className={classes.root}>
-                <Typography id="footer"> 
+        <Grid>
+            <BottomNavigation
+                classes={{ label: 'full-width' }}
+                id="footer-component" className={classes.root}>
+                <Typography
+                    classes={{ label: 'full-width' }}
+                    id="footer"
+                    > 
                     Made with <FavoriteIcon id="heart" /> |   <a href="https://github.com/Gryphon-CC12/storify">GitHub</a><br></br>
                     <span id="copyright">Copyright 2020 Carlos Salazar, Aizhan Imankulova, Phuong Tran, Polly Sutcliffe</span>
                 </Typography>
             </BottomNavigation>
-        </Container>
+        </Grid>
     );
 }
 
