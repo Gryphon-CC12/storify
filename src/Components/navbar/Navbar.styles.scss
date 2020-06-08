@@ -9,7 +9,11 @@ a {
 
 a:hover {
     text-decoration: none;
-    color: #B1B1B8;
+    color: #000;
+}
+
+.side-link:hover {
+    color: #000;
 }
 
 #app-title {
@@ -24,5 +28,10 @@ a:hover {
 
 #log-out {
     align-self: flex-end;
+    
+}
+
+.navbar-link {
+    color: white;
     font-size: 0.7em;
 }

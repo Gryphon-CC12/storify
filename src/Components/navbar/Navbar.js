@@ -25,6 +25,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import InfoIcon from '@material-ui/icons/Info';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import theme from '../../theme'
+import ListAlt from '@material-ui/icons/ListAlt';
 
 import './Navbar.styles.scss';
 
@@ -141,10 +142,19 @@ export default function Navbar() {
                 Storify
             </Typography>
           </Link>
+
+          <Link to="/">
+          <Button
+              // onClick={() => { auth.signOut() }}
+              color="inherit"
+              className="navbar-link"
+            >HOME</Button>
+          </Link>
+
             <Button
               onClick={() => { auth.signOut() }}
               color="inherit"
-
+              className="navbar-link"
             >LOG OUT</Button>
           </Toolbar>
           
@@ -168,37 +178,44 @@ export default function Navbar() {
 
         <Divider />
         <List>
-          <Link to="/profile">
+          <Link className="side-link" to="/profile">
             <ListItem button key="profile">
                 <ListItemIcon> <AccountCircleIcon /> </ListItemIcon>
                 <ListItemText primary="My Profile" />
             </ListItem>
           </Link>
           
-          {/* <Link to=""> */}
+          {/* <Link className="side-link" to=""> */}
             <ListItem button key="stories">
               <ListItemIcon> <BorderColorIcon /> </ListItemIcon>
               <ListItemText primary="My Stories" />
             </ListItem>
           {/* </Link> */}
 
-          {/* <Link to=""> */}
+          {/* <Link className="side-link" to=""> */}
             <ListItem button key="entries">
-              <ListItemIcon> <PostAddIcon /> </ListItemIcon>
+              <ListItemIcon> <ListAlt /> </ListItemIcon>
               <ListItemText primary="My Entries" />
             </ListItem>
-            {/* </Link> */}
+          {/* </Link> */}
+
+          <Link className="side-link" to="/createstory">
+              <ListItem button key="create">
+                <ListItemIcon> <PostAddIcon /> </ListItemIcon>
+              <ListItemText primary="Create A Story" />
+            </ListItem>
+            </Link>
         </List>
 
         <Divider />
 
-        <List>
+        <List className="side-link">
           <ListItem button key="liked">
             <ListItemIcon> <FavoriteIcon /> </ListItemIcon>
             <ListItemText primary="Most Liked Stories" />
           </ListItem>
 
-          <Link to='/about'>
+          <Link className="side-link" to='/about'>
             <ListItem button key="about">
               <ListItemIcon> <InfoIcon /> </ListItemIcon>
               <ListItemText primary="About Storify" />

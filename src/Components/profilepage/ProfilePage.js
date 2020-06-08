@@ -1,32 +1,50 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
 import { auth } from "../../firebaseConfig";
+import Typography from '@material-ui/core/Typography';
+import Container from '@material-ui/core/Container';
+import Grid from '@material-ui/core/Grid';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+}));
+
 
 const ProfilePage = () => {
   const user = useContext(UserContext);
-  console.log('USER IN PROFILE PAGE', user);
+  const classes = useStyles();
   
   const { photoURL, displayName, email } = user;
   
   return (
-    <div className = "mx-auto w-11/12 md:w-2/4 py-8 px-4 md:px-8">
-      <div className="flex border flex-col items-center md:flex-row md:items-start border-blue-400 px-3 py-4">
-        <div
-          style={{
-            background: `url(${photoURL || 'https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png'})  no-repeat center center`,
-            backgroundSize: "cover",
-            height: "200px",
-            width: "200px"
-          }}
-          className="border border-blue-300"
-        ></div>
-        <div className="md:pl-4">
-        <h2 className="text-2xl font-semibold">{displayName}</h2>
-        <h3 className="italic">{email}</h3>
-        </div>
+    <div className={classes.root}>
+      <Container maxWidth="sm">
+        <Grid container spacing={3}>
+          <Grid item xs={12}></Grid>
+          <Grid item xs={3}>
+          <div
+            style={{
+              background: `url(${photoURL || 'https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png'})  no-repeat center center`,
+              backgroundSize: "cover",
+              height: "100px",
+              width: "100px"
+            }}
+          ></div>
+          </Grid>
+          <Grid item xs={9}>
+            <Typography>{displayName}</Typography>
+          </Grid>
+          <Grid item xs={9}>
+            <Typography>{email}</Typography>
+          </Grid>
+
+        </Grid>
+        <button className="btn btn-info" onClick ={() => {auth.signOut()}}>Sign out</button>
+        </Container>
       </div>
-      <button className="btn btn-info" onClick ={() => {auth.signOut()}}>Sign out</button>
-    </div>
   ) 
 };
 

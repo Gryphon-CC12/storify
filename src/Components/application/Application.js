@@ -14,7 +14,7 @@ import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
 import PageFooter from '../pagefooter/PageFooter';
-
+import Container from '@material-ui/core/Container';
 import { UserContext } from "../../providers/UserProvider";
 import history from '../../history.js'
 
@@ -26,14 +26,16 @@ function Application() {
       <Router history={history}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-        <Navbar />
-        <Switch> 
-            <Route exact path="/profile" component={ProfilePage} />
-            <Route exact path="/" component={StoryList} />
-            <Route path="/about" component={About} />
-            <Route exact name="displaystory" path="/displaystory/:id" component={DisplayStory} />
-            <Route path="/createstory" component={CreateStory} />   
-        </Switch>
+          <Navbar />
+          <Container maxWidth="lg">
+            <Switch> 
+                <Route exact path="/profile" component={ProfilePage} />
+                <Route exact path="/" component={StoryList} />
+                <Route exact path="/about" component={About} />
+                <Route exact name="displaystory" path="/displaystory/:id" component={DisplayStory} />
+                <Route exact path="/createstory" component={CreateStory} />   
+                </Switch>
+            </Container>
         <PageFooter />
         </ThemeProvider>
       </Router>

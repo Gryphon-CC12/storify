@@ -1,4 +1,5 @@
 import React, { useRef, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
@@ -6,6 +7,8 @@ import {storage} from "../../firebaseConfig"
 
 import { UserContext } from "../../providers/UserProvider";
 import 'firebase/storage'
+import DisplayStory from '../displaystory/DisplayStory';
+import {Redirect} from 'react-router-dom';
 
 //import emailjs from 'emailjs-com';
 //require('dotenv').config()
@@ -103,6 +106,9 @@ function saveToStories(event, id, author, title, imageAsUrl) {
         
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
+        // this.props.history.push('/');
+        // return <Redirect  to="/" />
+
     };
     return (
         <>
@@ -173,7 +179,9 @@ function saveToStories(event, id, author, title, imageAsUrl) {
             {/* </form> */}
             {/* <button>Upload your art to firebase Which one is this?</button> */}
             {/* <img src={imageAsUrl} alt="preview" height="50"  width="100"/> */}
-            <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
+            <Link to="/">
+                <button id="entry-input" onClick={onButtonClick} className="btn btn-dark">Submit</button>
+            </Link>
         </>
     );
 }
