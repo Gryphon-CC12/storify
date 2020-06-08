@@ -14,7 +14,7 @@ import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
 import PageFooter from '../pagefooter/PageFooter';
-
+import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import history from '../../history.js'
 
@@ -23,7 +23,7 @@ function Application() {
   
   return (
       user ?
-      <Router history={history}>
+      <Router history={history} key={uuidv4()}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
         <Navbar />

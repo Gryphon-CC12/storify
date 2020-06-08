@@ -100,9 +100,16 @@ function saveToStories(event, id, author, title, imageAsUrl) {
     
     const onButtonClick = (event) => {
         event.preventDefault();
-        
+        console.log('maxEntries',maxEntries);
+        console.log('maxCollaborators', maxCollaborators);
+        if(inputEl.current.value === "" || titleEl.current.value === ""){
+            alert("Please enter a title and story prompt")   //Checks that story is not empty
+            } else if (Number(maxEntries.current.value) < Number(maxCollaborators.current.value)) {
+                alert("Entries should be greater than or equal to number of collaborators")
+            } else {
         saveToEntries(inputEl.current.value, id, author);
         saveToStories(inputEl.current.value, id, author, titleEl.current.value, imageAsUrl);
+          }
     };
     return (
         <>

@@ -75,13 +75,15 @@ function AddEntry(props) {
     const onButtonClick = (event) => {
     event.preventDefault()
     // `current` points to the mounted text input element
+    if(inputEl.current.value === ""){
+      alert("Please enter a longer entry")   //Checks that story is not empty
+    } else {
     saveToEntries(inputEl.current.value, id, author);
     pushToStory(props.id, id, author);
     console.log(props.id);
     // sendEmailToNextUser(author, props.id);
-
-
       return <Redirect to='/displaystory/:props.id' />
+    }
     };
 
     return (
