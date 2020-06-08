@@ -1,7 +1,6 @@
 //****************** */
 // Remaining TODOs for MVP
 // - Implement time limit mechanics (if time is exceeded skip to next user), reset time upon new entry.
-// - Implement email notification to user in turn.
 //****************** */
 import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
@@ -115,8 +114,8 @@ async function checkTurns(email, story_id){
   for (let user in currentUsersList) {
     console.log('turnNumber', turnNumber);
     console.log('user in turnNumber', user);
-      if (turnNumber == user) {
-        if (currentUsersList[user] === email)
+      if (turnNumber == user) {  //String and Number == 
+        if (currentUsersList[user] == email)
         {
           setIsUserInTurn(true);
         } else {
