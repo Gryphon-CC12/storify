@@ -1,7 +1,6 @@
 //****************** */
 // Remaining TODOs for MVP
 // - Implement time limit mechanics (if time is exceeded skip to next user), reset time upon new entry.
-// - Implement email notification to user in turn.
 //****************** */
 import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
@@ -104,28 +103,20 @@ async function checkTurns(email, story_id){
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
   
   let turnNumber = currentEntriesNum % currentUsersNum;
-
-  console.log('email in checkTurns', email);
-  console.log('currentUsersNum', currentUsersNum);
-  console.log('currentEntriesNum', currentEntriesNum);
-  console.log('currentUsersList', currentUsersList);
   
   // console.log('turnNumber', turnNumber);
 
 
   for (let user in currentUsersList) {
-    console.log('turnNumber', turnNumber);
-    console.log('user in turnNumber', user);
-      if (turnNumber == user) {
-        if (currentUsersList[user] === email)
+      if (turnNumber == user) {  //String and Number == 
+        if (currentUsersList[user] == email)
         {
           setIsUserInTurn(true);
         } else {
           setIsUserInTurn(false);
         }
         setUserInTurn(currentUsersList[user])
-      } else {
-      }
+      } 
     }
   }
 
@@ -195,13 +186,13 @@ async function checkTurns(email, story_id){
   
 
 
-  console.log('userInTurn',userInTurn);
+  //console.log('userInTurn',userInTurn);
   
   return (
-    <Container maxWidth="md">
+    <Container maxWidth="md" key={uuidv4()}>
       <Grid container spacing={2}>
         <Grid item xs={3}>
-          <img alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
+          <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
         </Grid>
 
         <Grid id="story-title" item xs={9}>
@@ -215,7 +206,6 @@ async function checkTurns(email, story_id){
                 <Paper id="story-text" className={classes.entry} elevation={3}>{item.text}</Paper>
                 </Grid>
                 <Grid item xs={6}>
-               
                 </Grid>
                 <Grid item xs={6}>
                 <Typography id="story-author" className={classes.details}>{item.author}
@@ -229,22 +219,22 @@ async function checkTurns(email, story_id){
           })}
           {isContributor ?
             isMaxEntries ?
-            <p></p>  
+            <p key={uuidv4()}>This Story has completed</p>  
             :
             isUserInTurn ?
-              <div className="row">
-              <div className="col">
+              <div className="row" key={uuidv4()}>
+              <div className="col" key={uuidv4()}>
                 <p>This story has {numOfEntries} entries left</p>
-                <AddEntry id={props.match.params.id}/>
+                <AddEntry id={props.match.params.id} />
               </div>
               </div>
             :
-            <p>User in turn: {userInTurn} </p>
+            <p key={uuidv4()}>User in turn: {userInTurn} </p>
           :
           isMaxContributors ?
-              <p></p>  
+              <p key={uuidv4()}>This Story has Max Contributor</p>  
           :
-          <button className="btn btn-dark" onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
+          <button className="btn btn-dark" key={uuidv4()} onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
           }
 
       </Grid>
