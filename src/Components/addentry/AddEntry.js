@@ -20,6 +20,7 @@ const pushToStory = (story_id, entry_id, author) => {
     querySnapshot.forEach(function(doc) {
         // Build doc ref from doc.id
         // collaborators: [{"authorEmail": author.email, "authorName": author.displayName}],
+        //storyTimeLimit = userData.docs[0].data().timeLimit;
         db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
         db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
     });
@@ -30,6 +31,7 @@ const pushToStory = (story_id, entry_id, author) => {
 async function sendEmailToNextUser(author, story_id) {
   const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
+  let storyTimeLimit = data.docs[0].data().timeLimit;
   let nextUserEmail = "";
   let nextUserName = ""
   for (let email_num in currentUsersList) {
@@ -46,14 +48,15 @@ async function sendEmailToNextUser(author, story_id) {
   const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
   console.log("next displayName",userData.docs[0].data().displayName)
   nextUserName = userData.docs[0].data().displayName;
-
+  console.log('storytimelimit',storyTimeLimit)
   //   //////  SEND EMAIL  ////
   let template_params = {
     "email": nextUserEmail,
     "reply_to": "storify.io@gmail.com",
     "from_name": "Storify Team",
     "to_name": nextUserName,
-    "message_html": "<h1>It's your turn to create!</h1>"
+    "time_limit": storyTimeLimit,
+    "message_html": ("<h1>It's your turn to create! You have "+ storyTimeLimit + " to add your entry.</h1>")
   }
     
   let service_id = "storify_io_gmail_com";
@@ -81,7 +84,7 @@ function AddEntry(props) {
     saveToEntries(inputEl.current.value, id, author);
     pushToStory(props.id, id, author);
     console.log(props.id);
-    // sendEmailToNextUser(author, props.id);
+    //sendEmailToNextUser(author, props.id);
       return <Redirect to='/displaystory/:props.id' />
     }
     };
