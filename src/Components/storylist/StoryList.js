@@ -51,6 +51,7 @@ function StoryList() {
     
     if (genre === "All" || genre === undefined) {
       const data = await db.collection('StoryDatabase').orderBy('dateCreated').get();
+      setStories([]);
       setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
     } else {
       const data = await db.collection('StoryDatabase').where('genre', "==", genre).get();
