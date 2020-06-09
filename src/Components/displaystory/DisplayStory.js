@@ -165,6 +165,7 @@ async function checkTurns(email, story_id){
             });
         })
       }
+      setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
   const useStyles = makeStyles((theme) => ({
