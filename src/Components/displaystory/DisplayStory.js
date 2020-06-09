@@ -95,7 +95,6 @@ let addLike = async (entry_id, story_id) => {
   })
 }
 
-
 async function checkTurns(email, story_id){ 
   const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
   let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
@@ -105,7 +104,6 @@ async function checkTurns(email, story_id){
   let turnNumber = currentEntriesNum % currentUsersNum;
   
   // console.log('turnNumber', turnNumber);
-
 
   for (let user in currentUsersList) {
       if (turnNumber == user) {  //String and Number == 
@@ -148,7 +146,6 @@ async function checkTurns(email, story_id){
       setIsMaxEntries(true)
     }
   }
-
 
 //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
   async function addToContributors(email, story_id){
