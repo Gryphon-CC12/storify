@@ -48,6 +48,7 @@ function StoryList() {
   }
 
   const retrieveAllStories = async (genre) => {
+    
     if (genre === "All" || genre === undefined) {
       const data = await db.collection('StoryDatabase').orderBy('dateCreated').get();
       setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
@@ -82,7 +83,7 @@ function StoryList() {
                 <MenuItem value={"Horror"}>Horror</MenuItem>
                 <MenuItem value={"Humor"}>Humor</MenuItem>
                 <MenuItem value={"Romance"}>Romance</MenuItem>
-                <MenuItem value={"Sci-Fi"}>Sci-fi</MenuItem>
+                <MenuItem value={"Sci-fi"}>Sci-fi</MenuItem>
                 <MenuItem value={"Thriller"}>Thriller</MenuItem>
                 <MenuItem value={"Other"}>Other</MenuItem>
               </Select>
