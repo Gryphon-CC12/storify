@@ -1,10 +1,9 @@
-import React, { useRef, useContext } from 'react';
+import React, { useRef, useContext, useEffect, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
-
 import emailjs from 'emailjs-com';
 
 // require('dotenv').config()
@@ -12,6 +11,7 @@ import emailjs from 'emailjs-com';
 // const {SERVICE_ID,TEMPLATE_ID,USER_ID} = process.env;
 
 const db = firebase.firestore();
+
 
 const pushToStory = (story_id, entry_id, author) => {
   db.collection('StoryDatabase').where("id", "==", story_id)
@@ -72,10 +72,13 @@ async function sendEmailToNextUser(author, story_id) {
 }
 
 function AddEntry(props) {
-    const author = useContext(UserContext);
-    const inputEl = useRef(null);
-    const id = uuidv4();
-    const onButtonClick = (event) => {
+
+  
+  const author = useContext(UserContext);
+  const inputEl = useRef(null);
+  const id = uuidv4();
+
+  const onButtonClick = (event) => {
     event.preventDefault()
     // `current` points to the mounted text input element
     if(inputEl.current.value === ""){
@@ -85,7 +88,9 @@ function AddEntry(props) {
     pushToStory(props.id, id, author);
     console.log(props.id);
     //sendEmailToNextUser(author, props.id);
-      return <Redirect to='/displaystory/:props.id' />
+    setTimeout(() => {window.location.reload(false);}, 1000);
+    
+    // return <Redirect to='/displaystory/:props.id' />
     }
     };
 
