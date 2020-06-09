@@ -9,11 +9,9 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-import TextField from '@material-ui/core/TextField';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
-import Paper from '@material-ui/core/Paper';
 import clsx from 'clsx';
 import GoogleButton from 'react-google-button'
 
@@ -26,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
   root: {
     '& > *': {
       margin: theme.spacing(1),
-      width: '25ch',
+      width: '100%',
     },
   },
   margin: {
@@ -54,7 +52,8 @@ const SignIn = () => {
   };
 
   const onChangeHandler = (event) => {
-      const {name, value} = event.currentTarget;
+      console.log('event:', event)
+      const {name, value} = event.target;
 
       if(name === 'userEmail') {
           setEmail(value);
@@ -65,77 +64,67 @@ const SignIn = () => {
   };
 
   return (
-    <>
+    <div id="wrapper">
       <CssBaseline />
-      <Container id="container" maxWidth="100%">
-      <Container id="sign-in" maxWidth="md">
-            
-           
-          <Grid
-            id="white"
-            container
-            spacing={3}
-            alignContent="center"
-          >
-            
-            <Grid id="title" item xs={12}>
-              <h1>Welcome to <span id="storify">Storify!</span></h1>
-            </Grid>
-
-
-              <Grid id="google-signin" item xs={6}>
-                  <GoogleButton
-                    size="medium"
-                    className={classes.margin}
-                    onClick={(event) => { signInWithGoogle() }}
-                  >
-                  </GoogleButton>
-                </Grid>
-
-
-            <Grid id="email-signin" item xs={6}>
-              Or sign in with an email address:
-                  <FormControl className={clsx(classes.margin, classes.textField)} noValidate autoComplete="on">
-                <InputLabel htmlFor="email">Email</InputLabel>    
-                <Input
-                  id="email"
-                  type={'email'}
-                  value={email}
-                  onChange={(event) => onChangeHandler(event)}
-                />
-                  </FormControl>
-                  <FormControl className={clsx(classes.margin, classes.textField)}>
-                    <InputLabel htmlFor="password">Password</InputLabel>
-                    <Input
-                      id="password"
-                      type={'password'}
-                      value={password}
-                      onChange={(event) => onChangeHandler(event)}
-                    />
-                <Button
-                  id="signin-btn"
-                  className="btn btn-dark"
-                  variant="contained"
-                      onClick={(event) => { signInWithEmailAndPasswordHandler(event, email, password) }}>
-                      Sign in
-                    </Button>
-                  </FormControl>
-                </Grid>
-                
-
-              <Typography id="links">
-              <Link to="/signup">
-                Not a member?
-              </Link>{" "}
-              <br />{" "}
-              <Link to="/passwordreset" className="">
-                Forgot Password?
-              </Link>
-            </Typography>
+        <Grid
+          id="white"
+          container
+          direction="column"
+          justify="center"
+          alignItems="center"
+          spacing={1}
+        >
+          <Grid id="title" item xs={12}>
+            <h1>Welcome to <span id="storify">Storify!</span></h1>
           </Grid>
-        </Container>
-      </Container>
-    </>
+          <Grid id="google-signin" item xs={12} lg={6}>
+            <GoogleButton
+              size="medium"
+              className={classes.margin}
+              onClick={(event) => { signInWithGoogle() }}
+            >
+            </GoogleButton>
+          </Grid>
+
+
+          <Grid id="email-signin" item xs={12} lg={6}>
+            Or sign in with an email address:
+            <FormControl className={clsx(classes.margin, classes.textField)} noValidate autoComplete="on">
+              <InputLabel htmlFor="email">Email</InputLabel>    
+              <Input
+                id="email"
+                type={'email'}
+                onChange={(event) => onChangeHandler(event)}
+              />
+            </FormControl>
+            <FormControl className={clsx(classes.margin, classes.textField)}>
+              <InputLabel htmlFor="password">Password</InputLabel>
+              <Input
+                id="password"
+                type={'password'}
+                onChange={(event) => onChangeHandler(event)}
+              />
+              <Button
+                id="signin-btn"
+                className="btn btn-dark"
+                variant="contained"
+                    onClick={(event) => { signInWithEmailAndPasswordHandler(event, email, password) }}>
+                    Sign in
+              </Button>
+            </FormControl>
+          </Grid>
+
+        <Typography id="links">
+            <Link to="/signup">
+              Not a member?
+            </Link>{" "}
+            <br />{" "}
+            <Link to="/passwordreset" className="">
+              Forgot Password?
+            </Link>
+          </Typography>
+        </Grid>
+    </div>
   );
 };
 export default SignIn;
