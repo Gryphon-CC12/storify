@@ -199,7 +199,8 @@ function DisplayStory(props) {
             db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
           });
         })
-    }
+      }
+      setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
   const useStyles = makeStyles((theme) => ({

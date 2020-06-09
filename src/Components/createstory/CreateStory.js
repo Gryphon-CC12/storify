@@ -49,6 +49,8 @@ function saveToStories(event, story_id, prompt_id, author, title, imageAsUrl) {
     db.collection("StoryDatabase").add({
         id: story_id,
         dateCreated: new Date(),
+        lastModified: new Date(),
+        inTurn: author.email,
         title: title,
         likes: 0,
         author: author.displayName,
@@ -122,7 +124,6 @@ function saveToStories(event, story_id, prompt_id, author, title, imageAsUrl) {
         saveToStories(inputEl.current.value, story_id, prompt_id, author, titleEl.current.value, imageAsUrl);
         props.history.push(`/displaystory/${story_id}`);
         // return <Redirect  to="/" />
-        
 
           }
     };
