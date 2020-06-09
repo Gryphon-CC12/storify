@@ -13,30 +13,30 @@ admin.initializeApp();
 const db = firebase.firestore();
 
 
-exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
-    console.log('This will be run every 1 minutes!');
+// exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun((context) => {
+//     console.log('This will be run every 1 minutes!');
 
-    db.collection("TimerFunction").add({
-        id: uuidv4(),
-        dateCreated: new Date(),
-    })
-        .then(function () {
-            console.log("Document successfully written!");
-        })
-        .catch(function (error) {
-            console.error("Error writing document: ", error);
-        }); 
+//     db.collection("TimerFunction").add({
+//         id: uuidv4(),
+//         dateCreated: new Date(),
+//     })
+//         .then(function () {
+//             console.log("Document successfully written!");
+//         })
+//         .catch(function (error) {
+//             console.error("Error writing document: ", error);
+//         }); 
 
-    return null;
-  });
+//     return null;
+//   });
 
 
-// exports.scheduledFunctionCrontab = functions.pubsub.schedule('5 11 * * *')
-//   .timeZone('America/New_York') // Users can choose timezone - default is America/Los_Angeles
-//   .onRun((context) => {
-//   console.log('This will be run every day at 11:05 AM Eastern!');
-//   return null;
-// });
+exports.scheduledFunctionCrontab = functions.pubsub.schedule('* * * * *')  //at every 5th minute
+  .timeZone('America/New_York') // Users can choose timezone - default is America/Los_Angeles
+  .onRun((context) => {
+  console.log('This will be run every minute');
+  return null;
+});
 
 
 // // Take the text parameter passed to this HTTP endpoint and insert it into 
