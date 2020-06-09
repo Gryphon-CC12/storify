@@ -240,7 +240,6 @@ function CreateStory(props) {
                 <option>3 hours</option>
                 <option>12 hours</option>
                 <option>1 day</option>
-                <option>1 week</option>
               </select>
             </div>
             <div className="form-group">
