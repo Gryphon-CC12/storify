@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
-import { auth } from "../../firebaseConfig";
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
@@ -16,7 +14,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: 'center',
     color: theme.palette.text.secondary,
-    width: "40%"
+    width: "90%",
+    marginTop: "5%"
   },
 }));
 
@@ -34,7 +33,7 @@ const ProfilePage = () => {
         direction="column"
         justify="center"
         alignItems="center"
-        spacing={3}
+        spacing={1}
       >
       <Paper className={classes.paper}>
           <Grid
@@ -42,9 +41,9 @@ const ProfilePage = () => {
           direction="column"
           justify="center"
           alignItems="center"
-          spacing={3}
+          spacing={1}
           >
-            <Grid item xs={3}>
+            <Grid item xs={12} md={12} lg={3}>
               <div
                 style={{
                   background: `url(${photoURL || 'https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png'})  no-repeat center center`,
@@ -69,11 +68,35 @@ const ProfilePage = () => {
                 <Typography>{displayName}</Typography>
               </Grid>
             </Grid>
-
-
-
           </Grid>
+        </Paper>
 
+        <Paper className={classes.paper}>
+        <Grid
+          container
+          direction="column"
+          justify=""
+          alignItems="start"
+          spacing={1}
+          >
+            <Grid item xs={12} md={12} lg={3}>
+            <Typography>My Stories</Typography>
+            </Grid>
+          </Grid>
+        </Paper>
+
+        <Paper className={classes.paper}>
+          <Grid
+            container
+            direction="column"
+            justify=""
+            alignItems="start"
+            spacing={1}
+            >
+              <Grid item xs={12} md={12} lg={3}>
+                <Typography>My entries</Typography>
+              </Grid>
+            </Grid>
           </Paper>
         </Grid>
       </div>

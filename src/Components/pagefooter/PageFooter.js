@@ -23,10 +23,8 @@ function PageFooter() {
     return (
         <Grid>
             <BottomNavigation
-                classes={{ label: 'full-width' }}
                 id="footer-component" className={classes.root}>
                 <Typography
-                    classes={{ label: 'full-width' }}
                     id="footer"
                     > 
                     Made with <FavoriteIcon id="heart" /> |   <a href="https://github.com/Gryphon-CC12/storify">GitHub</a><br></br>
