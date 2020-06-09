@@ -1,15 +1,10 @@
-<<<<<<< HEAD
 import React, { useRef, useContext } from "react";
 import { Link, Redirect } from "react-router-dom";
-=======
-import React, { useRef, useContext } from 'react';
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries";
 import { storage } from "../../firebaseConfig";
 import { UserContext } from "../../providers/UserProvider";
-<<<<<<< HEAD
 import "firebase/storage";
 import DisplayStory from "../displaystory/DisplayStory";
 import { makeStyles } from "@material-ui/core/styles";
@@ -18,10 +13,6 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import NativeSelect from "@material-ui/core/NativeSelect";
-=======
-import 'firebase/storage'
-import { makeStyles } from '@material-ui/core/styles';
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -40,11 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const db = firebase.firestore();
 
 function CreateStory(props) {
-<<<<<<< HEAD
   const classes = useStyles();
-=======
-    // const classes = useStyles();
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 
   ////For google image upload
   // const allInputs = {imgUrl: ''}
@@ -201,7 +188,6 @@ function CreateStory(props) {
             </div>
             <div className="form-group"></div>
 
-<<<<<<< HEAD
             <div className="form-check">
               <input
                 className="form-check-input"
@@ -214,22 +200,6 @@ function CreateStory(props) {
                 Use Robot as a player?
               </label>
             </div>
-=======
-    
-    const onButtonClick = (event) => {
-        event.preventDefault();
-        console.log('maxEntries',maxEntries);
-        console.log('maxCollaborators', maxCollaborators);
-        if(inputEl.current.value === "" || titleEl.current.value === ""){
-            alert("Please enter a title and story prompt")   //Checks that story is not empty
-            } else if (Number(maxEntries.current.value) < Number(maxCollaborators.current.value)) {
-                alert("Entries should be greater than or equal to number of collaborators")
-            } else {
-        saveToEntries(inputEl.current.value, prompt_id, author);
-        saveToStories(inputEl.current.value, story_id, prompt_id, author, titleEl.current.value, imageAsUrl);
-        props.history.push(`/displaystory/${story_id}`);
-        // return <Redirect  to="/" />
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 
             <div>
               <label className="form-check-label" htmlFor="defaultCheck1">

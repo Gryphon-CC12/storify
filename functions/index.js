@@ -2,7 +2,6 @@
 // import { v4 as uuidv4 } from "uuid";
 
 const uuidv4 = require("uuid/v4")
-const firebase = require("./firebaseConfig").firebase
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -20,11 +19,13 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
 
     db.collection('StoryDatabase').get()
     .then(function(querySnapshot) {
-      let lastModified = [];
+      let lastModifiedList = [];
       querySnapshot.forEach(function(doc) {
-      lastModified.push(doc.data().lastModified);
+      let currentLastModified = doc.data().lastModified;
+      let currentInTurn = doc.data().
+      // lastModifiedList.push(currentLastModified);
       })
-      console.log("lastModified", lastModified);
+      console.log("lastModifiedList", lastModifiedList);
     })
   });
 

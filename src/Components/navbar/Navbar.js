@@ -152,7 +152,7 @@ export default function Navbar() {
 
             <Link to="/createstory">
               <Button classes={{ label: "navbar-link" }} color="#034078">
-                CREAT STORY
+                CREATE STORY
               </Button>
             </Link>
 

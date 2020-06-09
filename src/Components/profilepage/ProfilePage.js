@@ -1,19 +1,11 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
-<<<<<<< HEAD
 import { auth } from "../../firebaseConfig";
 import Typography from "@material-ui/core/Typography";
 import Container from "@material-ui/core/Container";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
-=======
-import Typography from '@material-ui/core/Typography';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import { makeStyles } from '@material-ui/core/styles';
-
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,12 +15,8 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
     color: theme.palette.text.secondary,
-<<<<<<< HEAD
-    width: "40%",
-=======
-    width: "90%",
+    width: "90%",   //Was 40% in commit conflict
     marginTop: "5%"
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
   },
 }));
 
@@ -49,19 +37,11 @@ const ProfilePage = () => {
       >
         <Paper className={classes.paper}>
           <Grid
-<<<<<<< HEAD
             container
             direction="column"
             justify="center"
             alignItems="center"
-            spacing={3}
-=======
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          spacing={1}
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
+            spacing={3}  // VS spacing={1} in commit conflict
           >
             <Grid item xs={12} md={12} lg={3}>
               <div
@@ -91,13 +71,6 @@ const ProfilePage = () => {
                 <Typography>{displayName}</Typography>
               </Grid>
             </Grid>
-<<<<<<< HEAD
-          </Grid>
-        </Paper>
-      </Grid>
-    </div>
-  );
-=======
           </Grid>
         </Paper>
 
@@ -131,7 +104,6 @@ const ProfilePage = () => {
         </Grid>
       </div>
   ) 
->>>>>>> cab5fbd3b9c4eb4c7b73f8b0d8003c8756bd0824
 };
 
 export default ProfilePage;

@@ -239,7 +239,6 @@ async function checkTurns(email, story_id){
                         <p>{paragraph}</p>
                       )
                     })}
-                    <br /> Test <br />
                 </Paper>
                 </Grid>
                 <Grid item xs={6}>
