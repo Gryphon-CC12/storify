@@ -59,6 +59,8 @@ function DisplayStory(props) {
               querySnapshot2.forEach(function (doc) {
                 let thisAuthor = doc.data().author;
                 let thisText = doc.data().text;
+                thisText = thisText.split(/\n/g)
+                console.log('thisText:', thisText)
                 let thisLikes = doc.data().likes;
                 let thisId = doc.data().id
                 let thisEmail = doc.data().email;
@@ -232,7 +234,14 @@ function DisplayStory(props) {
           return (
             <>
               <Grid key={uuidv4()} item xs={12}>
-                <Paper id="story-text" className={classes.entry} elevation={3}>{item.text}</Paper>
+                <Paper id="story-text" className={classes.entry} elevation={3}>
+                    {item.text.map(paragraph => {
+                      return (
+                        <p>{paragraph}</p>
+                      )
+                    })}
+                    <br /> Test <br />
+                </Paper>
                 </Grid>
                 <Grid item xs={6}>
                 </Grid>

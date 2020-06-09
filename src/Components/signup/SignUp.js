@@ -4,7 +4,6 @@ import {auth} from "../../firebaseConfig";
 import { generateUserDocument } from "../../firebaseConfig";
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import firebase from '../../firebaseConfig';
 import { makeStyles } from '@material-ui/core/styles';
@@ -43,11 +42,11 @@ const SignUp = () => {
   const onChangeHandler = event => {
     const { name, value } = event.currentTarget;
     if (name === "userEmail") {
-      setEmail(value);
+      setEmail(value.toString().trim());
     } else if (name === "userPassword") {
-      setPassword(value);
+      setPassword(value.toString().trim());
     } else if (name === "displayName") {
-      setDisplayName(value);
+      setDisplayName(value.toString().trim());
     }
   };
 
@@ -96,18 +95,17 @@ const SignUp = () => {
           <Grid id="email-signup" item xs={12} lg={6}>
             <Typography>Sign up with an email address:</Typography>
             
-            {/* {error !== null && (
+            {error !== null && (
               <div className="py-4 bg-red-600 w-full text-center mb-3">
                 {error}
               </div>
-            )} */}
+            )}
           
             <FormControl className={clsx(classes.margin, classes.textField)} noValidate autoComplete="on">
               <InputLabel htmlFor="displayName">Display Name:</InputLabel>    
               <Input
                 id="displayName"
                 type={'text'}
-                value={displayName}
                 onChange={(event) => onChangeHandler(event)}
             />
           </FormControl>
@@ -116,7 +114,6 @@ const SignUp = () => {
               <Input
                 id="email"
                 type={'email'}
-                value={email}
                 onChange={(event) => onChangeHandler(event)}
             />
           </FormControl>
@@ -125,7 +122,6 @@ const SignUp = () => {
               <Input
                 id="userPassword"
                 type={'password'}
-                value={password}
                 onChange={(event) => onChangeHandler(event)}
               />
               <Button

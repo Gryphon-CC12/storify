@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
-import { auth } from "../../firebaseConfig";
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';

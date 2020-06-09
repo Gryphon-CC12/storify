@@ -1,18 +1,11 @@
 import React, { useRef, useContext } from 'react';
-import { Link, Redirect } from 'react-router-dom';
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries"
 import {storage} from "../../firebaseConfig"
 import { UserContext } from "../../providers/UserProvider";
 import 'firebase/storage'
-import DisplayStory from '../displaystory/DisplayStory';
 import { makeStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import NativeSelect from '@material-ui/core/NativeSelect';
 
 const useStyles = makeStyles((theme) => ({
     formControl: {
@@ -31,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const db = firebase.firestore();
 
 function CreateStory(props) {
-    const classes = useStyles();
+    // const classes = useStyles();
 
     ////For google image upload
     // const allInputs = {imgUrl: ''}

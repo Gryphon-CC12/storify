@@ -52,7 +52,8 @@ const SignIn = () => {
   };
 
   const onChangeHandler = (event) => {
-      const {name, value} = event.currentTarget;
+      console.log('event:', event)
+      const {name, value} = event.target;
 
       if(name === 'userEmail') {
           setEmail(value);
@@ -93,7 +94,6 @@ const SignIn = () => {
               <Input
                 id="email"
                 type={'email'}
-                value={email}
                 onChange={(event) => onChangeHandler(event)}
               />
             </FormControl>
@@ -102,7 +102,6 @@ const SignIn = () => {
               <Input
                 id="password"
                 type={'password'}
-                value={password}
                 onChange={(event) => onChangeHandler(event)}
               />
               <Button
@@ -115,10 +114,8 @@ const SignIn = () => {
             </FormControl>
           </Grid>
 
-        <Typography id="links"
-          
-        >
-            <Link to="/signup" classes={{ label: 'links'}}>
+        <Typography id="links">
+            <Link to="/signup">
               Not a member?
             </Link>{" "}
             <br />{" "}

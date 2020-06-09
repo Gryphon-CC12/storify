@@ -1,5 +1,4 @@
-import React, { useRef, useContext, useEffect, useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import React, { useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
 import { v4 as uuidv4 } from "uuid";
