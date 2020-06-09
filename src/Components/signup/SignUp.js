@@ -1,22 +1,52 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {auth} from "../../firebaseConfig";
-import {generateUserDocument} from "../../firebaseConfig";
+import { generateUserDocument } from "../../firebaseConfig";
+import CssBaseline from '@material-ui/core/CssBaseline';
+import Typography from '@material-ui/core/Typography';
+import Grid from '@material-ui/core/Grid';
+import firebase from '../../firebaseConfig';
+import { makeStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
+import FormControl from '@material-ui/core/FormControl';
+import clsx from 'clsx';
+import GoogleButton from 'react-google-button'
+import './SignUp.styles.scss';
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    '& > *': {
+      margin: theme.spacing(1),
+      width: '100%',
+    },
+  },
+  margin: {
+    margin: theme.spacing(1),
+  },
+  paper: {
+    padding: theme.spacing(2),
+    textAlign: 'center',
+    color: theme.palette.text.secondary,
+  },
+}));
 
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [displayName, setDisplayName] = useState("");
   const [error, setError] = useState(null);
+  const classes = useStyles();
 
   const onChangeHandler = event => {
     const { name, value } = event.currentTarget;
     if (name === "userEmail") {
-      setEmail(value);
+      setEmail(value.toString().trim());
     } else if (name === "userPassword") {
-      setPassword(value);
+      setPassword(value.toString().trim());
     } else if (name === "displayName") {
-      setDisplayName(value);
+      setDisplayName(value.toString().trim());
     }
   };
 
@@ -29,80 +59,87 @@ const SignUp = () => {
     catch(error){
       setError('Error Signing up with email and password');
     }
-
     setEmail("");
     setPassword("");
     setDisplayName("");
   };
 
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const signInWithGoogle = () => {
+    auth.signInWithPopup(provider);
+  };
+
   return (
-    <div className="mt-8">
-      <h1 className="text-3xl mb-2 text-center font-bold">Sign Up</h1>
-      <div className="border border-blue-400 mx-auto w-11/12 md:w-2/4 rounded py-8 px-4 md:px-8">
-        {error !== null && (
-          <div className="py-4 bg-red-600 w-full text-center mb-3">
-            {error}
-          </div>
-        )}
-        <form className="">
-          <label htmlFor="displayName" className="block">
-            Display Name:
-          </label>
-          <input
-            type="text"
-            className="my-1 p-1 w-full "
-            name="displayName"
-            value={displayName}
-            placeholder="E.g: Faruq"
-            id="displayName"
-            onChange={event => onChangeHandler(event)}
-          />
-          <label htmlFor="userEmail" className="block">
-            Email:
-          </label>
-          <input
-            type="email"
-            className="my-1 p-1 w-full"
-            name="userEmail"
-            value={email}
-            placeholder="E.g: faruq123@gmail.com"
-            id="userEmail"
-            onChange={event => onChangeHandler(event)}
-          />
-          <label htmlFor="userPassword" className="block">
-            Password:
-          </label>
-          <input
-            type="password"
-            className="mt-1 mb-3 p-1 w-full"
-            name="userPassword"
-            value={password}
-            placeholder="Your Password"
-            id="userPassword"
-            onChange={event => onChangeHandler(event)}
-          />
-          <button
-            className="btn btn-dark"
-            onClick={event => {
-              createUserWithEmailAndPasswordHandler(event, email, password);
-            }}
-          >
-            Sign up
-          </button>
-        </form>
-        <p className="text-center my-3">or</p>
-        <button
-          className="btn btn-dark"
-        >
-          Sign In with Google
-        </button>
-        <p className="text-center my-3">
-          Already have an account?{" "}
-          <Link to="/" className="text-blue-500 hover:text-blue-600">
-            Sign in here
-          </Link>
-        </p>
-      </div>
+    <div id="wrapper">
+      <CssBaseline />
+      <Grid
+        id="white"
+        container
+        direction="column"
+        justify="center"
+        alignItems="center"
+        spacing={1}
+      >
+        <Grid id="title" item xs={12}>
+            <h1>Welcome to <span id="storify">Storify!</span></h1>
+        </Grid>
+        <Grid id="google-signup" item xs={12} lg={6}>
+            <GoogleButton
+              size="medium"
+              className={classes.margin}
+              onClick={(event) => { signInWithGoogle() }}
+            >
+            </GoogleButton>
+        </Grid>
+        
+          <Grid id="email-signup" item xs={12} lg={6}>
+            <Typography>Sign up with an email address:</Typography>
+            
+            {error !== null && (
+              <div className="py-4 bg-red-600 w-full text-center mb-3">
+                {error}
+              </div>
+            )}
+          
+            <FormControl className={clsx(classes.margin, classes.textField)} noValidate autoComplete="on">
+              <InputLabel htmlFor="displayName">Display Name:</InputLabel>    
+              <Input
+                id="displayName"
+                type={'text'}
+                onChange={(event) => onChangeHandler(event)}
+            />
+          </FormControl>
+          <FormControl className={clsx(classes.margin, classes.textField)}>
+            <InputLabel htmlFor="email">Email:</InputLabel>    
+              <Input
+                id="email"
+                type={'email'}
+                onChange={(event) => onChangeHandler(event)}
+            />
+          </FormControl>
+          <FormControl className={clsx(classes.margin, classes.textField)}>
+            <InputLabel htmlFor="userPassword">Password:</InputLabel>    
+              <Input
+                id="userPassword"
+                type={'password'}
+                onChange={(event) => onChangeHandler(event)}
+              />
+              <Button
+                id="signup-btn"
+                className="btn btn-dark"
+                variant="contained"
+                    onClick={(event) => { createUserWithEmailAndPasswordHandler(event, email, password) }}>
+                    Sign Up
+              </Button>
+            </FormControl>
+        </Grid>
+        
+        <Typography id="links">
+            <Link to="/" className="text-blue-500 hover:text-blue-600">
+                  Sign in here
+            </Link>
+        </Typography>
+      </Grid>
     </div>
   );
 };

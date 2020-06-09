@@ -1,14 +1,14 @@
-.links {
+#links {
     margin-top: 5%;
     margin-bottom: 5%;
     font-size: 0.9em;
-    color: white;
     text-align: center;
     width: 100%;
 }
 
-.links:hover {
+#links:hover {
     color: black;
+    text-decoration: none;
 }
 
 #wrapper {
@@ -25,7 +25,7 @@
     font-family: 'Pacifico', cursive;
 }
 
-#signin-btn {
+#signup-btn {
     margin-top: 5%;
 }
 
@@ -38,14 +38,14 @@
     justify-content: center;
 }
 
-#google-signin {
+#google-signup {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-#email-signin {
+#email-signup {
     color: black;
     margin-top: 5%;
     margin-left: 0%;
@@ -54,7 +54,7 @@
     text-align: center;
 }
 
-#sign-in {
+#sign-up {
     width: 100%;
     justify-content: start;
 }
