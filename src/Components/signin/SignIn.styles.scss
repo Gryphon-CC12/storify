@@ -1,0 +1,60 @@
+.links {
+    margin-top: 5%;
+    margin-bottom: 5%;
+    font-size: 0.9em;
+    color: white;
+    text-align: center;
+    width: 100%;
+}
+
+.links:hover {
+    color: black;
+}
+
+#wrapper {
+    margin-top: 5%;
+}
+
+#title {
+    color: black;
+    text-align: center;
+}
+
+#storify {
+    color: #1282A2;
+    font-family: 'Pacifico', cursive;
+}
+
+#signin-btn {
+    margin-top: 5%;
+}
+
+#white {
+    background-color: white;
+    display: flex;
+    width: 80%;
+    align-self: center;
+    margin: auto;
+    justify-content: center;
+}
+
+#google-signin {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#email-signin {
+    color: black;
+    margin-top: 5%;
+    margin-left: 0%;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+#sign-in {
+    width: 100%;
+    justify-content: start;
+}

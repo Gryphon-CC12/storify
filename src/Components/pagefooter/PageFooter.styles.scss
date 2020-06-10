@@ -1,0 +1,32 @@
+.full-width {
+    width: 100%;
+    margin-bottom: 100px;
+}
+
+#footer {
+    font-size: 0.8em;
+    color: grey;
+}
+
+a {
+    color: grey;
+}
+
+a:hover {
+    color: white;
+}
+
+#heart {
+    font-size: small;
+}
+
+#copyright {
+    font-size: 0.7em;
+}
+
+#container {
+    display: flex;
+    // min-height: 100vh;
+    flex-direction: column;
+    width: 100%
+}
