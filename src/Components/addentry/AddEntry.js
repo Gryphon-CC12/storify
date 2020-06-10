@@ -1,10 +1,10 @@
 import React, { useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
+import saveToUserEntries from '../../utils/saveToUserEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import emailjs from 'emailjs-com';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 const db = firebase.firestore();
 
@@ -79,11 +79,13 @@ function AddEntry(props) {
     if(inputEl.current.value === ""){
       alert("Please enter a longer entry")   //Checks that story is not empty
     } else {
-    await saveToEntries(inputEl.current.value, id, author);
-    console.log(props.id);
-    await calculateNextUser(author, props.id);
-    await sendEmailToNextUser(author, props.id);
-    await pushToStory(props.id, id, author, nextUserEmail); 
+      await saveToEntries(inputEl.current.value, id, author);
+      await saveToUserEntries(author.email, props.id)
+
+      await calculateNextUser(author, props.id);
+      await sendEmailToNextUser(author, props.id);
+      await pushToStory(props.id, id, author, nextUserEmail); 
+    
 
     setTimeout(() => {window.location.reload(false);}, 1000);
     }
@@ -102,7 +104,6 @@ function AddEntry(props) {
               rows='15'
               spellCheck='true'
             />
-              {/* <textarea className="form-control"  type="text" rows="10" /> */}
               <button className="btn btn-dark" id="entry-input" onClick={onButtonClick}>Submit your entry</button>
           </div>
         </form>

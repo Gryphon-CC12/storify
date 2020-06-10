@@ -6,13 +6,9 @@ import saveToEntries from "../../utils/saveToEntries";
 import { storage } from "../../firebaseConfig";
 import { UserContext } from "../../providers/UserProvider";
 import "firebase/storage";
-import DisplayStory from "../displaystory/DisplayStory";
 import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import NativeSelect from "@material-ui/core/NativeSelect";
+import saveToUserStories from '../../utils/saveToUserStories';
+
 
 const useStyles = makeStyles((theme) => ({
   formControl: {
@@ -134,8 +130,7 @@ function CreateStory(props) {
 
   const onButtonClick = (event) => {
     event.preventDefault();
-    console.log("maxEntries", maxEntries);
-    console.log("maxCollaborators", maxCollaborators);
+
     if (inputEl.current.value === "" || titleEl.current.value === "") {
       alert("Please enter a title and story prompt"); //Checks that story is not empty
     } else if (
@@ -146,6 +141,7 @@ function CreateStory(props) {
       );
     } else {
       saveToEntries(inputEl.current.value, prompt_id, author);
+      saveToUserStories(author.email, story_id)
       saveToStories(
         inputEl.current.value,
         story_id,
@@ -155,7 +151,6 @@ function CreateStory(props) {
         imageAsUrl
       );
       props.history.push(`/displaystory/${story_id}`);
-      // return <Redirect  to="/" />
     }
   };
   return (
