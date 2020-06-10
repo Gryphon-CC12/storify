@@ -241,7 +241,6 @@ function DisplayStory(props) {
                         <p>{paragraph}</p>
                       )
                     })}
-                    <br /> Test <br />
                 </Paper>
                 </Grid>
                 <Grid item xs={6}>
