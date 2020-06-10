@@ -261,12 +261,10 @@ async function checkTurns(email, story_id){
             <p key={uuidv4()}>This Story has completed</p>  
             :
             isUserInTurn ?
-              <div className="row" key={uuidv4()}>
-              <div className="col" key={uuidv4()}>
-                <p>This story has {numOfEntries} entries left</p>
+              <Grid item xs={12} lg={3}>
+              <p>This story has {numOfEntries} entries left</p>
                 <AddEntry id={props.match.params.id} />
-              </div>
-              </div>
+              </Grid>
             :
             <p key={uuidv4()}>User in turn: {userInTurn} </p>
           :

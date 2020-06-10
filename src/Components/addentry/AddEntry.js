@@ -4,6 +4,7 @@ import saveToEntries from '../../utils/saveToEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import emailjs from 'emailjs-com';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 
 const db = firebase.firestore();
 
@@ -18,8 +19,6 @@ function AddEntry(props) {
 
 
   const pushToStory = (story_id, entry_id, author) => {
-    console.log("nextUserEmail in Push to story ", nextUserEmail);
-
     db.collection('StoryDatabase').where("id", "==", story_id)
     .get()
     .then(function(querySnapshot) {
@@ -42,16 +41,11 @@ function AddEntry(props) {
           nextUserEmail = currentUsersList[email_idx + 1];
         } else {
           nextUserEmail = currentUsersList[0];
-        }
-        console.log("nextUserEmail",nextUserEmail);
-        
+        }        
       }
     }  
-    console.log('nextUserEmail',nextUserEmail);
     const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
-    console.log("next displayName",userData.docs[0].data().displayName)
     nextUserName = userData.docs[0].data().displayName;
-    console.log('storytimelimit',storyTimeLimit)
 
     // return nextUserEmail;
   }
@@ -99,8 +93,16 @@ function AddEntry(props) {
     <>
       <form>
           <div className="form-group">
-              <label htmlFor="entry-input">Type your entry here</label>
-              <textarea className="form-control" ref={inputEl} type="text" rows="10" />
+            <label htmlFor="entry-input">Type your entry here</label>
+            <textarea
+              className="form-control"
+              aria-label="empty textarea"
+              placeholder="Add your entry!"
+              ref={inputEl}
+              rows='15'
+              spellCheck='true'
+            />
+              {/* <textarea className="form-control"  type="text" rows="10" /> */}
               <button className="btn btn-dark" id="entry-input" onClick={onButtonClick}>Submit your entry</button>
           </div>
         </form>
