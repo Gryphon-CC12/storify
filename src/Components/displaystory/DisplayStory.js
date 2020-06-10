@@ -111,40 +111,38 @@ function DisplayStory(props) {
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
-  ////ADD LIKES FUNCTION////
-  let addLike = async (entry_id, story_id) => {
-    db.collection('Entries').where("id", "==", entry_id)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-        });
-        updateLikeState(entry_id)
-      })
-    setLikes(likes + 1)
 
-    db.collection('StoryDatabase').where("id", "==", story_id)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-        });
-      })
-  }
+let addLike = async (entry_id, story_id) => {
+  db.collection('Entries').where("id", "==", entry_id)
+    .get()
+    .then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+      });
+      updateLikeState(entry_id)
+    })
+  setLikes(likes + 1)
 
+  db.collection('StoryDatabase').where("id", "==", story_id)
+    .get()
+    .then(function (querySnapshot) {
+      querySnapshot.forEach(function (doc) {
+        db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+      });
+    })
+}
 
-  async function checkTurns(email, story_id) {
-    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
-    let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
-    let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
+async function checkTurns(email, story_id){ 
+  const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+  let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
+  let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
+  let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
   
     let turnNumber = currentEntriesNum % currentUsersNum;
   
     // console.log('turnNumber', turnNumber);
 
-
-    for (let user in currentUsersList) {
+  for (let user in currentUsersList) {
       if (turnNumber == user) {  //String and Number == 
         if (currentUsersList[user] == email) {
           setIsUserInTurn(true);
@@ -185,13 +183,13 @@ function DisplayStory(props) {
     }
   }
 
-  //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
-  async function addToContributors(email, story_id) {
-    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
-    let currentUsers = data.docs[0].data().emails.length;
-    if (currentUsers < maxUsers) {    //if current users is not maxed out add a new contributor
-      db.collection('StoryDatabase').where("id", "==", story_id)
+//// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
+  async function addToContributors(email, story_id){
+      const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+      let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+      let currentUsers = data.docs[0].data().emails.length; 
+      if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
+        db.collection('StoryDatabase').where("id", "==", story_id)  
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {

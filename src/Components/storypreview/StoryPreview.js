@@ -50,7 +50,7 @@ function StoryPreview(props) {
       .then(async id => {
         const data = await db.collection('Entries').where('id', '==', id).get();
         setStoryText(data.docs.map((doc) => {
-          return doc.data().text.split('.')[0] + ".";   // Returns previous only till the first .
+          return (doc.data().text.split('.')[0] + ".").substring(0,100);   // Returns previous only till the first.
         }));
       })
   };

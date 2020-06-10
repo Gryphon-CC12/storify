@@ -1,8 +1,11 @@
-// import firebase from "../../gryphonseniorproject/src/firebaseConfig";
+const firebase = require("./firebaseConfig").firebase
+//import emailjs from 'emailjs-com';
+const emailjs = require('emailjs-com')
+
+// const firestore = require("../functions/firebaseConfig").firestore;
 // import { v4 as uuidv4 } from "uuid";
 
-const uuidv4 = require("uuid/v4")
-const firebase = require("./firebaseConfig").firebase
+// const uuidv4 = require("uuid/v4")
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -20,19 +23,110 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
 
     db.collection('StoryDatabase').get()
     .then(function(querySnapshot) {
-      let lastModified = [];
-      querySnapshot.forEach(function(doc) {
-      lastModified.push(doc.data().lastModified);
+      let lastModifiedList = [];
+      querySnapshot.forEach(async function(doc) {
+      let currentLastModified = doc.data().lastModified.seconds;
+      let currentInTurn = doc.data().inTurn;
+      let allEmails = doc.data().emails;
+      let currentTimeLimit = doc.data().timeLimit;
+      let story_id = doc.data().id;
+      let currentEndingTime = 0;
+      let currentDate = Math.round(new Date().getTime()/1000);
+      let nextUserName = "";
+      
+      switch (currentTimeLimit) {
+        case "5 minutes":
+          currentEndingTime = currentLastModified + 300;
+          break;
+        case "15 minutes":
+          currentEndingTime = currentLastModified + 900;
+        break;
+        case "30 minutes":
+          currentEndingTime = currentLastModified + 1800;
+          break;
+        case "1 hour":
+          currentEndingTime = currentLastModified + 3600;
+          break;        
+        case "3 hours":
+          currentEndingTime = currentLastModified + 10800;
+          break;
+        case "12 hours":
+          currentEndingTime = currentLastModified + 43200;
+          break; 
+        case "1 day":
+          currentEndingTime = currentLastModified + 86400;
+          break;   
+      }          
+      
+      // db.collection("StoryDatabase").doc(doc.id).update({ "useRobotAsPlayer": true });
+      // console.log("currentDate", currentDate)
+      // console.log("currentEndingTime", currentEndingTime);
+      // console.log('currentDate >= currentEndingTime', currentDate >= currentEndingTime);
+    if (currentDate >= currentEndingTime) {  //If we're past the deadline
+      // Modifty the collaborator in turn and notify him/her/
+      console.log("AllEmails array", allEmails)
+        let nextInTurn = ""
+        for (let i = 0; i < allEmails.length; i++){
+          if (allEmails[i] === currentInTurn){
+            if (i + 1 >= allEmails.length){
+              nextInTurn = allEmails[0]
+            } else {
+              nextInTurn = allEmails[i + 1]
+            }
+          }
+        }
+        console.log('nextInTurn', nextInTurn);
+        await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
+        await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": new Date() });
+        const userData = await db.collection('users').where('email', '==', nextInTurn).get();
+        console.log("next displayName",userData.docs[0].data().displayName)
+        nextUserName = userData.docs[0].data().displayName;
+
+      // Notify email
+      //await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // Update Story Last Modified  
+
+    }
+          
       })
-      console.log("lastModified", lastModified);
     })
   });
 
 
 
-
-
+  // async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
+  //   //   //////  SEND EMAIL  ////
+  //   let template_params = {
+  //     "email": author,
+  //     "reply_to": "storify.io@gmail.com",
+  //     "from_name": "Storify Team",
+  //     "to_name": nextUserName,
+  //     "time_limit": currentTimeLimit,
+  //     "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
+  //   }
+      
+  //   let service_id = "storify_io_gmail_com";
+  //   let template_id = "storifytest";
+  //   let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
+  //   await emailjs.send(service_id, template_id, template_params, user_id)
+  //     .then(function(response) {
+  //         console.log('SUCCESS!', response.status, response.text);
+  //     }, function(error) {
+  //         console.log('FAILED...', error);
+  //     });
+  // }
+/*
+  5 min = 300
+  15 min = 900
+  30 min = 1800
+  1 hour =  3600
+  3 hour =  10800
+  12 hour =  43200
+  24 hour =  86400
+*/
+
+
     // let maxEntries = data.docs[0].data().maxEntries;   //fetch max Users limit from database
     // let currentEntries = data.docs[0].data().entries.length;
 

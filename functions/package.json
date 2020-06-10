@@ -12,6 +12,7 @@
     "node": "8"
   },
   "dependencies": {
+    "emailjs-com": "^2.4.1",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.10.0",
     "firebase-functions": "^3.6.1"
