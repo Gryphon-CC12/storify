@@ -1,5 +1,7 @@
 import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
+import StoryPreview from '../storypreview/StoryPreview';
+import EntryPreview from '../entrypreview/EntryPreview';
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
@@ -25,6 +27,18 @@ const ProfilePage = () => {
   const classes = useStyles();
 
   const { photoURL, displayName, email } = user;
+
+  const mapUserStories = () => {
+    return (user.linkToStories.map((story) => {
+        return <StoryPreview storyProp={story} />
+      }))
+  }
+
+  const mapUserEntries = () => {
+    return (user.linkToEntries.map((entry) => {
+        return <EntryPreview storyId={entry.storyId} entryId={entry.entryId} />
+      }))
+  }
 
   return (
     <div style={{ padding: 100 }} id="profile" className={classes.root}>
@@ -83,7 +97,11 @@ const ProfilePage = () => {
           spacing={1}
           >
             <Grid item xs={12} md={12} lg={3}>
-            <Typography>My Stories</Typography>
+              <Typography>My Stories</Typography>
+              {user.linkToStories
+                ? mapUserStories()
+                : <p>Nothing!</p>
+              }
             </Grid>
           </Grid>
         </Paper>
@@ -97,7 +115,11 @@ const ProfilePage = () => {
             spacing={1}
             >
               <Grid item xs={12} md={12} lg={3}>
-                <Typography>My entries</Typography>
+              <Typography>My entries</Typography>
+              {user.linkToEntries
+                ? mapUserEntries()
+                : <p>Nothing!</p>
+              }
               </Grid>
             </Grid>
           </Paper>

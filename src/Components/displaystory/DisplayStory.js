@@ -60,7 +60,6 @@ function DisplayStory(props) {
                 let thisAuthor = doc.data().author;
                 let thisText = doc.data().text;
                 thisText = thisText.split(/\n/g)
-                console.log('thisText:', thisText)
                 let thisLikes = doc.data().likes;
                 let thisId = doc.data().id
                 let thisEmail = doc.data().email;

@@ -79,8 +79,8 @@ function AddEntry(props) {
     if(inputEl.current.value === ""){
       alert("Please enter a longer entry")   //Checks that story is not empty
     } else {
-      await saveToEntries(inputEl.current.value, id, author);
-      await saveToUserEntries(author.email, props.id)
+      await saveToEntries(props.id, inputEl.current.value, id, author);
+      await saveToUserEntries(author.email, id, props.id)
 
       await calculateNextUser(author, props.id);
       await sendEmailToNextUser(author, props.id);

@@ -30,9 +30,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function StoryPreview(props) {
+  
+// console.log('props:', props)
+console.log('props:', props)
 
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
+  const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
 
@@ -43,6 +47,7 @@ function StoryPreview(props) {
         querySnapshot.forEach(function (doc) {
           setGenre(doc.data().genre);
           setLikes(doc.data().likes);
+          setTitle(doc.data().title)
           ids_array.push(doc.data().entries)
         })
         return ids_array[0][0];
@@ -50,15 +55,15 @@ function StoryPreview(props) {
       .then(async id => {
         const data = await db.collection('Entries').where('id', '==', id).get();
         setStoryText(data.docs.map((doc) => {
-          return (doc.data().text.split('.')[0] + ".").substring(0,100);   // Returns previous only till the first.
+          return (doc.data().text.split('. ')[0] + ".").substring(0,100);   // Returns previous only till the first.
         }));
       })
   };
 
   useEffect(() => {
-    fetchFirstEntryForStory(props.storyProp.id);
-    fetchImageURL(props.storyProp.id);
-  }, [props.storyProp.id])
+    fetchFirstEntryForStory(props.storyProp);
+    fetchImageURL(props.storyProp);
+  }, [props.storyProp])
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
@@ -68,10 +73,12 @@ function StoryPreview(props) {
   };
 
   const classes = useStyles();
-
+  if (!props) {
+    return <div></div>
+  }
   return (
     <div className={classes.root}>
-      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp.id}` }}>
+      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
         <Paper className={classes.paper}>
           <Grid id="preview" container spacing={2}>
             <Grid item>
@@ -81,7 +88,7 @@ function StoryPreview(props) {
               <Grid item xs container direction="column" spacing={2}>
                 <Grid id="story" item xs>
                   <Typography gutterBottom variant="subtitle1">
-                    {props.storyProp.title}
+                    {title}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     {storyText}
