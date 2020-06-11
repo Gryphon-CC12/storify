@@ -23,6 +23,7 @@ function DisplayStory(props) {
   const [title, setTitle] = useState("")
   const [isContributor, setIsContributor] = useState(false)
   // const [author, setAuthor] = useState("")
+  const [noOfUsersState, setNoOfUsersState] = useState(0)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
   const [isMaxEntries, setIsMaxEntries] = useState(true)
   const [numOfEntries, setNumOfEntries] = useState(0)
@@ -37,6 +38,7 @@ function DisplayStory(props) {
     checkMaxEntries(user.email, props.match.params.id)
     checkTurns(user.email, props.match.params.id)
     // checkAuthor(user.email, props.match.params.id)
+    getCurrentNumberOfParticipants(props.match.params.id)
   }, [user.email, props.match.params.id])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
@@ -202,9 +204,16 @@ console.log(isUserInTurn)
       setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
-  async function handleDeleteStory() {
+  async function handleDeleteStory(e) {
+    e.preventDefault();
     await deleteOneStory(props.match.params.id, user.email);
     props.history.push('/');
+  }
+
+  async function getCurrentNumberOfParticipants(storyId) {
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let currentUsers = data.docs[0].data().emails.length;
+    setNoOfUsersState(currentUsers)
   }
 
   const renderDeleteButton = () => {
@@ -275,7 +284,8 @@ console.log(isUserInTurn)
               </Grid>
               </React.Fragment>
             )
-          })}
+        })}
+        <p>Collaborators: {noOfUsersState} <br/></p>{" "}
           {isContributor ?
             isMaxEntries ?
             <p key={uuidv4()}>This Story has completed</p>  
