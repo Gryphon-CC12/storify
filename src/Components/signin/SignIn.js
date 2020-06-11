@@ -5,7 +5,6 @@ import firebase from '../../firebaseConfig';
 import './SignIn.styles.scss';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -40,6 +39,7 @@ const useStyles = makeStyles((theme) => ({
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [error, setError] = useState(null);
   const classes = useStyles();
   
@@ -52,7 +52,6 @@ const SignIn = () => {
   };
 
   const onChangeHandler = (event) => {
-      console.log('event:', event)
       const {name, value} = event.target;
 
       if(name === 'userEmail') {

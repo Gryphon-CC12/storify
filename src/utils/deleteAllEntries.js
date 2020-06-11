@@ -10,6 +10,7 @@ export default function deleteAllEntries() {
                 element.ref.delete();
             });
         });
+    
     setTimeout(() => {
         window.location.reload(false);
     }, 500);

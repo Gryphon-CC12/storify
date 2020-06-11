@@ -130,7 +130,7 @@ export default function Navbar() {
           <Toolbar>
             <IconButton
               classes={{ label: "menu-icon" }}
-              color="#034078"
+              // color="#034078"
               aria-label="open drawer"
               onClick={handleDrawerOpen}
               edge="start"
@@ -145,13 +145,13 @@ export default function Navbar() {
             </Link>
 
             <Link to="/">
-              <Button classes={{ label: "navbar-link" }} color="#034078">
+              <Button classes={{ label: "navbar-link" }} >
                 HOME
               </Button>
             </Link>
 
             <Link to="/createstory">
-              <Button classes={{ label: "navbar-link" }} color="#034078">
+              <Button classes={{ label: "navbar-link" }} >
                 CREATE STORY
               </Button>
             </Link>
@@ -162,7 +162,7 @@ export default function Navbar() {
                 onClick={() => {
                   auth.signOut();
                 }}
-                color="#034078"
+                
               >
                 LOG OUT
               </Button>
