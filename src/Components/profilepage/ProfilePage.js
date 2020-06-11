@@ -6,6 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
+import deleteAllStories from '../../utils/deleteAllStories';
+import deleteAllEntries from '../../utils/deleteAllEntries'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -40,6 +42,32 @@ const ProfilePage = () => {
       }))
   }
 
+  const renderDeleteButton = () => {
+    return (
+      <>
+        <button
+        className="btn btn-danger"
+        onClick={handleDeleteStories}
+        >Delete All Stories
+        </button>
+        <button
+        className="btn btn-danger"
+        onClick={handleDeleteEntries}
+        >Delete All Entries
+        </button>
+      </>
+    )
+  }
+
+
+  async function handleDeleteStories() {
+    await deleteAllStories;
+  }
+
+  async function handleDeleteEntries() {
+    await deleteAllEntries;
+  }
+
   return (
     <div style={{ padding: 100 }} id="profile" className={classes.root}>
       <Grid
@@ -57,6 +85,11 @@ const ProfilePage = () => {
             alignItems="center"
             spacing={3}  // VS spacing={1} in commit conflict
           >
+            {
+              user.admin === true ?
+                renderDeleteButton()
+                : ""
+            }
             <Grid item xs={12} md={12} lg={3}>
               <div
                 style={{

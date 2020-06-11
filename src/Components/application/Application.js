@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../../theme';
@@ -14,9 +14,7 @@ import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
 // import PageFooter from '../pagefooter/PageFooter';
-import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
-import history from '../../history.js'
 
 function Application() {
   const user = useContext(UserContext);
