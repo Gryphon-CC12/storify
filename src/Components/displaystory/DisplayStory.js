@@ -140,22 +140,35 @@ async function checkTurns(email, storyId){
   let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
   let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-  
-  let turnNumber = currentEntriesNum % currentUsersNum;
+  let turnNumber = (currentEntriesNum % currentUsersNum);
 
-  for (let user in currentUsersList) {
-    // eslint-disable-next-line eqeqeq
-    if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-        if (currentUsersList[user] === email) {
-          setIsUserInTurn(true);
-        } else {
-          setIsUserInTurn(false);
-        }
-        setUserInTurn(currentUsersList[user])
-      }
+  //prevent prompt writer going again straight away
+  if (currentUsersNum === 1) {
+    setIsUserInTurn(false)
+  }// reverse results so second person to join goes next
+  else if (currentUsersNum === 2) {
+    if (currentUsersList[user] !== email) {
+      setIsUserInTurn(true);
+      setUserInTurn(currentUsersList[user])
+    } else {
+      setIsUserInTurn(false);
     }
+  } // return to regular order
+  else {
+    for (let user in currentUsersList) {
+      // eslint-disable-next-line eqeqeq
+      if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+          if (currentUsersList[user] === email) {
+            setIsUserInTurn(true);
+          } else {
+            setIsUserInTurn(false);
+          }
+          setUserInTurn(currentUsersList[user])
+        }
+      }
+  }
+  console.log(userInTurn)
 }
-console.log(isUserInTurn)
 
   async function checkMaxContributors(email, story_id) {
 
@@ -285,8 +298,11 @@ console.log(isUserInTurn)
               </React.Fragment>
             )
         })}
+        
+          <div className="container">
         <p>Collaborators: {noOfUsersState} <br/></p>{" "}
-          {isContributor ?
+        {
+          isContributor ?
             isMaxEntries ?
             <p key={uuidv4()}>This Story has completed</p>  
             :
@@ -295,15 +311,26 @@ console.log(isUserInTurn)
               <p>This story has {numOfEntries} entries left</p>
                 <AddEntry id={props.match.params.id} />
               </Grid>
-            :
-              <p key={uuidv4()}>Currently {userInTurn}'s turn!</p>
-            
+              :
+              <>
+              <p key={uuidv4()}>
+                {userInTurn ?
+                  "Currently {userInTurn}'s turn!"
+                  :
+                  "Waiting for players!"
+                }
+                </p>
+                <br />{" "}
+          </>
           :
           isMaxContributors ?
+            
               <p key={uuidv4()}>This Story has Max Contributor</p>  
+
           :
           <button className="btn btn-dark" key={uuidv4()} onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
           }
+            </div>
 
       </Grid>
     </Container>
