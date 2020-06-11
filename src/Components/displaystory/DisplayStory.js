@@ -39,7 +39,7 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
   }, [user.email, props.match.params.id])
 
-  let authorEmail; //somehow couldnt use useState to update this; needs to be fixed later
+  let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(story_id, user_email) {
     db.collection('StoryDatabase').where('id', '==', story_id).get()
       .then(function (querySnapshot) {
@@ -133,19 +133,18 @@ let addLike = async (entry_id, story_id) => {
     })
 }
 
-async function checkTurns(email, story_id){ 
-  const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-  let currentUsersNum = data.docs[0].data().emails.length -1;  //fetch current user number of story from database
+async function checkTurns(email, storyId){ 
+  const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+  let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
   let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
   
-    let turnNumber = currentEntriesNum % currentUsersNum;
-  
-    // console.log('turnNumber', turnNumber);
+  let turnNumber = currentEntriesNum % currentUsersNum;
 
   for (let user in currentUsersList) {
-      if (turnNumber == user) {  //String and Number == 
-        if (currentUsersList[user] == email) {
+    // eslint-disable-next-line eqeqeq
+    if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+        if (currentUsersList[user] === email) {
           setIsUserInTurn(true);
         } else {
           setIsUserInTurn(false);
@@ -153,7 +152,8 @@ async function checkTurns(email, story_id){
         setUserInTurn(currentUsersList[user])
       }
     }
-  }
+}
+console.log(isUserInTurn)
 
   async function checkMaxContributors(email, story_id) {
 

@@ -10,48 +10,26 @@ export default function deleteOneStory(storyIdToDelete, userEmail) {
         querySnapshot.forEach((doc) => {
             db.collection("users").doc(doc.id).update({ "linkToStories": firebase.firestore.FieldValue.arrayRemove(storyIdToDelete)});
         });
-    }
-)
+        }
+    )
 
+    db.collection("StoryDatabase")
+    .where('id', '==', storyIdToDelete)
+    .get()
+    .then(storyArray => {
+        storyArray.forEach(story => {
+            story.ref.delete();
+        });
+    });
 
-
-    // db.collection('users')
-    //     .where('email', '==', userEmail)
-    //     .where('linksToStories', '==', storyId)
-    //     .get()
-    //     .then(storyToDelete => {
-    //         storyToDelete.where('linksToStories', '==', storyId)
-    //             .get()
-    //             .then(storyToDelete => {
-    //                 storyToDelete.forEach(story => {
-    //                     console.log('story:', story)
-    //                     story.ref.delete();
-    //                 })
-    //             })
-    //     })
-    // query.get()
-    //     .then(
-    //         storyArray => {
-    //             storyArray.forEach(story => {
-    //                 console.log('story:', story)
-    //                 story.ref.delete();
-    //             });
-    //         })
-
-    
-        // db.collection("StoryDatabase")
-        // .where('id', '==', storyId)
-        // .get()
-        // .then(storyArray => {
-        //     storyArray.forEach(story => {
-        //         story.ref.delete();
-        //     });
-        // });
+    setTimeout(() => {
+        window.location.reload(false);
+    }, 500);
 };
 
 //62594131-7b98-405b-b75c-932cc3d5a591
 
-// for deleting entries on user this might work
+// for deleting entries on user this might work:
 // db.collection("users")
 // .doc('linkToEntries')
 // .where("entryId", "==", storyId)
