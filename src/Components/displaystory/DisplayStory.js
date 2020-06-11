@@ -203,7 +203,7 @@ async function checkTurns(email, story_id){
   }
 
   async function handleDeleteStory() {
-    await deleteOneStory(props.match.params.id);
+    await deleteOneStory(props.match.params.id, user.email);
     props.history.push('/');
   }
 
