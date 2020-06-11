@@ -31,21 +31,21 @@ function AddEntry(props) {
   })}
 
   async function calculateNextUser(author, story_id) {
-    const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-    storyTimeLimit = data.docs[0].data().timeLimit;
-    for (let email_num in currentUsersList) {
-      let email_idx = Number(email_num)
-      if (currentUsersList[email_idx] === author.email) {
-        if (email_idx + 1 < currentUsersList.length) { 
-          nextUserEmail = currentUsersList[email_idx + 1];
-        } else {
-          nextUserEmail = currentUsersList[0];
-        }        
-      }
-    }  
-    const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
-    nextUserName = userData.docs[0].data().displayName;
+    // const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+    // let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
+    // storyTimeLimit = data.docs[0].data().timeLimit;
+    // for (let email_num in currentUsersList) {
+    //   let email_idx = Number(email_num)
+    //   if (currentUsersList[email_idx] === author.email) {
+    //     if (email_idx + 1 < currentUsersList.length) { 
+    //       nextUserEmail = currentUsersList[email_idx + 1];
+    //     } else {
+    //       nextUserEmail = currentUsersList[0];
+    //     }        
+    //   }
+    // }  
+    // const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
+    // nextUserName = userData.docs[0].data().displayName;
 
     // return nextUserEmail;
   }

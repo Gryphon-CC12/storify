@@ -13,5 +13,5 @@ export default function deleteAllEntries() {
     
     setTimeout(() => {
         window.location.reload(false);
-    }, 500);
+    }, 1000);
 };
