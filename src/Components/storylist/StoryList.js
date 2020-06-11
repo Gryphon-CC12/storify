@@ -93,7 +93,7 @@ function StoryList() {
           {stories.map((story) => {         
             return (
               <Grid container item xs={6} key={uuidv4()}>
-                <StoryPreview storyProp={story}/>
+                <StoryPreview storyProp={story.id}/>
               </Grid>
             )
           })}

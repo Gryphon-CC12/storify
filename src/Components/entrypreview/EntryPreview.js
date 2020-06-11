@@ -36,7 +36,6 @@ function EntryPreview(props) {
   const [entryLikes, setEntryLikes] = useState(0);
 
   function fetchStoryTitle(storyId) {
-    console.log('storyId:', storyId)
     db.collection('StoryDatabase').where('id', '==', storyId).get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {

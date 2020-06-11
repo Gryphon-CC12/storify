@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
 const ProfilePage = () => {
 
   const user = useContext(UserContext);
-  console.log('user:', user)
   const classes = useStyles();
 
   const { photoURL, displayName, email } = user;

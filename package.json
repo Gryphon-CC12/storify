@@ -1,5 +1,5 @@
 {
-  "name": "Storify",
+  "name": "storify",
   "version": "1.1.0",
   "private": false,
   "dependencies": {

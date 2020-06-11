@@ -31,9 +31,6 @@ const useStyles = makeStyles((theme) => ({
 
 function StoryPreview(props) {
   
-// console.log('props:', props)
-console.log('props:', props)
-
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
@@ -41,23 +38,28 @@ console.log('props:', props)
   const [likes, setLikes] = useState(0);
 
   function fetchFirstEntryForStory(id) {
-    db.collection('StoryDatabase').where('id', '==', id).get()
-      .then(function (querySnapshot) {
-        let ids_array = [];
-        querySnapshot.forEach(function (doc) {
-          setGenre(doc.data().genre);
-          setLikes(doc.data().likes);
-          setTitle(doc.data().title)
-          ids_array.push(doc.data().entries)
+    try {
+      db.collection('StoryDatabase').where('id', '==', id).get()
+        .then(function (querySnapshot) {
+          let ids_array = [];
+          querySnapshot.forEach(function (doc) {
+            setGenre(doc.data().genre);
+            setLikes(doc.data().likes);
+            setTitle(doc.data().title)
+            ids_array.push(doc.data().entries)
+          })
+          console.log('ids_array:', ids_array)
+          return ids_array[0][0];
         })
-        return ids_array[0][0];
-      })
-      .then(async id => {
-        const data = await db.collection('Entries').where('id', '==', id).get();
-        setStoryText(data.docs.map((doc) => {
-          return (doc.data().text.split('. ')[0] + ".").substring(0,100);   // Returns previous only till the first.
-        }));
-      })
+        .then(async id => {
+          const data = await db.collection('Entries').where('id', '==', id).get();
+          setStoryText(data.docs.map((doc) => {
+            return (doc.data().text.split('. ')[0] + ".").substring(0,100);   // Returns previous only till the first.
+          }));
+        })
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   useEffect(() => {

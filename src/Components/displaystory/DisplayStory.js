@@ -9,6 +9,7 @@ import AddEntry from '../../Components/addentry/AddEntry'
 import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
+import deleteOneStory from '../../utils/deleteOneStory';
 // import _ from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -142,8 +143,8 @@ async function checkTurns(email, story_id){
     // console.log('turnNumber', turnNumber);
 
   for (let user in currentUsersList) {
-      if (turnNumber == user) {  //String and Number == 
-        if (currentUsersList[user] == email) {
+      if (turnNumber === user) {  //String and Number == 
+        if (currentUsersList[user] === email) {
           setIsUserInTurn(true);
         } else {
           setIsUserInTurn(false);
@@ -200,6 +201,11 @@ async function checkTurns(email, story_id){
       setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
+  async function handleDeleteStory() {
+    await deleteOneStory(props.match.params.id);
+    props.history.push('/');
+  }
+
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -220,6 +226,12 @@ async function checkTurns(email, story_id){
   return (
     <Container maxWidth="md" key={uuidv4()}>
       <Grid container spacing={2}>
+      <button
+            className="btn btn-danger"
+            onClick={handleDeleteStory}
+        >Delete Story
+
+        </button>
         <Grid item xs={12} lg={3}>
           <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
         </Grid>
@@ -230,12 +242,12 @@ async function checkTurns(email, story_id){
         
         {storyArr.map((item) => { 
           return (
-            <>
+            <React.Fragment key={uuidv4()}>
               <Grid key={uuidv4()} item xs={12}>
                 <Paper id="story-text" className={classes.entry} elevation={3}>
                     {item.text.map(paragraph => {
                       return (
-                        <p>{paragraph}</p>
+                        <p key={uuidv4()}>{paragraph}</p>
                       )
                     })}
                 </Paper>
@@ -246,13 +258,12 @@ async function checkTurns(email, story_id){
                 <Typography id="story-author" className={classes.details}>
                   <span id="likes" onClick={() => addLike(item.entry_id, item.story_id)}>
                   {getLikes(item.entry_id)}
-                    <FavoriteIcon /> 
-                    <div></div>
+                    <FavoriteIcon /> <br />
                   </span>
                   {item.author}
                   </Typography>
-                </Grid>
-              </>
+              </Grid>
+              </React.Fragment>
             )
           })}
           {isContributor ?

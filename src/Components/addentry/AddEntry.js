@@ -4,7 +4,7 @@ import saveToEntries from '../../utils/saveToEntries';
 import saveToUserEntries from '../../utils/saveToUserEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
-import emailjs from 'emailjs-com';
+// import emailjs from 'emailjs-com';
 
 const db = firebase.firestore();
 
@@ -36,7 +36,7 @@ function AddEntry(props) {
     storyTimeLimit = data.docs[0].data().timeLimit;
     for (let email_num in currentUsersList) {
       let email_idx = Number(email_num)
-      if (currentUsersList[email_idx] == author.email) {
+      if (currentUsersList[email_idx] === author.email) {
         if (email_idx + 1 < currentUsersList.length) { 
           nextUserEmail = currentUsersList[email_idx + 1];
         } else {
@@ -50,20 +50,20 @@ function AddEntry(props) {
     // return nextUserEmail;
   }
 
-  async function sendEmailToNextUser(author, story_id) {
+  // async function sendEmailToNextUser(author, story_id) {
     //   //////  SEND EMAIL  ////
-    let template_params = {
-      "email": nextUserEmail,
-      "reply_to": "storify.io@gmail.com",
-      "from_name": "Storify Team",
-      "to_name": nextUserName,
-      "time_limit": storyTimeLimit,
-      "message_html": ("<h1>It's your turn to create! You have "+ storyTimeLimit + " to add your entry.</h1>")
-    }
+    // let template_params = {
+    //   "email": nextUserEmail,
+    //   "reply_to": "storify.io@gmail.com",
+    //   "from_name": "Storify Team",
+    //   "to_name": nextUserName,
+    //   "time_limit": storyTimeLimit,
+    //   "message_html": ("<h1>It's your turn to create! You have "+ storyTimeLimit + " to add your entry.</h1>")
+    // }
       
-    let service_id = "storify_io_gmail_com";
-    let template_id = "storifytest";
-    let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
+    // let service_id = "storify_io_gmail_com";
+    // let template_id = "storifytest";
+    // let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
     // emailjs.send(service_id, template_id, template_params, user_id)
     //   .then(function(response) {
@@ -71,7 +71,7 @@ function AddEntry(props) {
     //   }, function(error) {
     //       console.log('FAILED...', error);
     //   });
-  }
+  // }
 
   const onButtonClick = async (event) => {
     event.preventDefault()
@@ -83,7 +83,7 @@ function AddEntry(props) {
       await saveToUserEntries(author.email, id, props.id)
 
       await calculateNextUser(author, props.id);
-      await sendEmailToNextUser(author, props.id);
+      // await sendEmailToNextUser(author, props.id);
       await pushToStory(props.id, id, author, nextUserEmail); 
     
 
