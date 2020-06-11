@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 function StoryPreview(props) {
   
   const [storyText, setStoryText] = useState([]);
-  const [promptEntryId, setPromptEntryId] = useState("");
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
