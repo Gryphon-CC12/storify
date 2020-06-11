@@ -1,16 +1,16 @@
-import React, {useState, useEffect, useRef} from 'react';
-import './StoryList.styles.scss';
-import StoryPreview from '../storypreview/StoryPreview'
-import firebase from '../../firebaseConfig';
+import React, { useState, useEffect, useRef } from "react";
+import "./StoryList.styles.scss";
+import StoryPreview from "../storypreview/StoryPreview";
+import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Container from '@material-ui/core/Container';
-import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Container from "@material-ui/core/Container";
+import { makeStyles } from "@material-ui/core/styles";
+import Grid from "@material-ui/core/Grid";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 const db = firebase.firestore();
 
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
   formControl: {
@@ -32,43 +32,83 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 function StoryList() {
   const [stories, setStories] = useState([]);
   const classes = useStyles();
   const [genre, setGenre] = useState("All");
   const storyGenre = useRef("");
+  const [like, setLike] = useState("By Newest");
+  const storyLike = useRef("");
 
   useEffect(() => {
     retrieveAllStories(genre);
-  }, [genre])
+  }, [genre]);
+
+  useEffect(() => {
+    retrieveAllStoriesByLikes(like);
+  }, [like]);
 
   const selectGenre = (event) => {
-    setGenre(event.target.value)
-  }
+    setGenre(event.target.value);
+  };
+
+  const selectLike = (event) => {
+    setLike(event.target.value);
+  };
 
   const retrieveAllStories = async (genre) => {
-    
     if (genre === "All" || genre === undefined) {
-      const data = await db.collection('StoryDatabase').orderBy('dateCreated').get();
+      const data = await db
+        .collection("StoryDatabase")
+        .orderBy("dateCreated")
+        .get();
       setStories([]);
-      setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      setStories((stories) =>
+        stories.concat(data.docs.map((doc) => doc.data()))
+      );
     } else {
-      const data = await db.collection('StoryDatabase').where('genre', "==", genre).get();
+      const data = await db
+        .collection("StoryDatabase")
+        .where("genre", "==", genre)
+        .get();
       setStories([]);
-      setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      setStories((stories) =>
+        stories.concat(data.docs.map((doc) => doc.data()))
+      );
+    }
+  };
+
+  const retrieveAllStoriesByLikes = async (genre) => {
+    if (genre === "By Newest" || genre === undefined) {
+      const data = await db
+        .collection("StoryDatabase")
+        .orderBy("dateCreated")
+        .get();
+      setStories([]);
+      setStories((stories) =>
+        stories.concat(data.docs.map((doc) => doc.data()))
+      );
+    } else {
+      const data = await db
+        .collection("StoryDatabase")
+        .orderBy("likes", "desc")
+        .get();
+      setStories([]);
+      setStories((stories) =>
+        stories.concat(data.docs.map((doc) => doc.data()))
+      );
     }
   };
 
   return (
     <div className="display-story">
       <CssBaseline />
-      
+
       <Container maxWidth="lg" className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={12}>
+          <Grid item xs={6}>
             <FormControl className={classes.formControl}>
-              <InputLabel id="select-genre">Filter Stories</InputLabel>
+              <InputLabel id="select-genre">Story Genres</InputLabel>
               <Select
                 labelId="select-genre"
                 id="select-dropdown"
@@ -90,16 +130,33 @@ function StoryList() {
               </Select>
             </FormControl>
           </Grid>
-          {stories.map((story) => {         
+
+          <Grid item xs={6}>
+            <FormControl className={classes.formControl}>
+              <InputLabel id="select-genre">Filter Stories</InputLabel>
+              <Select
+                labelId="select-genre"
+                id="select-dropdown"
+                value={like}
+                onChange={selectLike}
+                ref={storyLike}
+              >
+                <MenuItem value={"By Newest"}>By Newest</MenuItem>
+                <MenuItem value={"Most Liked"}>By Likes</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {stories.map((story) => {
             return (
               <Grid container item xs={6} key={uuidv4()}>
-                <StoryPreview storyProp={story}/>
+                <StoryPreview storyProp={story} />
               </Grid>
-            )
+            );
           })}
         </Grid>
       </Container>
-		</div>
+    </div>
   );
 }
 
