@@ -32,14 +32,15 @@ const useStyles = makeStyles((theme) => ({
 function StoryPreview(props) {
   
   const [storyText, setStoryText] = useState([]);
+  const [promptEntryId, setPromptEntryId] = useState("");
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
 
-  function fetchFirstEntryForStory(id) {
-    try {
-      db.collection('StoryDatabase').where('id', '==', id).get()
+  async function fetchFirstEntryForStory(id) {
+    try {          
+        db.collection('StoryDatabase').where('id', '==', id).get()
         .then(function (querySnapshot) {
           let ids_array = [];
           querySnapshot.forEach(function (doc) {
@@ -48,7 +49,6 @@ function StoryPreview(props) {
             setTitle(doc.data().title)
             ids_array.push(doc.data().entries)
           })
-          console.log('ids_array:', ids_array)
           return ids_array[0][0];
         })
         .then(async id => {
