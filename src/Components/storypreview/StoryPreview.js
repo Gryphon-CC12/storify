@@ -30,35 +30,42 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 function StoryPreview(props) {
-
+  
   const [storyText, setStoryText] = useState([]);
+  const [promptEntryId, setPromptEntryId] = useState("");
   const [imageURL, setImageURL] = useState("");
+  const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
 
-  function fetchFirstEntryForStory(id) {
-    db.collection('StoryDatabase').where('id', '==', id).get()
-      .then(function (querySnapshot) {
-        let ids_array = [];
-        querySnapshot.forEach(function (doc) {
-          setGenre(doc.data().genre);
-          setLikes(doc.data().likes);
-          ids_array.push(doc.data().entries)
+  async function fetchFirstEntryForStory(id) {
+    try {          
+        db.collection('StoryDatabase').where('id', '==', id).get()
+        .then(function (querySnapshot) {
+          let ids_array = [];
+          querySnapshot.forEach(function (doc) {
+            setGenre(doc.data().genre);
+            setLikes(doc.data().likes);
+            setTitle(doc.data().title)
+            ids_array.push(doc.data().entries)
+          })
+          return ids_array[0][0];
         })
-        return ids_array[0][0];
-      })
-      .then(async id => {
-        const data = await db.collection('Entries').where('id', '==', id).get();
-        setStoryText(data.docs.map((doc) => {
-          return (doc.data().text.split('.')[0] + ".").substring(0,100);   // Returns previous only till the first.
-        }));
-      })
+        .then(async id => {
+          const data = await db.collection('Entries').where('id', '==', id).get();
+          setStoryText(data.docs.map((doc) => {
+            return (doc.data().text.split('. ')[0] + ".").substring(0,100);   // Returns previous only till the first.
+          }));
+        })
+    } catch (error) {
+      console.error(error)
+    }
   };
 
   useEffect(() => {
-    fetchFirstEntryForStory(props.storyProp.id);
-    fetchImageURL(props.storyProp.id);
-  }, [props.storyProp.id])
+    fetchFirstEntryForStory(props.storyProp);
+    fetchImageURL(props.storyProp);
+  }, [props.storyProp])
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
@@ -68,10 +75,12 @@ function StoryPreview(props) {
   };
 
   const classes = useStyles();
-
+  if (!props) {
+    return <div></div>
+  }
   return (
     <div className={classes.root}>
-      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp.id}` }}>
+      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
         <Paper className={classes.paper}>
           <Grid id="preview" container spacing={2}>
             <Grid item>
@@ -81,7 +90,7 @@ function StoryPreview(props) {
               <Grid item xs container direction="column" spacing={2}>
                 <Grid id="story" item xs>
                   <Typography gutterBottom variant="subtitle1">
-                    {props.storyProp.title}
+                    {title}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
                     {storyText}

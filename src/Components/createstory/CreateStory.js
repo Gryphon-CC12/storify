@@ -1,28 +1,11 @@
 import React, { useRef, useContext } from "react";
-import { Link, Redirect } from "react-router-dom";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
 import saveToEntries from "../../utils/saveToEntries";
 import { storage } from "../../firebaseConfig";
 import { UserContext } from "../../providers/UserProvider";
 import "firebase/storage";
-import DisplayStory from "../displaystory/DisplayStory";
-import { makeStyles } from "@material-ui/core/styles";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
-import NativeSelect from "@material-ui/core/NativeSelect";
-
-const useStyles = makeStyles((theme) => ({
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
+import saveToUserStories from '../../utils/saveToUserStories';
 
 //import emailjs from 'emailjs-com';
 //require('dotenv').config()
@@ -31,12 +14,11 @@ const useStyles = makeStyles((theme) => ({
 const db = firebase.firestore();
 
 function CreateStory(props) {
-  const classes = useStyles();
 
   ////For google image upload
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
-  const author = useContext(UserContext);
+  const user = useContext(UserContext);
   let imageAsUrl = "";
   /////
 
@@ -53,7 +35,7 @@ function CreateStory(props) {
     event,
     story_id,
     prompt_id,
-    author,
+    user,
     title,
     imageAsUrl
   ) {
@@ -65,11 +47,11 @@ function CreateStory(props) {
         id: story_id,
         dateCreated: new Date(),
         lastModified: new Date(),
-        inTurn: author.email,
+        inTurn: user.email,
         title: title,
         likes: 0,
-        author: author.displayName,
-        emails: [author.email],
+        author: user.displayName,
+        emails: [user.email],
         isPrompt: true,
         maxEntries: maxEntries.current.value,
         maxUsers: maxCollaborators.current.value,
@@ -88,9 +70,9 @@ function CreateStory(props) {
   }
 
   ////For IMAGE UPLOAD TO GOOGLE BUCKET///
-  const handleFireBaseUpload = (arenderSynce) => {
-    arenderSynce.preventDefault();
-    const image = arenderSynce.target.files[0];
+  const handleFireBaseUpload = (arenderSync) => {
+    arenderSync.preventDefault();
+    const image = arenderSync.target.files[0];
     // async magic goes here...
     if (image === "") {
       console.error(`not an image, the image file is a ${typeof image}`);
@@ -109,7 +91,7 @@ function CreateStory(props) {
         console.log("err", err);
       },
       () => {
-        // gets the functions from storage refences the image storage in firebase by the children
+        // gets the functions from storage references the image storage in firebase by the children
         // gets the download url then sets the image from firebase as the value for the imgUrl key:
         storage
           .ref("images")
@@ -134,8 +116,7 @@ function CreateStory(props) {
 
   const onButtonClick = (event) => {
     event.preventDefault();
-    console.log("maxEntries", maxEntries);
-    console.log("maxCollaborators", maxCollaborators);
+
     if (inputEl.current.value === "" || titleEl.current.value === "") {
       alert("Please enter a title and story prompt"); //Checks that story is not empty
     } else if (
@@ -145,17 +126,17 @@ function CreateStory(props) {
         "Entries should be greater than or equal to number of collaborators"
       );
     } else {
-      saveToEntries(inputEl.current.value, prompt_id, author);
+      saveToEntries(story_id, inputEl.current.value, prompt_id, user);
+      saveToUserStories(user.email, story_id)
       saveToStories(
         inputEl.current.value,
         story_id,
         prompt_id,
-        author,
+        user,
         titleEl.current.value,
         imageAsUrl
       );
       props.history.push(`/displaystory/${story_id}`);
-      // return <Redirect  to="/" />
     }
   };
   return (
