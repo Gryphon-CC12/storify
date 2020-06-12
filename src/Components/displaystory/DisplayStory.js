@@ -1,7 +1,3 @@
-//****************** */
-// Remaining TODOs for MVP
-// - Implement time limit mechanics (if time is exceeded skip to next user), reset time upon new entry.
-//****************** */
 import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
 import firebase from '../../firebaseConfig';
@@ -9,6 +5,7 @@ import AddEntry from '../../Components/addentry/AddEntry'
 import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
+import deleteOneStory from '../../utils/deleteOneStory';
 // import _ from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -25,6 +22,8 @@ function DisplayStory(props) {
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
   const [title, setTitle] = useState("")
   const [isContributor, setIsContributor] = useState(false)
+  // const [author, setAuthor] = useState("")
+  const [noOfUsersState, setNoOfUsersState] = useState(0)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
   const [isMaxEntries, setIsMaxEntries] = useState(true)
   const [numOfEntries, setNumOfEntries] = useState(0)
@@ -38,9 +37,11 @@ function DisplayStory(props) {
     checkMaxContributors(user.email, props.match.params.id)
     checkMaxEntries(user.email, props.match.params.id)
     checkTurns(user.email, props.match.params.id)
+    // checkAuthor(user.email, props.match.params.id)
+    getCurrentNumberOfParticipants(props.match.params.id)
   }, [user.email, props.match.params.id])
 
-
+  let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(story_id, user_email) {
     db.collection('StoryDatabase').where('id', '==', story_id).get()
       .then(function (querySnapshot) {
@@ -49,6 +50,8 @@ function DisplayStory(props) {
           ids_array.push(doc.data().entries)
           setIsContributor(doc.data().emails.includes(user_email))
           setTitle(doc.data().title);
+          let emails = doc.data().emails;
+          authorEmail = emails[0]
         })
         return ids_array[0];
       })
@@ -60,7 +63,6 @@ function DisplayStory(props) {
                 let thisAuthor = doc.data().author;
                 let thisText = doc.data().text;
                 thisText = thisText.split(/\n/g)
-                console.log('thisText:', thisText)
                 let thisLikes = doc.data().likes;
                 let thisId = doc.data().id
                 let thisEmail = doc.data().email;
@@ -74,6 +76,7 @@ function DisplayStory(props) {
                     "user_email": thisEmail
                   }
                 ]));
+                
                 setLikes(likes => likes.concat([
                   {
                     "entry_id": thisId,
@@ -132,27 +135,40 @@ let addLike = async (entry_id, story_id) => {
     })
 }
 
-async function checkTurns(email, story_id){ 
-  const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+async function checkTurns(email, storyId){ 
+  const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
   let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
   let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
   let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-  
-    let turnNumber = currentEntriesNum % currentUsersNum;
-  
-    // console.log('turnNumber', turnNumber);
+  let turnNumber = (currentEntriesNum % currentUsersNum);
 
-  for (let user in currentUsersList) {
-      if (turnNumber == user) {  //String and Number == 
-        if (currentUsersList[user] == email) {
-          setIsUserInTurn(true);
-        } else {
-          setIsUserInTurn(false);
-        }
-        setUserInTurn(currentUsersList[user])
-      }
+  //prevent prompt writer going again straight away
+  if (currentUsersNum === 1) {
+    setIsUserInTurn(false)
+  }// reverse results so second person to join goes next
+  else if (currentUsersNum === 2) {
+    if (currentUsersList[user] !== email) {
+      setIsUserInTurn(true);
+      setUserInTurn(currentUsersList[user])
+    } else {
+      setIsUserInTurn(false);
     }
+  } // return to regular order
+  else {
+    for (let user in currentUsersList) {
+      // eslint-disable-next-line eqeqeq
+      if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+          if (currentUsersList[user] === email) {
+            setIsUserInTurn(true);
+          } else {
+            setIsUserInTurn(false);
+          }
+          setUserInTurn(currentUsersList[user])
+        }
+      }
   }
+  console.log(userInTurn)
+}
 
   async function checkMaxContributors(email, story_id) {
 
@@ -201,6 +217,28 @@ async function checkTurns(email, story_id){
       setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
+  async function handleDeleteStory(e) {
+    e.preventDefault();
+    await deleteOneStory(props.match.params.id, user.email);
+    props.history.push('/');
+  }
+
+  async function getCurrentNumberOfParticipants(storyId) {
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let currentUsers = data.docs[0].data().emails.length;
+    setNoOfUsersState(currentUsers)
+  }
+
+  const renderDeleteButton = () => {
+    return (
+      <button
+      className="btn btn-danger"
+      onClick={handleDeleteStory}
+      >Delete Story
+      </button>
+    )
+  }
+
   const useStyles = makeStyles((theme) => ({
     root: {
       flexGrow: 1,
@@ -221,6 +259,11 @@ async function checkTurns(email, story_id){
   return (
     <Container maxWidth="md" key={uuidv4()}>
       <Grid container spacing={2}>
+        {
+          user.email === authorEmail || user.admin === true ?
+            renderDeleteButton() : ""
+        }
+      
         <Grid item xs={12} lg={3}>
           <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
         </Grid>
@@ -231,12 +274,12 @@ async function checkTurns(email, story_id){
         
         {storyArr.map((item) => { 
           return (
-            <>
+            <React.Fragment key={uuidv4()}>
               <Grid key={uuidv4()} item xs={12}>
                 <Paper id="story-text" className={classes.entry} elevation={3}>
                     {item.text.map(paragraph => {
                       return (
-                        <p>{paragraph}</p>
+                        <p key={uuidv4()}>{paragraph}</p>
                       )
                     })}
                 </Paper>
@@ -247,34 +290,47 @@ async function checkTurns(email, story_id){
                 <Typography id="story-author" className={classes.details}>
                   <span id="likes" onClick={() => addLike(item.entry_id, item.story_id)}>
                   {getLikes(item.entry_id)}
-                    <FavoriteIcon /> 
-                    <div></div>
+                    <FavoriteIcon /> <br />
                   </span>
                   {item.author}
                   </Typography>
-                </Grid>
-              </>
+              </Grid>
+              </React.Fragment>
             )
-          })}
-          {isContributor ?
+        })}
+        
+          <div className="container">
+        <p>Collaborators: {noOfUsersState} <br/></p>{" "}
+        {
+          isContributor ?
             isMaxEntries ?
             <p key={uuidv4()}>This Story has completed</p>  
             :
             isUserInTurn ?
-              <div className="row" key={uuidv4()}>
-              <div className="col" key={uuidv4()}>
-                <p>This story has {numOfEntries} entries left</p>
+              <Grid item xs={12} lg={3}>
+              <p>This story has {numOfEntries} entries left</p>
                 <AddEntry id={props.match.params.id} />
-              </div>
-              </div>
-            :
-            <p key={uuidv4()}>User in turn: {userInTurn} </p>
+              </Grid>
+              :
+              <>
+              <p key={uuidv4()}>
+                {userInTurn ?
+                  "Currently {userInTurn}'s turn!"
+                  :
+                  "Waiting for players!"
+                }
+                </p>
+                <br />{" "}
+          </>
           :
           isMaxContributors ?
+            
               <p key={uuidv4()}>This Story has Max Contributor</p>  
+
           :
           <button className="btn btn-dark" key={uuidv4()} onClick={() => addToContributors(user.email, storyArr[0].story_id)}>Join the Story</button>
           }
+            </div>
 
       </Grid>
     </Container>

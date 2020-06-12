@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { Switch, Route } from "react-router-dom";
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../../theme';
@@ -13,17 +13,15 @@ import CreateStory from '../../Components/createstory/CreateStory';
 import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
-import PageFooter from '../pagefooter/PageFooter';
-import {v4 as uuidv4} from "uuid";
+// import PageFooter from '../pagefooter/PageFooter';
 import { UserContext } from "../../providers/UserProvider";
-import history from '../../history.js'
 
 function Application() {
   const user = useContext(UserContext);
   
   return (
       user ?
-      <Router history={history} key={uuidv4()}>
+      // <Router history={history} key={uuidv4()}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Navbar />
@@ -36,16 +34,16 @@ function Application() {
                 </Switch>
         {/* <PageFooter /> */}
         </ThemeProvider>
-      </Router>
+      // </Router>
       :    
-      <Router>
+      // <Router>
         <Switch> 
           <Route exact path="/signup" component={SignUp} />
           <Route path="/" component={SignIn} />
           <Route path="/passwordreset" component={PasswordReset} />
         </Switch> 
-        <PageFooter />
-    </Router>
+
+    // </Router>
     );
 }
 export default Application;
