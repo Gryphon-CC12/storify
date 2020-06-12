@@ -10,7 +10,8 @@ export default function saveToEntries(storyId, event, id, user) {
         date: new Date(),
         likes: 0,
         author: user.displayName,
-        email: user.email
+        email: user.email,
+        userId: user.id
     })
     .then(function () {
         console.log("Document successfully written!");
