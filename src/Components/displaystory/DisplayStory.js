@@ -42,21 +42,21 @@ function DisplayStory(props) {
   }, [user.email, props.match.params.id])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
-  function fetchEntriesForStory(story_id, user_email) {
-    db.collection('StoryDatabase').where('id', '==', story_id).get()
+  function fetchEntriesForStory(storyId, userEmail) {
+    db.collection('StoryDatabase').where('id', '==', storyId).get()
       .then(function (querySnapshot) {
-        let ids_array = [];
+        let idsArray = [];
         querySnapshot.forEach(function (doc) {
-          ids_array.push(doc.data().entries)
-          setIsContributor(doc.data().emails.includes(user_email))
+          idsArray.push(doc.data().entries)
+          setIsContributor(doc.data().emails.includes(userEmail))
           setTitle(doc.data().title);
           let emails = doc.data().emails;
           authorEmail = emails[0]
         })
-        return ids_array[0];
+        return idsArray[0];
       })
-      .then(ids_array => {
-        ids_array.forEach((id) => {
+      .then(idsArray => {
+        idsArray.forEach((id) => {
           db.collection('Entries').where('id', '==', id).get()
             .then(function (querySnapshot2) {
               querySnapshot2.forEach(function (doc) {
@@ -64,22 +64,22 @@ function DisplayStory(props) {
                 let thisText = doc.data().text;
                 thisText = thisText.split(/\n/g)
                 let thisLikes = doc.data().likes;
-                let thisId = doc.data().id
-                let thisEmail = doc.data().email;
+                let entryId = doc.data().id
+                let userEmail = doc.data().email;
                 setStoryArr(storyArr => storyArr.concat([
                   {
                     "author": thisAuthor,
                     "text": thisText,
                     "likes": thisLikes,
-                    "entry_id": thisId,
-                    "story_id": story_id,
-                    "user_email": thisEmail
+                    "entry_id": entryId,
+                    "story_id": storyId,
+                    "user_email": userEmail
                   }
                 ]));
                 
                 setLikes(likes => likes.concat([
                   {
-                    "entry_id": thisId,
+                    "entryId": entryId,
                     "likes": thisLikes
                   }
                 ]))
@@ -89,18 +89,18 @@ function DisplayStory(props) {
       })
   };
 
-  const getLikes = (entry_id) => {
+  const getLikes = (entryId) => {
     for (const item of likes) {
-      if (item.entry_id === entry_id) {
+      if (item.entryId === entryId) {
         return item.likes;
       }
     }
   }
 
-  const updateLikeState = (entry_id) => {
+  const updateLikeState = (entryId) => {
     let newLikes = [...likes]
     for (let i = 0; i < likes.length; i++) {
-      if (likes[i].entry_id === entry_id) {
+      if (likes[i].entryId === entryId) {
         newLikes[i].likes += 1;
         setLikes(newLikes);
       }
@@ -115,60 +115,45 @@ function DisplayStory(props) {
   };
 
 
-let addLike = async (entry_id, story_id) => {
-  db.collection('Entries').where("id", "==", entry_id)
-    .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-      });
-      updateLikeState(entry_id)
-    })
-  setLikes(likes + 1)
+  const addLike = async (entryId, storyId) => {
+    db.collection('Entries').where("id", "==", entryId)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+        });
+        updateLikeState(entryId)
+      })
+    setLikes(likes + 1)
 
-  db.collection('StoryDatabase').where("id", "==", story_id)
-    .get()
-    .then(function (querySnapshot) {
-      querySnapshot.forEach(function (doc) {
-        db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-      });
-    })
-}
+    db.collection('StoryDatabase').where("id", "==", storyId)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+        });
+      })
+  }
 
-async function checkTurns(email, storyId){ 
-  const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-  let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
-  let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
-  let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-  let turnNumber = (currentEntriesNum % currentUsersNum);
+  async function checkTurns(email, storyId){ 
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
+    let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
+    let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
+    let turnNumber = currentEntriesNum % currentUsersNum;
 
-  //prevent prompt writer going again straight away
-  if (currentUsersNum === 1) {
-    setIsUserInTurn(false)
-  }// reverse results so second person to join goes next
-  else if (currentUsersNum === 2) {
-    if (currentUsersList[user] !== email) {
-      setIsUserInTurn(true);
-      setUserInTurn(currentUsersList[user])
-    } else {
-      setIsUserInTurn(false);
-    }
-  } // return to regular order
-  else {
-    for (let user in currentUsersList) {
-      // eslint-disable-next-line eqeqeq
-      if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-          if (currentUsersList[user] === email) {
-            setIsUserInTurn(true);
-          } else {
-            setIsUserInTurn(false);
-          }
-          setUserInTurn(currentUsersList[user])
+      for (let user in currentUsersList) {
+        // eslint-disable-next-line eqeqeq
+        if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+            if (currentUsersList[user] === email) {
+              setIsUserInTurn(true);
+            } else {
+              setIsUserInTurn(false);
+            }
+            setUserInTurn(currentUsersList[user])
         }
       }
   }
-  console.log(userInTurn)
-}
 
   async function checkMaxContributors(email, story_id) {
 
@@ -200,12 +185,12 @@ async function checkTurns(email, storyId){
   }
 
 //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
-  async function addToContributors(email, story_id){
-      const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
+  async function addToContributors(email, storyId){
+      const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
       let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
       let currentUsers = data.docs[0].data().emails.length; 
       if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
-        db.collection('StoryDatabase').where("id", "==", story_id)  
+        db.collection('StoryDatabase').where("id", "==", storyId)  
         .get()
         .then(function (querySnapshot) {
           querySnapshot.forEach(function (doc) {
@@ -214,7 +199,7 @@ async function checkTurns(email, storyId){
           });
         })
       }
-      setTimeout(() => {window.location.reload(false);}, 1000);
+    setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
   async function handleDeleteStory(e) {
@@ -237,6 +222,18 @@ async function checkTurns(email, storyId){
       >Delete Story
       </button>
     )
+  }
+
+  const DisplayPlayerNumbers = () => {
+    if (noOfUsersState > 0) {
+      return (
+        <p> Currently {noOfUsersState} authors in the game!</p>
+      )
+    } else {
+      return (
+        <p>Waiting for players to join! Click join to write the next entry.</p>
+      )
+    }
   }
 
   const useStyles = makeStyles((theme) => ({
@@ -300,14 +297,14 @@ async function checkTurns(email, storyId){
         })}
         
           <div className="container">
-        <p>Collaborators: {noOfUsersState} <br/></p>{" "}
-        {
+            <DisplayPlayerNumbers />
+            {
           isContributor ?
             isMaxEntries ?
             <p key={uuidv4()}>This Story has completed</p>  
             :
             isUserInTurn ?
-              <Grid item xs={12} lg={3}>
+              <Grid item xs={12} lg={12}>
               <p>This story has {numOfEntries} entries left</p>
                 <AddEntry id={props.match.params.id} />
               </Grid>
@@ -315,7 +312,7 @@ async function checkTurns(email, storyId){
               <>
               <p key={uuidv4()}>
                 {userInTurn ?
-                  "Currently {userInTurn}'s turn!"
+                  <p key={uuidv4()}>Currently {userInTurn}'s turn!</p>
                   :
                   "Waiting for players!"
                 }

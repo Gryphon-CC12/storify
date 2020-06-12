@@ -33,8 +33,8 @@ function CreateStory(props) {
 
   function saveToStories(
     event,
-    story_id,
-    prompt_id,
+    storyId,
+    promptId,
     user,
     title,
     imageAsUrl
@@ -44,18 +44,19 @@ function CreateStory(props) {
     }
     db.collection("StoryDatabase")
       .add({
-        id: story_id,
+        id: storyId,
         dateCreated: new Date(),
         lastModified: new Date(),
         inTurn: user.email,
         title: title,
         likes: 0,
         author: user.displayName,
-        emails: [user.email],
+        authorUserId: user.id,
+        emails: [],
         isPrompt: true,
         maxEntries: maxEntries.current.value,
         maxUsers: maxCollaborators.current.value,
-        entries: [prompt_id],
+        entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
@@ -105,8 +106,8 @@ function CreateStory(props) {
   };
 
   const inputEl = useRef();
-  const prompt_id = uuidv4();
-  const story_id = uuidv4();
+  const promptId = uuidv4();
+  const storyId = uuidv4();
   const titleEl = useRef();
   const useRobot = useRef(false);
   const maxEntries = useRef(1);
@@ -126,17 +127,17 @@ function CreateStory(props) {
         "Entries should be greater than or equal to number of collaborators"
       );
     } else {
-      saveToEntries(story_id, inputEl.current.value, prompt_id, user);
-      saveToUserStories(user.email, story_id)
+      saveToEntries(storyId, inputEl.current.value, promptId, user);
+      saveToUserStories(user.email, storyId)
       saveToStories(
         inputEl.current.value,
-        story_id,
-        prompt_id,
+        storyId,
+        promptId,
         user,
         titleEl.current.value,
         imageAsUrl
       );
-      props.history.push(`/displaystory/${story_id}`);
+      props.history.push(`/displaystory/${storyId}`);
     }
   };
   return (
@@ -232,7 +233,7 @@ function CreateStory(props) {
                 ref={storyGenre}
               >
                 <option>Crime</option>
-                <option>Fan fiction</option>
+                <option>Fan Fiction</option>
                 <option>Fantasy</option>
                 <option>Historical</option>
                 <option>Horror</option>

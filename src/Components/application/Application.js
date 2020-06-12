@@ -21,29 +21,23 @@ function Application() {
   
   return (
       user ?
-      // <Router history={history} key={uuidv4()}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <Navbar />
             <Switch> 
-                <Route exact path="/profile" component={ProfilePage} />
                 <Route exact path="/" component={StoryList} />
+                <Route exact path="/profile" component={ProfilePage} />
                 <Route exact path="/about" component={About} />
-                <Route exact name="displaystory" path="/displaystory/:id" component={DisplayStory} />
+                <Route exact path="/displaystory/:id" component={DisplayStory} />
                 <Route exact path="/createstory" component={CreateStory} />   
-                </Switch>
-        {/* <PageFooter /> */}
+            </Switch>
         </ThemeProvider>
-      // </Router>
       :    
-      // <Router>
         <Switch> 
           <Route exact path="/signup" component={SignUp} />
           <Route path="/" component={SignIn} />
           <Route path="/passwordreset" component={PasswordReset} />
         </Switch> 
-
-    // </Router>
     );
 }
 export default Application;
