@@ -1,11 +1,11 @@
-![logo](https://github.com/Gryphon-CC12/storify/blob/master/logo.png?raw=true)
+![logo](https://github.com/Gryphon-CC12/storify/blob/master/images/logo.png?raw=true)
 # Storify
 ------
 
 Storify is a story-writing platform where you can create stories by collaborating with other authors and our lovable Robowriter AI!
 Check it out for yourself at [storifyapp.com](https://www.storifyapp.com)!
 
-![screenshot of app](https://github.com/Gryphon-CC12/storify/blob/master/ss.png?raw=true)
+![screenshot of app](https://github.com/Gryphon-CC12/storify/blob/master/images/ss.png?raw=true)
 
 ## Technologies
 Frontend:
