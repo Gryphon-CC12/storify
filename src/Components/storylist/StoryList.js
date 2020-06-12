@@ -150,11 +150,7 @@ function StoryList() {
           {stories.map((story) => {
             return (
               <Grid container item xs={6} key={uuidv4()}>
-<<<<<<< HEAD
-                <StoryPreview storyProp={story} />
-=======
-                <StoryPreview storyProp={story.id}/>
->>>>>>> 727122b5a1af06a78297703baf89f87efe239f87
+                <StoryPreview storyProp={story.id} />
               </Grid>
             );
           })}
