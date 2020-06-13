@@ -6,7 +6,6 @@ import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
-// import _ from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +27,7 @@ function DisplayStory(props) {
   const [isMaxEntries, setIsMaxEntries] = useState(true)
   const [numOfEntries, setNumOfEntries] = useState(0)
   const [userInTurn, setUserInTurn] = useState("")
+  const [userInTurnName, setUserInTurnName] = useState("");
   const [isUserInTurn, setIsUserInTurn] = useState(false)
   const [likes, setLikes] = useState([])
 
@@ -114,7 +114,6 @@ function DisplayStory(props) {
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
-
   const addLike = async (entryId, storyId) => {
     db.collection('Entries').where("id", "==", entryId)
       .get()
@@ -135,24 +134,75 @@ function DisplayStory(props) {
       })
   }
 
-  async function checkTurns(email, storyId){ 
-    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-    let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
-    let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
-    let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-    let turnNumber = currentEntriesNum % currentUsersNum;
+  async function checkTurns(email, storyId) { 
+    
+   db.collection('StoryDatabase').where('id', '==', storyId).get()
+   .then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
 
-      for (let user in currentUsersList) {
-        // eslint-disable-next-line eqeqeq
-        if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-            if (currentUsersList[user] === email) {
-              setIsUserInTurn(true);
-            } else {
-              setIsUserInTurn(false);
-            }
-            setUserInTurn(currentUsersList[user])
+    const currentInTurn = await doc.data().inTurn;
+
+    if (currentInTurn == "") {
+      const currentUsersNum =  await doc.data().emails.length;
+      const currentEntriesNum = await doc.data().entries.length;
+      const currentUsersList = await doc.data().emails;
+      let turnNumber = currentEntriesNum % currentUsersNum;
+      console.log('currentUsersList', currentUsersList);
+      console.log('turnNumber', turnNumber);
+      console.log('current logged in user', email);
+  
+      if (currentUsersNum >= 2) {
+
+        for (let user in currentUsersList) {
+          
+          // eslint-disable-next-line eqeqeq
+          if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+              if (currentUsersList[user] == email) {
+                setIsUserInTurn(true);
+              } else {
+                setIsUserInTurn(false);
+              }
+              setUserInTurn(currentUsersList[user])
+              const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
+              await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": currentUsersList[user]});
+              setUserInTurnName(userData.docs[0].data().displayName);    
+          }
+        }
+      } else {
+        for (let user in currentUsersList) {
+          console.log('currentUsersList', currentUsersList);
+          console.log('turnNumber', turnNumber);
+          console.log('current logged in user', email);
+          
+          // eslint-disable-next-line eqeqeq
+          if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+              if (currentUsersList[user] == email) {
+                setIsUserInTurn(true);
+              } else {
+                setIsUserInTurn(false);
+              }
+              setUserInTurn(currentUsersList[user])
+              const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
+              setUserInTurnName(userData.docs[0].data().displayName);    
+          }
         }
       }
+      
+
+
+    } else {
+      if (currentInTurn == email) {
+        setIsUserInTurn(true);
+      } else {
+        setIsUserInTurn(false);
+      }
+      setUserInTurn(currentInTurn);
+      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
+      setUserInTurnName(userData.docs[0].data().displayName);  
+    }
+    
+    })
+  })
   }
 
   async function checkMaxContributors(email, story_id) {
@@ -311,7 +361,7 @@ function DisplayStory(props) {
                     <p key={uuidv4()}>
                       {
                         userInTurn ?
-                          <p key={uuidv4()}>Currently {userInTurn}'s turn!</p>
+                          <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
                         :
                         "Waiting for players!"
                       }

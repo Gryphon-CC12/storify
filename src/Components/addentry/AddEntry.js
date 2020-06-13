@@ -22,33 +22,35 @@ function AddEntry(props) {
     db.collection('StoryDatabase').where("id", "==", story_id)
     .get()
     .then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
-          db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextUserEmail});
-          db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
-          db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
-          db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
+      querySnapshot.forEach(async function(doc) {
+
+          await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
+          await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
+          // await db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
+          
+          let currentEnries = await doc.data().entries.length;
+          let maxEnries = await doc.data().maxEntries;
+          await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
+          
+          let currentInTurn = await doc.data().inTurn; 
+          let allEmails = await doc.data().emails;
+          console.log('allEmails', allEmails);
+          
+          let nextInTurn = ""
+          for (let i = 0; i < allEmails.length; i++){
+            if (allEmails[i] === currentInTurn){
+              if (i + 1 >= allEmails.length){
+                nextInTurn = allEmails[0]
+              } else {
+                nextInTurn = allEmails[i + 1]
+              }
+            }
+          }
+          console.log('nextInTurn after adding entry', nextInTurn);
+          
+          await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
       });
   })}
-
-  async function calculateNextUser(author, story_id) {
-    // const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    // let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-    // storyTimeLimit = data.docs[0].data().timeLimit;
-    // for (let email_num in currentUsersList) {
-    //   let email_idx = Number(email_num)
-    //   if (currentUsersList[email_idx] === author.email) {
-    //     if (email_idx + 1 < currentUsersList.length) { 
-    //       nextUserEmail = currentUsersList[email_idx + 1];
-    //     } else {
-    //       nextUserEmail = currentUsersList[0];
-    //     }        
-    //   }
-    // }  
-    // const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
-    // nextUserName = userData.docs[0].data().displayName;
-
-    // return nextUserEmail;
-  }
 
   // async function sendEmailToNextUser(author, story_id) {
     //   //////  SEND EMAIL  ////
@@ -81,10 +83,7 @@ function AddEntry(props) {
     } else {
       await saveToEntries(props.id, inputEl.current.value, id, author);
       await saveToUserEntries(author.email, id, props.id)
-
-      await calculateNextUser(author, props.id);
-      // await sendEmailToNextUser(author, props.id);
-      await pushToStory(props.id, id, author, nextUserEmail); 
+      await pushToStory(props.id, id, author); 
     
 
     setTimeout(() => {window.location.reload(false);}, 1000);
