@@ -37,7 +37,7 @@ function AddEntry(props) {
           
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++){
-            if (allEmails[i] === currentInTurn){
+            if (allEmails[i] == author.email){
               if (i + 1 >= allEmails.length){
                 nextInTurn = allEmails[0]
               } else {
