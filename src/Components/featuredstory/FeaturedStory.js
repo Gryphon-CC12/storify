@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "./StoryList.styles.scss";
+import "./FeaturedStory.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function StoryList() {
+function FeaturedStory() {
   const [stories, setStories] = useState([]);
   const classes = useStyles();
   const [genre, setGenre] = useState("All");
@@ -44,9 +44,9 @@ function StoryList() {
     retrieveAllStories(genre);
   }, [genre]);
 
-  useEffect(() => {
-    retrieveAllStoriesByLikes(like);
-  }, [like]);
+  // useEffect(() => {
+  //   retrieveAllStoriesByLikes(like);
+  // }, [like]);
 
   const selectGenre = (event) => {
     setGenre(event.target.value);
@@ -60,7 +60,8 @@ function StoryList() {
     if (genre === "All" || genre === undefined) {
       const data = await db
         .collection("StoryDatabase")
-        .orderBy("dateCreated")
+        // .orderBy("dateCreated")
+        .where("featuredStory", "==", true)
         .get();
       setStories([]);
       setStories((stories) =>
@@ -78,35 +79,38 @@ function StoryList() {
     }
   };
 
-  const retrieveAllStoriesByLikes = async (genre) => {
-    if (genre === "By Newest" || genre === undefined) {
-      const data = await db
-        .collection("StoryDatabase")
-        .orderBy("dateCreated")
-        .get();
-      setStories([]);
-      setStories((stories) =>
-        stories.concat(data.docs.map((doc) => doc.data()))
-      );
-    } else {
-      const data = await db
-        .collection("StoryDatabase")
-        .orderBy("likes", "desc")
-        .get();
-      setStories([]);
-      setStories((stories) =>
-        stories.concat(data.docs.map((doc) => doc.data()))
-      );
-    }
-  };
+  // const retrieveAllStoriesByLikes = async (genre) => {
+  //   if (genre === "By Newest" || genre === undefined) {
+  //     const data = await db
+  //       .collection("StoryDatabase")
+  //       .orderBy("dateCreated")
+  //       .get();
+  //     setStories([]);
+  //     setStories((stories) =>
+  //       stories.concat(data.docs.map((doc) => doc.data()))
+  //     );
+  //   } else {
+  //     const data = await db
+  //       .collection("StoryDatabase")
+  //       .orderBy("likes", "desc")
+  //       .get();
+  //     setStories([]);
+  //     setStories((stories) =>
+  //       stories.concat(data.docs.map((doc) => doc.data()))
+  //     );
+  //   }
+  // };
 
   return (
     <div className="display-story">
       <CssBaseline />
 
       <Container maxWidth="lg" className={classes.root}>
+        <br />
+        <h3 style={{ color: "grey" }}> Featured Story </h3>
+        <br />
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          {/* <Grid item xs={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id="select-genre">Story Genres</InputLabel>
               <Select
@@ -145,7 +149,7 @@ function StoryList() {
                 <MenuItem value={"Most Liked"}>By Likes</MenuItem>
               </Select>
             </FormControl>
-          </Grid>
+          </Grid> */}
 
           {stories.map((story) => {
             return (
@@ -160,4 +164,4 @@ function StoryList() {
   );
 }
 
-export default StoryList;
+export default FeaturedStory;
