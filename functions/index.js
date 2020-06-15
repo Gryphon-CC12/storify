@@ -5,7 +5,7 @@ const emailjs = require('emailjs-com')
 // const firestore = require("../functions/firebaseConfig").firestore;
 // import { v4 as uuidv4 } from "uuid";
 
-// const uuidv4 = require("uuid/v4")
+const uuidv4 = require("uuid/v4")
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -14,7 +14,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = firebase.firestore();
-
 
 exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
     console.log('This will be run every 1 minutes! with Google function');
@@ -33,7 +32,35 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
       let currentEndingTime = 0;
       let currentDate = Math.round(new Date().getTime()/1000);
       let nextUserName = "";
-      
+
+      if (currentInTurn == "storify.io@gmail.com") {
+        let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
+        console.log("last entry", last_entry_id)
+        const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
+        console.log("last entry id", last_entry_data)
+        let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
+        let last_entry_text = last_entry_text_list[last_entry_text_list.length - 1] + ".";
+        console.log("last entry text", last_entry_text)
+        let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
+        fetch("http://ec2-52-68-242-203.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
+        .then(response => {
+          //console.log("RESPONSE FROM AI RESPONSE (This is the Body { result:..}", response)
+          return response.json()
+        })
+          .then(async output=>{
+            let entry_id = uuidv4()
+            console.log("RESPONSE FROM AI OUTPUT.RESULT", output.result);
+            console.log("story_id",story_id)
+            console.log("entry_id",entry_id)
+            console.log("robot",robot_data.docs[0].data())
+            console.log("robot.email",robot_data.docs[0].data().email)
+            await saveToEntries(story_id, output.result, entry_id, robot_data.docs[0].data());
+            await saveToUserEntries(robot_data.docs[0].data().email, entry_id, story_id)
+            await pushToStory(story_id, entry_id, robot_data.docs[0].data()); 
+          //document.getElementById("generatedText").innerHTML = output.result;
+        })
+      }
+
       switch (currentTimeLimit) {
         case "5 minutes":
           currentEndingTime = currentLastModified + 300;
@@ -85,12 +112,84 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
       // Notify email
       //await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
       // Update Story Last Modified  
-
-    }
-          
+    }  
       })
     })
   });
+
+  function saveToEntries(storyId, event, entry_id, user) {
+    db.collection("Entries").add({
+        id: entry_id,
+        story: storyId,
+        text: event,
+        date: new Date(),
+        likes: 0,
+        author: user.displayName,
+        email: user.email,
+        userId: user.id
+    })
+    .then(function () {
+        console.log("Document successfully written!");
+    })
+    .catch(function (error) {
+        console.error("Error writing document: ", error);
+    });
+}
+
+async function saveToUserEntries(userEmail, entryId, storyId) {
+  db.collection('users').where('email', '==', userEmail)
+      .get()
+      .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              db.collection("users").doc(doc.id).update({ "linkToEntries": firebase.firestore.FieldValue.arrayUnion({entryId: entryId, storyId: storyId})});
+          });
+      }
+  )
+}
+
+async function pushToStory(story_id, entry_id, author) {
+  db.collection('StoryDatabase').where("id", "==", story_id)
+  .get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
+      await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
+      await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
+       
+      let currentEnries = await doc.data().entries.length;
+      let maxEnries = await doc.data().maxEntries;
+      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
+      
+      let currentInTurn = await doc.data().inTurn; 
+      let allEmails = await doc.data().emails;
+      console.log('allEmails', allEmails);
+      
+      let nextInTurn = ""
+      for (let i = 0; i < allEmails.length; i++){
+        if (allEmails[i] === currentInTurn){
+          if (i + 1 >= allEmails.length){
+            nextInTurn = allEmails[0]
+          } else {
+            nextInTurn = allEmails[i + 1]
+          }
+        }
+      }
+      console.log('nextInTurn after adding entry', nextInTurn);
+      
+      await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
+})
+})
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
