@@ -42,25 +42,29 @@ function CreateStory(props) {
     if (imageAsUrl === "") {
       imageAsUrl = "https://bit.ly/2MEQ1yJ";
     }
-    db.collection("StoryDatabase")
+
+    if (useRobot.current.checked){
+      db.collection("StoryDatabase")
       .add({
         id: storyId,
         dateCreated: new Date(),
         lastModified: new Date(),
-        inTurn: user.email,
+        inTurn: "storify.io@gmail.com",
         title: title,
         likes: 0,
         author: user.displayName,
         authorUserId: user.id,
-        emails: [],
+        emails: [user.email, "storify.io@gmail.com"],
         isPrompt: true,
+        featuredStory: false,
         maxEntries: maxEntries.current.value,
-        maxUsers: maxCollaborators.current.value,
+        maxUsers: Number(maxCollaborators.current.value) + 1,
         entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
+        isCompleted: Number(maxEntries.current.value) - 1 == 0
       })
       .then(function () {
         console.log("Document successfully written!");
@@ -68,6 +72,36 @@ function CreateStory(props) {
       .catch(function (error) {
         console.error("Error writing document: ", error);
       });
+    } else {
+      db.collection("StoryDatabase")
+      .add({
+        id: storyId,
+        dateCreated: new Date(),
+        lastModified: new Date(),
+        inTurn: "",
+        title: title,
+        likes: 0,
+        author: user.displayName,
+        authorUserId: user.id,
+        emails: [user.email],
+        isPrompt: true,
+        featuredStory: false,
+        maxEntries: maxEntries.current.value,
+        maxUsers: maxCollaborators.current.value,
+        entries: [promptId],
+        useRobotAsPlayer: useRobot.current.checked,
+        imageUrl: imageAsUrl,
+        genre: storyGenre.current.value,
+        timeLimit: deadline.current.value,
+        isCompleted: Number(maxEntries.current.value) - 1 == 0
+      })
+      .then(function () {
+        console.log("Document successfully written!");
+      })
+      .catch(function (error) {
+        console.error("Error writing document: ", error);
+      });
+    }
   }
 
   ////For IMAGE UPLOAD TO GOOGLE BUCKET///
@@ -127,6 +161,7 @@ function CreateStory(props) {
         "Entries should be greater than or equal to number of collaborators"
       );
     } else {
+      //Verify if AI robot will participate
       saveToEntries(storyId, inputEl.current.value, promptId, user);
       saveToUserStories(user.email, storyId)
       saveToStories(
@@ -197,7 +232,7 @@ function CreateStory(props) {
             </div>
             <div>
               <label className="form-check-label" htmlFor="defaultCheck1">
-                Max number of Collaborators?
+                Max number of Human Collaborators?
               </label>
               <input
                 className="form-control"
@@ -244,7 +279,6 @@ function CreateStory(props) {
                 <option>Other</option>
               </select>
             </div>
-
             <button
               id="entry-input"
               onClick={onButtonClick}
