@@ -142,11 +142,13 @@ function DisplayStory(props) {
 
     const currentInTurn = await doc.data().inTurn;
 
+    const currentUsersNum =  await doc.data().emails.length;
+    const currentEntriesNum = await doc.data().entries.length;
+    const currentUsersList = await doc.data().emails;
+    let turnNumber = currentEntriesNum % currentUsersNum;
+
     if (currentInTurn == "") {
-      const currentUsersNum =  await doc.data().emails.length;
-      const currentEntriesNum = await doc.data().entries.length;
-      const currentUsersList = await doc.data().emails;
-      let turnNumber = currentEntriesNum % currentUsersNum;
+
       console.log('currentUsersList', currentUsersList);
       console.log('turnNumber', turnNumber);
       console.log('current logged in user', email);
