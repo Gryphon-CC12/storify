@@ -6,11 +6,15 @@ import theme from "../../theme";
 
 import Navbar from "../navbar/Navbar.js";
 import ProfilePage from "../profilepage/ProfilePage";
-import StoryList from "../../Components/storylist/StoryList";
-import About from "../../Components/about/About";
-import DisplayStory from "../../Components/displaystory/DisplayStory";
-import CreateStory from "../../Components/createstory/CreateStory";
+// import StoryList from "../../Components/storylist/StoryList";
+// import About from "../../Components/about/About";
+// import DisplayStory from "../../Components/displaystory/DisplayStory";
+// import CreateStory from "../../Components/createstory/CreateStory";
 import FeaturedStory from "../../Components/featuredstory/FeaturedStory";
+import StoryList from "../storylist/StoryList";
+import About from "../about/About";
+import DisplayStory from "../displaystory/DisplayStory";
+import CreateStory from "../createstory/CreateStory";
 import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
@@ -21,35 +25,24 @@ function Application() {
   const user = useContext(UserContext);
 
   return user ? (
-    // <Router history={history} key={uuidv4()}>
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Navbar />
       <Switch>
-        <Route exact path="/profile" component={ProfilePage} />
         <Route exact path="/" component={StoryList} />
+        <Route exact path="/profile" component={ProfilePage} />
         <Route exact path="/about" component={About} />
-        <Route
-          exact
-          name="displaystory"
-          path="/displaystory/:id"
-          component={DisplayStory}
-        />
+        <Route exact path="/displaystory/:id" component={DisplayStory} />
         <Route exact path="/createstory" component={CreateStory} />
         <Route exact path="/featuredstory" component={FeaturedStory} />
       </Switch>
-      {/* <PageFooter /> */}
     </ThemeProvider>
   ) : (
-    // </Router>
-    // <Router>
     <Switch>
       <Route exact path="/signup" component={SignUp} />
       <Route path="/" component={SignIn} />
       <Route path="/passwordreset" component={PasswordReset} />
     </Switch>
   );
-
-  // </Router>
 }
 export default Application;
