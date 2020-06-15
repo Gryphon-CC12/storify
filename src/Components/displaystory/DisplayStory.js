@@ -39,7 +39,7 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id)
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id)
-  }, [user.email, props.match.params.id])
+  }, [user.email, props.match.params.id])  
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -139,51 +139,17 @@ function DisplayStory(props) {
    db.collection('StoryDatabase').where('id', '==', storyId).get()
    .then(function(querySnapshot) {
     querySnapshot.forEach(async function(doc) {
-
-      /////////////// for calculating from db
-      const currentUsersNum =  await doc.data().emails.length;
-      const currentEntriesNum = await doc.data().entries.length;
-      const currentTotalSkipped = await doc.data().totalSkipped;
-      const currentUsersList = await doc.data().emails;
+      
       let currentInTurn = await doc.data().inTurn;
       
-      let turnNumber = (currentEntriesNum + currentTotalSkipped) % currentUsersNum;
-
-      // console.log('currentInTurn != currentUsersList[turnNumber]', currentInTurn != currentUsersList[turnNumber]);
-       
-      
-      for (let user in currentUsersList) {
-
-        if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-          if (currentUsersList[user] == email) {
-            setIsUserInTurn(true);
-          } else {
-            setIsUserInTurn(false);
-          }
-          setUserInTurn(currentUsersList[user])
-          const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
-          // await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": currentUsersList[user]});
-          setUserInTurnName(userData.docs[0].data().displayName);    
+      if (currentInTurn == email) {  
+          setIsUserInTurn(true);
+        } else {
+          setIsUserInTurn(false);
         }
-      }
-      
-      
-      
-      
-      
-      /////////// for reading turn from db
-      // let currentInTurn = await doc.data().inTurn;
-      
-      // if (currentInTurn == email) {  
-      //     setIsUserInTurn(true);
-      //   } else {
-      //     setIsUserInTurn(false);
-      //   }
-      // setUserInTurn(currentInTurn)
-      // const userData = await db.collection('users').where('email', '==', currentInTurn).get();
-      // setUserInTurnName(userData.docs[0].data().displayName); 
-    
-    
+      setUserInTurn(currentInTurn)
+      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
+      setUserInTurnName(userData.docs[0].data().displayName);     
     })
   })
   }

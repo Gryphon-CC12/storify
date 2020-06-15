@@ -35,29 +35,20 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
 
       if (currentInTurn == "storify.io@gmail.com") {
         let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
-        console.log("last entry", last_entry_id)
         const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
-        console.log("last entry id", last_entry_data)
         let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
-        let last_entry_text = last_entry_text_list[last_entry_text_list.length - 1] + ".";
-        console.log("last entry text", last_entry_text)
+        let last_entry_clean =  last_entry_text_list.map(sent => sent.trim());
+        let last_entry_text = last_entry_text_list.slice(Math.max(0, last_entry_text_list.length-3)).join(". ");
         let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
-        fetch("http://ec2-52-68-242-203.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
+        fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
         .then(response => {
-          //console.log("RESPONSE FROM AI RESPONSE (This is the Body { result:..}", response)
           return response.json()
         })
           .then(async output=>{
             let entry_id = uuidv4()
-            console.log("RESPONSE FROM AI OUTPUT.RESULT", output.result);
-            console.log("story_id",story_id)
-            console.log("entry_id",entry_id)
-            console.log("robot",robot_data.docs[0].data())
-            console.log("robot.email",robot_data.docs[0].data().email)
             await saveToEntries(story_id, output.result, entry_id, robot_data.docs[0].data());
             await saveToUserEntries(robot_data.docs[0].data().email, entry_id, story_id)
-            await pushToStory(story_id, entry_id, robot_data.docs[0].data()); 
-          //document.getElementById("generatedText").innerHTML = output.result;
+            await pushToStory(story_id, entry_id, robot_data.docs[0].data(), currentTimeLimit); 
         })
       }
 
@@ -84,11 +75,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
           currentEndingTime = currentLastModified + 86400;
           break;   
       }          
-      
-      // db.collection("StoryDatabase").doc(doc.id).update({ "useRobotAsPlayer": true });
-      // console.log("currentDate", currentDate)
-      // console.log("currentEndingTime", currentEndingTime);
-      // console.log('currentDate >= currentEndingTime', currentDate >= currentEndingTime);
+
     if (currentDate >= currentEndingTime) {  //If we're past the deadline
       // Modifty the collaborator in turn and notify him/her/
       console.log("AllEmails array", allEmails)
@@ -105,18 +92,20 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
         console.log('nextInTurn', nextInTurn);
         await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
         await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": new Date() });
-        await db.collection("StoryDatabase").doc(doc.id).update({ "totalSkipped": firebase.firestore.FieldValue.increment(1) });
         const userData = await db.collection('users').where('email', '==', nextInTurn).get();
         console.log("next displayName",userData.docs[0].data().displayName)
         nextUserName = userData.docs[0].data().displayName;
 
       // Notify email
-      //await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // if (nextInTurn != "storify.io@gmail.com") {
+      //   await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // }
       // Update Story Last Modified  
     }  
       })
     })
   });
+
 
   function saveToEntries(storyId, event, entry_id, user) {
     db.collection("Entries").add({
@@ -148,7 +137,7 @@ async function saveToUserEntries(userEmail, entryId, storyId) {
   )
 }
 
-async function pushToStory(story_id, entry_id, author) {
+async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
   db.collection('StoryDatabase').where("id", "==", story_id)
   .get()
   .then(function(querySnapshot) {
@@ -177,45 +166,40 @@ async function pushToStory(story_id, entry_id, author) {
       console.log('nextInTurn after adding entry', nextInTurn);
       
       await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
+      const userData = await db.collection('users').where('email', '==', nextInTurn).get();
+      nextUserName = userData.docs[0].data().displayName;
+      // if (nextInTurn != "storify.io@gmail.com") {
+      //   await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // }
+
 })
 })
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  // async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
-  //   //   //////  SEND EMAIL  ////
-  //   let template_params = {
-  //     "email": author,
-  //     "reply_to": "storify.io@gmail.com",
-  //     "from_name": "Storify Team",
-  //     "to_name": nextUserName,
-  //     "time_limit": currentTimeLimit,
-  //     "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
-  //   }
+  async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
+    //   //////  SEND EMAIL  ////
+    let template_params = {
+      "email": author,
+      "reply_to": "storify.io@gmail.com",
+      "from_name": "Storify Team",
+      "to_name": nextUserName,
+      "time_limit": currentTimeLimit,
+      "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
+    }
       
-  //   let service_id = "storify_io_gmail_com";
-  //   let template_id = "storifytest";
-  //   let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
+    let service_id = "storify_io_gmail_com";
+    let template_id = "storifytest";
+    let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
-  //   await emailjs.send(service_id, template_id, template_params, user_id)
-  //     .then(function(response) {
-  //         console.log('SUCCESS!', response.status, response.text);
-  //     }, function(error) {
-  //         console.log('FAILED...', error);
-  //     });
-  // }
+    await emailjs.send(service_id, template_id, template_params, user_id)
+      .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+          console.log('FAILED...', error);
+      });
+  }
+
 /*
   5 min = 300
   15 min = 900
