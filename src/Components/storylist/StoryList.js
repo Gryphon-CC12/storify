@@ -60,7 +60,7 @@ function StoryList() {
     if (genre === "All" || genre === undefined) {
       const data = await db
         .collection("StoryDatabase")
-        .orderBy("dateCreated")
+        .orderBy("dateCreated", "desc")
         .get();
       setStories([]);
       setStories((stories) =>
@@ -82,7 +82,7 @@ function StoryList() {
     if (genre === "By Newest" || genre === undefined) {
       const data = await db
         .collection("StoryDatabase")
-        .orderBy("dateCreated")
+        .orderBy("dateCreated", "desc")
         .get();
       setStories([]);
       setStories((stories) =>
