@@ -26,7 +26,6 @@ function AddEntry(props) {
 
           await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
           await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
-          // await db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
           
           let currentEnries = await doc.data().entries.length;
           let maxEnries = await doc.data().maxEntries;
