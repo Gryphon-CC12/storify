@@ -105,6 +105,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
         console.log('nextInTurn', nextInTurn);
         await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
         await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": new Date() });
+        await db.collection("StoryDatabase").doc(doc.id).update({ "totalSkipped": firebase.firestore.FieldValue.increment(1) });
         const userData = await db.collection('users').where('email', '==', nextInTurn).get();
         console.log("next displayName",userData.docs[0].data().displayName)
         nextUserName = userData.docs[0].data().displayName;

@@ -140,68 +140,49 @@ function DisplayStory(props) {
    .then(function(querySnapshot) {
     querySnapshot.forEach(async function(doc) {
 
-    const currentInTurn = await doc.data().inTurn;
+      /////////////// for calculating from db
+      const currentUsersNum =  await doc.data().emails.length;
+      const currentEntriesNum = await doc.data().entries.length;
+      const currentTotalSkipped = await doc.data().totalSkipped;
+      const currentUsersList = await doc.data().emails;
+      let currentInTurn = await doc.data().inTurn;
+      
+      let turnNumber = (currentEntriesNum + currentTotalSkipped) % currentUsersNum;
 
-    const currentUsersNum =  await doc.data().emails.length;
-    const currentEntriesNum = await doc.data().entries.length;
-    const currentUsersList = await doc.data().emails;
-    let turnNumber = currentEntriesNum % currentUsersNum;
+      // console.log('currentInTurn != currentUsersList[turnNumber]', currentInTurn != currentUsersList[turnNumber]);
+       
+      
+      for (let user in currentUsersList) {
 
-    if (currentInTurn == "") {
-
-      console.log('currentUsersList', currentUsersList);
-      console.log('turnNumber', turnNumber);
-      console.log('current logged in user', email);
-  
-      if (currentUsersNum >= 2) {
-
-        for (let user in currentUsersList) {
-          
-          // eslint-disable-next-line eqeqeq
-          if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-              if (currentUsersList[user] == email) {
-                setIsUserInTurn(true);
-              } else {
-                setIsUserInTurn(false);
-              }
-              setUserInTurn(currentUsersList[user])
-              const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
-              await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": currentUsersList[user]});
-              setUserInTurnName(userData.docs[0].data().displayName);    
+        if (turnNumber == user) {  //Using '==' because comparing a string with a number 
+          if (currentUsersList[user] == email) {
+            setIsUserInTurn(true);
+          } else {
+            setIsUserInTurn(false);
           }
-        }
-      } else {
-        for (let user in currentUsersList) {
-          console.log('currentUsersList', currentUsersList);
-          console.log('turnNumber', turnNumber);
-          console.log('current logged in user', email);
-          
-          // eslint-disable-next-line eqeqeq
-          if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-              if (currentUsersList[user] == email) {
-                setIsUserInTurn(true);
-              } else {
-                setIsUserInTurn(false);
-              }
-              setUserInTurn(currentUsersList[user])
-              const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
-              setUserInTurnName(userData.docs[0].data().displayName);    
-          }
+          setUserInTurn(currentUsersList[user])
+          const userData = await db.collection('users').where('email', '==', currentUsersList[user]).get();
+          // await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": currentUsersList[user]});
+          setUserInTurnName(userData.docs[0].data().displayName);    
         }
       }
       
-
-
-    } else {
-      if (currentInTurn == email) {
-        setIsUserInTurn(true);
-      } else {
-        setIsUserInTurn(false);
-      }
-      setUserInTurn(currentInTurn);
-      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
-      setUserInTurnName(userData.docs[0].data().displayName);  
-    }
+      
+      
+      
+      
+      /////////// for reading turn from db
+      // let currentInTurn = await doc.data().inTurn;
+      
+      // if (currentInTurn == email) {  
+      //     setIsUserInTurn(true);
+      //   } else {
+      //     setIsUserInTurn(false);
+      //   }
+      // setUserInTurn(currentInTurn)
+      // const userData = await db.collection('users').where('email', '==', currentInTurn).get();
+      // setUserInTurnName(userData.docs[0].data().displayName); 
+    
     
     })
   })
@@ -238,19 +219,22 @@ function DisplayStory(props) {
 
 //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
   async function addToContributors(email, storyId){
-      const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-      let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
-      let currentUsers = data.docs[0].data().emails.length; 
-      if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
-        db.collection('StoryDatabase').where("id", "==", storyId)  
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
-            db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
-          });
-        })
-      }
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+    let currentUsers = data.docs[0].data().emails.length; 
+    if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
+      db.collection('StoryDatabase').where("id", "==", storyId)  
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+          db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
+        });
+      })
+    }
+  
+    checkTurns(email, storyId);
+
     setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
