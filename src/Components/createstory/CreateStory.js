@@ -64,8 +64,7 @@ function CreateStory(props) {
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
-        totalSkipped: 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0
       })
       .then(function () {
         console.log("Document successfully written!");
@@ -94,8 +93,7 @@ function CreateStory(props) {
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
-        totalSkipped: 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0
       })
       .then(function () {
         console.log("Document successfully written!");
