@@ -13,6 +13,21 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+} from "react-share";
+
+import { FacebookShareCount, RedditShareCount } from "react-share";
+
+import { EmailIcon, FacebookIcon, RedditIcon, TwitterIcon } from "react-share";
+
+// const {
+//   FacebookShareButton,
+//   TwitterShareButton
+// } = ShareButtons;
+
 const db = firebase.firestore();
 
 function DisplayStory(props) {
@@ -38,13 +53,12 @@ function DisplayStory(props) {
     checkMaxEntries(user.email, props.match.params.id);
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
-<<<<<<< HEAD
     getCurrentNumberOfParticipants(props.match.params.id);
   }, [user.email, props.match.params.id]);
-=======
-    getCurrentNumberOfParticipants(props.match.params.id)
-  }, [user.email, props.match.params.id])  
->>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
+
+  useEffect(() => {
+    console.log(storyArr);
+  }, [storyArr]);
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -153,7 +167,6 @@ function DisplayStory(props) {
             .doc(doc.id)
             .update({ likes: firebase.firestore.FieldValue.increment(1) });
         });
-<<<<<<< HEAD
       });
   };
 
@@ -163,101 +176,21 @@ function DisplayStory(props) {
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(async function (doc) {
-          const currentInTurn = await doc.data().inTurn;
+          let currentInTurn = await doc.data().inTurn;
 
-          const currentUsersNum = await doc.data().emails.length;
-          const currentEntriesNum = await doc.data().entries.length;
-          const currentUsersList = await doc.data().emails;
-          let turnNumber = currentEntriesNum % currentUsersNum;
-
-          if (currentInTurn == "") {
-            console.log("currentUsersList", currentUsersList);
-            console.log("turnNumber", turnNumber);
-            console.log("current logged in user", email);
-
-            if (currentUsersNum >= 2) {
-              for (let user in currentUsersList) {
-                // eslint-disable-next-line eqeqeq
-                if (turnNumber == user) {
-                  //Using '==' because comparing a string with a number
-                  if (currentUsersList[user] == email) {
-                    setIsUserInTurn(true);
-                  } else {
-                    setIsUserInTurn(false);
-                  }
-                  setUserInTurn(currentUsersList[user]);
-                  const userData = await db
-                    .collection("users")
-                    .where("email", "==", currentUsersList[user])
-                    .get();
-                  await db
-                    .collection("StoryDatabase")
-                    .doc(doc.id)
-                    .update({ inTurn: currentUsersList[user] });
-                  setUserInTurnName(userData.docs[0].data().displayName);
-                }
-              }
-            } else {
-              for (let user in currentUsersList) {
-                console.log("currentUsersList", currentUsersList);
-                console.log("turnNumber", turnNumber);
-                console.log("current logged in user", email);
-
-                // eslint-disable-next-line eqeqeq
-                if (turnNumber == user) {
-                  //Using '==' because comparing a string with a number
-                  if (currentUsersList[user] == email) {
-                    setIsUserInTurn(true);
-                  } else {
-                    setIsUserInTurn(false);
-                  }
-                  setUserInTurn(currentUsersList[user]);
-                  const userData = await db
-                    .collection("users")
-                    .where("email", "==", currentUsersList[user])
-                    .get();
-                  setUserInTurnName(userData.docs[0].data().displayName);
-                }
-              }
-            }
+          if (currentInTurn == email) {
+            setIsUserInTurn(true);
           } else {
-            if (currentInTurn == email) {
-              setIsUserInTurn(true);
-            } else {
-              setIsUserInTurn(false);
-            }
-            setUserInTurn(currentInTurn);
-            const userData = await db
-              .collection("users")
-              .where("email", "==", currentInTurn)
-              .get();
-            setUserInTurnName(userData.docs[0].data().displayName);
+            setIsUserInTurn(false);
           }
+          setUserInTurn(currentInTurn);
+          const userData = await db
+            .collection("users")
+            .where("email", "==", currentInTurn)
+            .get();
+          setUserInTurnName(userData.docs[0].data().displayName);
         });
       });
-=======
-      })
-  }
-
-  async function checkTurns(email, storyId) { 
-    
-   db.collection('StoryDatabase').where('id', '==', storyId).get()
-   .then(function(querySnapshot) {
-    querySnapshot.forEach(async function(doc) {
-      
-      let currentInTurn = await doc.data().inTurn;
-      
-      if (currentInTurn == email) {  
-          setIsUserInTurn(true);
-        } else {
-          setIsUserInTurn(false);
-        }
-      setUserInTurn(currentInTurn)
-      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
-      setUserInTurnName(userData.docs[0].data().displayName);     
-    })
-  })
->>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
   }
 
   async function checkMaxContributors(email, story_id) {
@@ -294,7 +227,6 @@ function DisplayStory(props) {
     }
   }
 
-<<<<<<< HEAD
   //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
   async function addToContributors(email, storyId) {
     const data = await db
@@ -319,30 +251,12 @@ function DisplayStory(props) {
           });
         });
     }
+
+    checkTurns(email, storyId);
+
     setTimeout(() => {
       window.location.reload(false);
     }, 1000);
-=======
-//// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
-  async function addToContributors(email, storyId){
-    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
-    let currentUsers = data.docs[0].data().emails.length; 
-    if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
-      db.collection('StoryDatabase').where("id", "==", storyId)  
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
-          db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
-        });
-      })
-    }
-  
-    checkTurns(email, storyId);
-
-    setTimeout(() => {window.location.reload(false);}, 1000);
->>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
   }
 
   async function handleDeleteStory(e) {
@@ -411,6 +325,14 @@ function DisplayStory(props) {
             height="400"
           />
         </Grid>
+
+        <TwitterShareButton
+          url={"shareUrl"}
+          title={"title"}
+          className="Demo__some-network__share-button"
+        >
+          <TwitterIcon size={32} round />
+        </TwitterShareButton>
 
         <Grid id="story-title" item xs={12} lg={9}>
           <h1 className="story-title">{title}</h1>

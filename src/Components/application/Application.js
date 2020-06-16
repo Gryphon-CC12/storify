@@ -24,8 +24,10 @@ import { UserContext } from "../../providers/UserProvider";
 const userLocal = JSON.parse(localStorage.getItem('userToken'));
 
 function Application() {
-  // const user = useContext(UserContext);
-  return userLocal ? (
+  const user = useContext(UserContext);
+  console.log('user in Application', user);
+  
+  return user ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Navbar />
@@ -41,7 +43,7 @@ function Application() {
   ) : (
     <Switch>
       <Route exact path="/signup" component={SignUp} />
-      <Route path="/" component={SignIn} />
+      <Route exact path="/signin" component={SignIn} />
       <Route path="/passwordreset" component={PasswordReset} />
     </Switch>
   );

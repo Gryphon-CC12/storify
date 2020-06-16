@@ -12,6 +12,17 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+} from "react-share";
+
+// const {
+//   FacebookShareButton,
+//   TwitterShareButton
+// } = ShareButtons;
+
 const db = firebase.firestore();
 
 const useStyles = makeStyles((theme) => ({
@@ -136,10 +147,20 @@ function StoryList() {
 
   return (
     <div className="display-story">
+      <TwitterShareButton
+        url={"shareUrl"}
+        title={"title"}
+        className="shareBtn col-md-1 col-sm-1 col-xs-1"
+      >
+        <a className="twitter">
+          <i className="fa fa-twitter" aria-hidden="true"></i>
+        </a>
+      </TwitterShareButton>
+
       <CssBaseline />
       <Container maxWidth="lg" className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <FormControl className={classes.formControl}>
               <InputLabel id="select-genre">Story Genres</InputLabel>
               <Select
@@ -164,11 +185,9 @@ function StoryList() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid item xs={4}>
             <FormControl className={classes.formControl}>
-              <InputLabel id="select-completion">
-                Filter Stories By Completion Status
-              </InputLabel>
+              <InputLabel id="select-completion">Story Completion</InputLabel>
               <Select
                 labelId="select-completion"
                 id="select-dropdown"
@@ -185,7 +204,7 @@ function StoryList() {
           </Grid>
 
           {/* {stories.map((story) => {          */}
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <FormControl className={classes.formControl}>
               <InputLabel id="select-genre">Filter Stories</InputLabel>
               <Select
