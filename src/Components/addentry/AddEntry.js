@@ -35,6 +35,8 @@ function AddEntry(props) {
           
           let currentEnries = await doc.data().entries.length;
           let maxEnries = await doc.data().maxEntries;
+          let storyTimeLimit = await doc.data().timeLimit;
+          let storyTitle = await doc.data().title;
           await db.collection("StoryDatabase").doc(doc.id).update({ "isCompleted": maxEnries - currentEnries == 0 });
           
           let currentInTurn = await doc.data().inTurn;
@@ -53,13 +55,16 @@ function AddEntry(props) {
             }
           }
           console.log('nextInTurn after adding entry', nextInTurn);
-          
           await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
+          const userData = await db.collection('users').where('email', '==', nextInTurn).get();
+          let nextUserName = userData.docs[0].data().displayName;
+          sendEmailToNextUser(storyTitle, story_id, nextInTurn, nextUserName, storyTimeLimit);
         });
       })
   }
 
-  async function sendEmailToNextUser(author, story_id) {
+  async function sendEmailToNextUser(title, story_id, nextUserEmail, nextUserName, storyTimeLimit) {
+
     //////  SEND EMAIL  ////
     if (nextUserEmail != "storify.io@gmail.com") {
       let template_params = {
@@ -68,7 +73,7 @@ function AddEntry(props) {
         "from_name": "Storify Team",
         "to_name": nextUserName,
         "time_limit": storyTimeLimit,
-        "message_html": ("<h1>It's your turn to create! You have " + storyTimeLimit + " to add your entry.</h1>")
+        "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3> <br></br> <h4>Visit https://www.storifyapp.com/displaystory/" + story_id + "</h4>")
       }
       
       let service_id = "storify_io_gmail_com";
@@ -109,9 +114,11 @@ function AddEntry(props) {
     } else {
       await saveToEntries(props.id, inputEl.current.value, id, author);
       await saveToUserEntries(author.email, id, props.id)
-      await pushToStory(props.id, id, author);
+      await pushToStory(props.id, id, author);  //props.id is story.id
     //🍕
      // history.push(`/displaystory/${props.id}`);
+    //  setTimeout(function(){ sendEmailToNextUser(author, props.id) }, 3000);
+     
     };
   };
 
