@@ -78,7 +78,7 @@ function CreateStory(props) {
         id: storyId,
         dateCreated: new Date(),
         lastModified: new Date(),
-        inTurn: "",
+        inTurn: user.email,
         title: title,
         likes: 0,
         author: user.displayName,

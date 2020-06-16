@@ -38,8 +38,13 @@ function DisplayStory(props) {
     checkMaxEntries(user.email, props.match.params.id);
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
+<<<<<<< HEAD
     getCurrentNumberOfParticipants(props.match.params.id);
   }, [user.email, props.match.params.id]);
+=======
+    getCurrentNumberOfParticipants(props.match.params.id)
+  }, [user.email, props.match.params.id])  
+>>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -148,6 +153,7 @@ function DisplayStory(props) {
             .doc(doc.id)
             .update({ likes: firebase.firestore.FieldValue.increment(1) });
         });
+<<<<<<< HEAD
       });
   };
 
@@ -229,6 +235,29 @@ function DisplayStory(props) {
           }
         });
       });
+=======
+      })
+  }
+
+  async function checkTurns(email, storyId) { 
+    
+   db.collection('StoryDatabase').where('id', '==', storyId).get()
+   .then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
+      
+      let currentInTurn = await doc.data().inTurn;
+      
+      if (currentInTurn == email) {  
+          setIsUserInTurn(true);
+        } else {
+          setIsUserInTurn(false);
+        }
+      setUserInTurn(currentInTurn)
+      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
+      setUserInTurnName(userData.docs[0].data().displayName);     
+    })
+  })
+>>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
   }
 
   async function checkMaxContributors(email, story_id) {
@@ -265,6 +294,7 @@ function DisplayStory(props) {
     }
   }
 
+<<<<<<< HEAD
   //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
   async function addToContributors(email, storyId) {
     const data = await db
@@ -292,6 +322,27 @@ function DisplayStory(props) {
     setTimeout(() => {
       window.location.reload(false);
     }, 1000);
+=======
+//// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
+  async function addToContributors(email, storyId){
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+    let currentUsers = data.docs[0].data().emails.length; 
+    if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
+      db.collection('StoryDatabase').where("id", "==", storyId)  
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+          db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
+        });
+      })
+    }
+  
+    checkTurns(email, storyId);
+
+    setTimeout(() => {window.location.reload(false);}, 1000);
+>>>>>>> 6f035cf27557e07db0eb1ae666005c122d694ab5
   }
 
   async function handleDeleteStory(e) {
