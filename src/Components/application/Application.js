@@ -24,8 +24,10 @@ import { UserContext } from "../../providers/UserProvider";
 const userLocal = JSON.parse(localStorage.getItem('userToken'));
 
 function Application() {
-  // const user = useContext(UserContext);
-  return userLocal ? (
+  const user = useContext(UserContext);
+  console.log('user in Application', user);
+  
+  return user ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Navbar />
