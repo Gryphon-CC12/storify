@@ -1,6 +1,8 @@
 import firebase from "firebase"
 import "firebase/auth";
 import "firebase/firestore";
+import { v4 as uuidv4 } from "uuid";
+
 
   // Your web app’s Firebase configuration
   var firebaseConfig = {
@@ -32,7 +34,8 @@ import "firebase/firestore";
           "linkToEntries" :[], 
           "linkToStories" : [], 
           "upVotesStories" : [], 
-          "date" : new Date()
+          "date" : new Date(),
+          id:uuidv4()
         });
       } catch (error) {
         console.error("Error creating user document", error);

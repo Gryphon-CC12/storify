@@ -5,7 +5,7 @@ const emailjs = require('emailjs-com')
 // const firestore = require("../functions/firebaseConfig").firestore;
 // import { v4 as uuidv4 } from "uuid";
 
-// const uuidv4 = require("uuid/v4")
+const uuidv4 = require("uuid/v4")
 
 // The Cloud Functions for Firebase SDK to create Cloud Functions and setup triggers.
 const functions = require('firebase-functions');
@@ -14,7 +14,6 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 const db = firebase.firestore();
-
 
 exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
     console.log('This will be run every 1 minutes! with Google function');
@@ -33,7 +32,26 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
       let currentEndingTime = 0;
       let currentDate = Math.round(new Date().getTime()/1000);
       let nextUserName = "";
-      
+
+      if (currentInTurn == "storify.io@gmail.com") {
+        let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
+        const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
+        let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
+        let last_entry_clean =  last_entry_text_list.map(sent => sent.trim());
+        let last_entry_text = last_entry_text_list.slice(Math.max(0, last_entry_text_list.length-3)).join(". ");
+        let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
+        fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
+        .then(response => {
+          return response.json()
+        })
+          .then(async output=>{
+            let entry_id = uuidv4()
+            await saveToEntries(story_id, output.result, entry_id, robot_data.docs[0].data());
+            await saveToUserEntries(robot_data.docs[0].data().email, entry_id, story_id)
+            await pushToStory(story_id, entry_id, robot_data.docs[0].data(), currentTimeLimit); 
+        })
+      }
+
       switch (currentTimeLimit) {
         case "5 minutes":
           currentEndingTime = currentLastModified + 300;
@@ -57,11 +75,7 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
           currentEndingTime = currentLastModified + 86400;
           break;   
       }          
-      
-      // db.collection("StoryDatabase").doc(doc.id).update({ "useRobotAsPlayer": true });
-      // console.log("currentDate", currentDate)
-      // console.log("currentEndingTime", currentEndingTime);
-      // console.log('currentDate >= currentEndingTime', currentDate >= currentEndingTime);
+
     if (currentDate >= currentEndingTime) {  //If we're past the deadline
       // Modifty the collaborator in turn and notify him/her/
       console.log("AllEmails array", allEmails)
@@ -83,39 +97,109 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
         nextUserName = userData.docs[0].data().displayName;
 
       // Notify email
-      //await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // if (nextInTurn != "storify.io@gmail.com") {
+      //   await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // }
       // Update Story Last Modified  
-
-    }
-          
+    }  
       })
     })
   });
 
 
+  function saveToEntries(storyId, event, entry_id, user) {
+    db.collection("Entries").add({
+        id: entry_id,
+        story: storyId,
+        text: event,
+        date: new Date(),
+        likes: 0,
+        author: user.displayName,
+        email: user.email,
+        userId: user.id
+    })
+    .then(function () {
+        console.log("Document successfully written!");
+    })
+    .catch(function (error) {
+        console.error("Error writing document: ", error);
+    });
+}
 
-  // async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
-  //   //   //////  SEND EMAIL  ////
-  //   let template_params = {
-  //     "email": author,
-  //     "reply_to": "storify.io@gmail.com",
-  //     "from_name": "Storify Team",
-  //     "to_name": nextUserName,
-  //     "time_limit": currentTimeLimit,
-  //     "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
-  //   }
+async function saveToUserEntries(userEmail, entryId, storyId) {
+  db.collection('users').where('email', '==', userEmail)
+      .get()
+      .then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+              db.collection("users").doc(doc.id).update({ "linkToEntries": firebase.firestore.FieldValue.arrayUnion({entryId: entryId, storyId: storyId})});
+          });
+      }
+  )
+}
+
+async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
+  db.collection('StoryDatabase').where("id", "==", story_id)
+  .get()
+  .then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
+      await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
+      await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
+       
+      let currentEnries = await doc.data().entries.length;
+      let maxEnries = await doc.data().maxEntries;
+      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
       
-  //   let service_id = "storify_io_gmail_com";
-  //   let template_id = "storifytest";
-  //   let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
+      let currentInTurn = await doc.data().inTurn; 
+      let allEmails = await doc.data().emails;
+      console.log('allEmails', allEmails);
+      
+      let nextInTurn = ""
+      for (let i = 0; i < allEmails.length; i++){
+        if (allEmails[i] === currentInTurn){
+          if (i + 1 >= allEmails.length){
+            nextInTurn = allEmails[0]
+          } else {
+            nextInTurn = allEmails[i + 1]
+          }
+        }
+      }
+      console.log('nextInTurn after adding entry', nextInTurn);
+      
+      await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
+      const userData = await db.collection('users').where('email', '==', nextInTurn).get();
+      nextUserName = userData.docs[0].data().displayName;
+      // if (nextInTurn != "storify.io@gmail.com") {
+      //   await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
+      // }
+
+})
+})
+}
+
+
+  async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
+    //   //////  SEND EMAIL  ////
+    let template_params = {
+      "email": author,
+      "reply_to": "storify.io@gmail.com",
+      "from_name": "Storify Team",
+      "to_name": nextUserName,
+      "time_limit": currentTimeLimit,
+      "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
+    }
+      
+    let service_id = "storify_io_gmail_com";
+    let template_id = "storifytest";
+    let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
-  //   await emailjs.send(service_id, template_id, template_params, user_id)
-  //     .then(function(response) {
-  //         console.log('SUCCESS!', response.status, response.text);
-  //     }, function(error) {
-  //         console.log('FAILED...', error);
-  //     });
-  // }
+    await emailjs.send(service_id, template_id, template_params, user_id)
+      .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+          console.log('FAILED...', error);
+      });
+  }
+
 /*
   5 min = 300
   15 min = 900

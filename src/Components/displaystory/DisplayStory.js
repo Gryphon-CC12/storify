@@ -6,7 +6,6 @@ import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
-// import _ from 'lodash'
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -28,6 +27,7 @@ function DisplayStory(props) {
   const [isMaxEntries, setIsMaxEntries] = useState(true)
   const [numOfEntries, setNumOfEntries] = useState(0)
   const [userInTurn, setUserInTurn] = useState("")
+  const [userInTurnName, setUserInTurnName] = useState("");
   const [isUserInTurn, setIsUserInTurn] = useState(false)
   const [likes, setLikes] = useState([])
 
@@ -39,7 +39,7 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id)
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id)
-  }, [user.email, props.match.params.id])
+  }, [user.email, props.match.params.id])  
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -114,7 +114,6 @@ function DisplayStory(props) {
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
-
   const addLike = async (entryId, storyId) => {
     db.collection('Entries').where("id", "==", entryId)
       .get()
@@ -135,24 +134,24 @@ function DisplayStory(props) {
       })
   }
 
-  async function checkTurns(email, storyId){ 
-    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-    let currentUsersNum = data.docs[0].data().emails.length;  //fetch current user number of story from database
-    let currentEntriesNum = data.docs[0].data().entries.length;  //fetch current user number of story from database
-    let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-    let turnNumber = currentEntriesNum % currentUsersNum;
-
-      for (let user in currentUsersList) {
-        // eslint-disable-next-line eqeqeq
-        if (turnNumber == user) {  //Using '==' because comparing a string with a number 
-            if (currentUsersList[user] === email) {
-              setIsUserInTurn(true);
-            } else {
-              setIsUserInTurn(false);
-            }
-            setUserInTurn(currentUsersList[user])
+  async function checkTurns(email, storyId) { 
+    
+   db.collection('StoryDatabase').where('id', '==', storyId).get()
+   .then(function(querySnapshot) {
+    querySnapshot.forEach(async function(doc) {
+      
+      let currentInTurn = await doc.data().inTurn;
+      
+      if (currentInTurn == email) {  
+          setIsUserInTurn(true);
+        } else {
+          setIsUserInTurn(false);
         }
-      }
+      setUserInTurn(currentInTurn)
+      const userData = await db.collection('users').where('email', '==', currentInTurn).get();
+      setUserInTurnName(userData.docs[0].data().displayName);     
+    })
+  })
   }
 
   async function checkMaxContributors(email, story_id) {
@@ -186,19 +185,22 @@ function DisplayStory(props) {
 
 //// THIS FUNCTION ADDS A NEW CONTRIBUTOR TO THE STORY /////
   async function addToContributors(email, storyId){
-      const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
-      let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
-      let currentUsers = data.docs[0].data().emails.length; 
-      if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
-        db.collection('StoryDatabase').where("id", "==", storyId)  
-        .get()
-        .then(function (querySnapshot) {
-          querySnapshot.forEach(function (doc) {
-            //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
-            db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
-          });
-        })
-      }
+    const data = await db.collection('StoryDatabase').where('id', '==', storyId).get();
+    let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+    let currentUsers = data.docs[0].data().emails.length; 
+    if (currentUsers < maxUsers){    //if current users is not maxed out add a new contributor
+      db.collection('StoryDatabase').where("id", "==", storyId)  
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+          db.collection("StoryDatabase").doc(doc.id).update({ "emails": firebase.firestore.FieldValue.arrayUnion(email) });
+        });
+      })
+    }
+  
+    checkTurns(email, storyId);
+
     setTimeout(() => {window.location.reload(false);}, 1000);
   }
 
@@ -311,7 +313,7 @@ function DisplayStory(props) {
                     <p key={uuidv4()}>
                       {
                         userInTurn ?
-                          <p key={uuidv4()}>Currently {userInTurn}'s turn!</p>
+                          <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
                         :
                         "Waiting for players!"
                       }
