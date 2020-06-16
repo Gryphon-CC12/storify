@@ -4,7 +4,7 @@ import "./About.styles.scss";
 function About() {
   return (
     <div className="About">
-      <h1> About Storify </h1>
+      <h1 style={{ color: "grey" }}> About Storify </h1>
       <br />
       <p>
         Storify is a collaborative story-writing platform between human and

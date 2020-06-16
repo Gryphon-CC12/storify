@@ -145,15 +145,15 @@ export default function Navbar() {
             </Link>
 
             <Link to="/">
-              <Button classes={{ label: "navbar-link" }} >
-                HOME
-              </Button>
+              <Button classes={{ label: "navbar-link" }}>HOME</Button>
+            </Link>
+
+            <Link to="/featuredstory">
+              <Button classes={{ label: "navbar-link" }}>FEATURED STORY</Button>
             </Link>
 
             <Link to="/createstory">
-              <Button classes={{ label: "navbar-link" }} >
-                CREATE STORY
-              </Button>
+              <Button classes={{ label: "navbar-link" }}>CREATE STORY</Button>
             </Link>
 
             <Link to="/">
@@ -162,7 +162,6 @@ export default function Navbar() {
                 onClick={() => {
                   auth.signOut();
                 }}
-                
               >
                 LOG OUT
               </Button>

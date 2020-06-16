@@ -4,7 +4,7 @@ import saveToEntries from '../../utils/saveToEntries';
 import saveToUserEntries from '../../utils/saveToUserEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
-// import emailjs from 'emailjs-com';
+import emailjs from 'emailjs-com';
 
 const db = firebase.firestore();
 
@@ -22,56 +22,60 @@ function AddEntry(props) {
     db.collection('StoryDatabase').where("id", "==", story_id)
     .get()
     .then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
-          db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextUserEmail});
-          db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
-          db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
-          db.collection("StoryDatabase").doc(doc.id).update({"emails": firebase.firestore.FieldValue.arrayUnion(author.email)});
+      querySnapshot.forEach(async function(doc) {
+
+          await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
+          await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
+          
+          let currentEnries = await doc.data().entries.length;
+          let maxEnries = await doc.data().maxEntries;
+          await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
+          
+          let currentInTurn = await doc.data().inTurn; 
+          let allEmails = await doc.data().emails;
+
+          console.log('allEmails', allEmails);
+          
+          let nextInTurn = ""
+          for (let i = 0; i < allEmails.length; i++){
+            if (allEmails[i] == author.email){
+              if (i + 1 >= allEmails.length){
+                nextInTurn = allEmails[0]
+              } else {
+                nextInTurn = allEmails[i + 1]
+              }
+            }
+          }
+          console.log('nextInTurn after adding entry', nextInTurn);
+          
+          await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
       });
   })}
 
-  async function calculateNextUser(author, story_id) {
-    // const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
-    // let currentUsersList = data.docs[0].data().emails;  //fetch current user number of story from database
-    // storyTimeLimit = data.docs[0].data().timeLimit;
-    // for (let email_num in currentUsersList) {
-    //   let email_idx = Number(email_num)
-    //   if (currentUsersList[email_idx] === author.email) {
-    //     if (email_idx + 1 < currentUsersList.length) { 
-    //       nextUserEmail = currentUsersList[email_idx + 1];
-    //     } else {
-    //       nextUserEmail = currentUsersList[0];
-    //     }        
-    //   }
-    // }  
-    // const userData = await db.collection('users').where('email', '==', nextUserEmail).get();
-    // nextUserName = userData.docs[0].data().displayName;
-
-    // return nextUserEmail;
-  }
-
-  // async function sendEmailToNextUser(author, story_id) {
-    //   //////  SEND EMAIL  ////
-    // let template_params = {
-    //   "email": nextUserEmail,
-    //   "reply_to": "storify.io@gmail.com",
-    //   "from_name": "Storify Team",
-    //   "to_name": nextUserName,
-    //   "time_limit": storyTimeLimit,
-    //   "message_html": ("<h1>It's your turn to create! You have "+ storyTimeLimit + " to add your entry.</h1>")
-    // }
+  async function sendEmailToNextUser(author, story_id) {
+      //////  SEND EMAIL  ////
+  if (nextUserEmail != "storify.io@gmail.com") {    
+    let template_params = {
+      "email": nextUserEmail,
+      "reply_to": "storify.io@gmail.com",
+      "from_name": "Storify Team",
+      "to_name": nextUserName,
+      "time_limit": storyTimeLimit,
+      "message_html": ("<h1>It's your turn to create! You have "+ storyTimeLimit + " to add your entry.</h1>")
+    }
       
-    // let service_id = "storify_io_gmail_com";
-    // let template_id = "storifytest";
-    // let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
+    let service_id = "storify_io_gmail_com";
+    let template_id = "storifytest";
+    let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
-    // emailjs.send(service_id, template_id, template_params, user_id)
-    //   .then(function(response) {
-    //       console.log('SUCCESS!', response.status, response.text);
-    //   }, function(error) {
-    //       console.log('FAILED...', error);
-    //   });
-  // }
+    emailjs.send(service_id, template_id, template_params, user_id)
+      .then(function(response) {
+          console.log('SUCCESS!', response.status, response.text);
+      }, function(error) {
+          console.log('FAILED...', error);
+      });
+    }
+  }
 
   const onButtonClick = async (event) => {
     event.preventDefault()
@@ -81,13 +85,10 @@ function AddEntry(props) {
     } else {
       await saveToEntries(props.id, inputEl.current.value, id, author);
       await saveToUserEntries(author.email, id, props.id)
-
-      await calculateNextUser(author, props.id);
-      // await sendEmailToNextUser(author, props.id);
-      await pushToStory(props.id, id, author, nextUserEmail); 
+      await pushToStory(props.id, id, author); 
     
-
-    setTimeout(() => {window.location.reload(false);}, 1000);
+      // sendEmailToNextUser(author, props.id)
+    setTimeout(() => {window.location.reload(false);}, 2500);
     }
     };
 
