@@ -43,7 +43,7 @@ function Application() {
   ) : (
     <Switch>
       <Route exact path="/signup" component={SignUp} />
-      <Route path="/" component={SignIn} />
+      <Route exact path="/signin" component={SignIn} />
       <Route path="/passwordreset" component={PasswordReset} />
     </Switch>
   );

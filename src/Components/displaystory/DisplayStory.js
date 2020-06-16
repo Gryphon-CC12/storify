@@ -13,6 +13,30 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton
+} from "react-share";
+
+import {
+  FacebookShareCount,
+  RedditShareCount,
+} from "react-share";
+
+import {
+  EmailIcon,
+  FacebookIcon,
+  RedditIcon,
+  TwitterIcon
+} from "react-share";
+
+// const {
+//   FacebookShareButton,
+//   TwitterShareButton
+// } = ShareButtons;
+
+
 const db = firebase.firestore();
 
 function DisplayStory(props) {
@@ -40,6 +64,11 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id)
   }, [user.email, props.match.params.id])  
+
+
+  useEffect(()=> {
+    console.log(storyArr)
+  }, [storyArr])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -266,6 +295,16 @@ function DisplayStory(props) {
           <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
         </Grid>
 
+
+      <TwitterShareButton
+        url={"shareUrl"}
+        title={"title"}
+        className="Demo__some-network__share-button">
+        <TwitterIcon
+          size={32}
+          round />
+      </TwitterShareButton>
+
         <Grid id="story-title" item xs={12} lg={9}>
           <h1 className="story-title">{title}</h1>
         </Grid>
@@ -306,7 +345,7 @@ function DisplayStory(props) {
                 isUserInTurn ?
                   <Grid item xs={12} lg={12}>
                     <p>This story has {numOfEntries} entries left</p>
-                    <AddEntry id={props.match.params.id} />
+                    <AddEntry setStoryArr={setStoryArr} id={props.match.params.id}  />
                   </Grid>
                 :
                   <>
