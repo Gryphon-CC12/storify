@@ -114,11 +114,11 @@ function StoryList() {
       const data = await db.collection('StoryDatabase').orderBy('dateCreated', 'desc').get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-    } else if (completion == "Finished Stories") {
+    } else if (completion == "Finished") {
       const data = await db.collection('StoryDatabase').where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-  } else if (completion == "Unfinished Stories") {
+  } else if (completion == "Unfinished") {
       const data = await db.collection('StoryDatabase').where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
@@ -184,8 +184,8 @@ function StoryList() {
                ref={storyCompletion}
              >
                <MenuItem value={"All"}>All</MenuItem>
-               <MenuItem value={"Finished"}>Finished Stories</MenuItem>
-               <MenuItem value={"Unfinished"}>Unfinished Stories</MenuItem>
+               <MenuItem value={"Finished"}>Finished</MenuItem>
+               <MenuItem value={"Unfinished"}>Unfinished</MenuItem>
              </Select>
            </FormControl>
          </Grid>

@@ -1,0 +1,114 @@
+[debug] [2020-06-17T07:21:25.423Z] ----------------------------------------------------------------------
+[debug] [2020-06-17T07:21:25.425Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2020-06-17T07:21:25.425Z] CLI Version:   8.4.0
+[debug] [2020-06-17T07:21:25.425Z] Platform:      darwin
+[debug] [2020-06-17T07:21:25.425Z] Node Version:  v12.13.1
+[debug] [2020-06-17T07:21:25.426Z] Time:          Wed Jun 17 2020 16:21:25 GMT+0900 (Japan Standard Time)
+[debug] [2020-06-17T07:21:25.426Z] ----------------------------------------------------------------------
+[debug] [2020-06-17T07:21:25.426Z] 
+[debug] [2020-06-17T07:21:25.434Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-06-17T07:21:25.435Z] > authorizing via signed-in user
+[debug] [2020-06-17T07:21:25.435Z] [iam] checking project seniorgryphon-df706 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-06-17T07:21:25.437Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2020-06-17T07:21:25.438Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2020-06-17T07:21:25.585Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:25 GMT","server":"scaffolding on HTTPServer2","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:25.597Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/seniorgryphon-df706:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2020-06-17T07:21:26.232Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:26 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=565","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:26.233Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/seniorgryphon-df706/serviceAccounts/seniorgryphon-df706@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-06-17T07:21:27.104Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:27 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:27.105Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/seniorgryphon-df706  
+ 
+[debug] [2020-06-17T07:21:27.726Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:27 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions.
+Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[info] 
+[info] === Deploying to 'seniorgryphon-df706'...
+[info] 
+[info] i  deploying functions, hosting 
+[debug] [2020-06-17T07:21:29.332Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "dependencies": {
+    "emailjs-com": "^2.4.1",
+    "firebase": "^7.15.0",
+    "firebase-admin": "^8.10.0",
+    "firebase-functions": "^3.6.1"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2020-06-17T07:21:30.177Z] [functions] runtime dependency check dates: warning: 2020-05-21T00:00:00.000Z error: 2020-06-23T00:00:00.000Z
+[debug] [2020-06-17T07:21:30.177Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/seniorgryphon-df706/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-06-17T07:21:30.178Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/seniorgryphon-df706/services/runtimeconfig.googleapis.com  
+ 
+[debug] [2020-06-17T07:21:31.138Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:31.139Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2020-06-17T07:21:31.140Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/seniorgryphon-df706/adminSdkConfig  
+ 
+[debug] [2020-06-17T07:21:31.487Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:31.488Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/seniorgryphon-df706/versions  
+ {"config":{},"labels":{"deployment-tool":"cli-firebase"}}
+[debug] [2020-06-17T07:21:33.052Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:32 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: preparing functions directory for uploading... 
+[debug] [2020-06-17T07:21:33.054Z] >>> HTTP REQUEST GET https://runtimeconfig.googleapis.com/v1beta1/projects/seniorgryphon-df706/configs  
+ 
+[debug] [2020-06-17T07:21:33.444Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:33 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: packaged functions (36.23 KB) for uploading 
+[debug] [2020-06-17T07:21:33.754Z] >>> HTTP REQUEST GET https://cloudfunctions.googleapis.com/v1/projects/seniorgryphon-df706/locations/-/functions  
+ 
+[debug] [2020-06-17T07:21:34.264Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:34 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:34.266Z] >>> HTTP REQUEST POST https://cloudfunctions.googleapis.com/v1/projects/seniorgryphon-df706/locations/us-central1/functions:generateUploadUrl  
+ 
+[debug] [2020-06-17T07:21:35.110Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:35 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:35.110Z] >>> HTTP REQUEST PUT https://storage.googleapis.com/gcf-upload-us-central1-19af074b-2a6c-43db-9703-d0cc5905d45d/b612677c-b1d3-424f-b8fb-247a2b78f1f6.zip?GoogleAccessId=service-990142616456@gcf-admin-robot.iam.gserviceaccount.com&Expires=1592380294&Signature=GpFO50CTT82XXgmwxYP98STc6YKW7uzQpMKKBQdicFZ94mtZo9Rz1AwxHKoM0X1lJ8Uz0NrLEmRI%2BW8pmxd2b7LSrYsyS48Pu%2FeNmbkPBnAsyzLofk73E0caXLN2SwHbCWU4%2F5nCBIrQvTHzddLyJYtNjoXXNnZH8g44r4mdmFwmdaM4WWGMzSPmilsVaM5%2FUOsTgNic466bdYa%2BbZ2xJ6Ow2b1%2BEqAKJHfnR%2FnRvPI24GYwgZxdNzBoqmxVVRoeTPTZc%2Bf7xChfWFaQQQbxeQwYkkD10Kc0PfnF0SBZFzyN1IUuBKN%2BnRs93SQA%2FUXhCkrOTpP6eg%2BElFQR4lUxsw%3D%3D  
+ <request body omitted>
+[debug] [2020-06-17T07:21:35.426Z] <<< HTTP RESPONSE 200 {"x-guploader-uploadid":"AAANsUk2LYKF_XTUw6pdAfwmN_guiUedtgQfFgR7U6_N4mRi36Dr_t0q5wzkJN6YdcoXESOGRITpYiAUZCVpknHeU34","etag":"\"a580ce477cbfb61f614098703092c468\"","x-goog-generation":"1592378495344069","x-goog-metageneration":"1","x-goog-hash":"crc32c=KvhW9A==, md5=pYDOR3y/th9hQJhwMJLEaA==","x-goog-stored-content-length":"37101","x-goog-stored-content-encoding":"identity","vary":"Origin","content-length":"0","date":"Wed, 17 Jun 2020 07:21:35 GMT","server":"UploadServer","content-type":"text/html; charset=UTF-8","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\""}
+[info] ✔  functions: functions folder uploaded successfully 
+[info] i  hosting[seniorgryphon-df706]: beginning deploy... 
+[info] i  hosting[seniorgryphon-df706]: found 4 files in public 
+[debug] [2020-06-17T07:21:35.431Z] [hosting] hash cache [cHVibGlj] stored for 4 files
+[debug] [2020-06-17T07:21:35.432Z] [hosting][hash queue][FINAL] {"max":1,"min":1,"avg":1,"active":0,"complete":4,"success":4,"errored":0,"retried":0,"total":4,"elapsed":2}
+[debug] [2020-06-17T07:21:35.432Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/seniorgryphon-df706/versions/cfba3d381f9db429:populateFiles  
+ <request body omitted>
+[debug] [2020-06-17T07:21:36.401Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:36 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-06-17T07:21:36.401Z] [hosting][populate queue][FINAL] {"max":970,"min":970,"avg":970,"active":0,"complete":1,"success":1,"errored":0,"retried":0,"total":1,"elapsed":970}
+[debug] [2020-06-17T07:21:36.402Z] [hosting] uploads queued: 0
+[debug] [2020-06-17T07:21:36.402Z] [hosting][upload queue][FINAL] {"max":0,"min":9999999999,"avg":0,"active":0,"complete":0,"success":0,"errored":0,"retried":0,"total":0,"elapsed":1592378496402}
+[info] ✔  hosting[seniorgryphon-df706]: file upload complete 
+[debug] [2020-06-17T07:21:36.402Z] [hosting] deploy completed after 976ms
+[info] i  functions: updating Node.js 8 function scheduledFunction(us-central1)... 
+[debug] [2020-06-17T07:21:36.514Z] Trigger is:  {"eventTrigger":{"resource":"projects/seniorgryphon-df706/topics/firebase-schedule-scheduledFunction-us-central1","eventType":"google.pubsub.topic.publish","service":"pubsub.googleapis.com"}}
+[info] i  scheduler: ensuring required API cloudscheduler.googleapis.com is enabled... 
+[info] i  pubsub: ensuring required API pubsub.googleapis.com is enabled... 
+[debug] [2020-06-17T07:21:36.515Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/seniorgryphon-df706/services/cloudscheduler.googleapis.com  
+ 
+[debug] [2020-06-17T07:21:36.515Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/seniorgryphon-df706/services/pubsub.googleapis.com  
+ 
+[debug] [2020-06-17T07:21:37.355Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:37 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  scheduler: required API cloudscheduler.googleapis.com is enabled 
+[debug] [2020-06-17T07:21:37.398Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:37 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] ✔  pubsub: required API pubsub.googleapis.com is enabled 
+[debug] [2020-06-17T07:21:37.399Z] >>> HTTP REQUEST GET https://cloudscheduler.googleapis.com/v1beta1/projects/seniorgryphon-df706/locations/us-central1/jobs/firebase-schedule-scheduledFunction-us-central1  
+ 
+[debug] [2020-06-17T07:21:38.407Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 17 Jun 2020 07:21:38 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-28=\":443\"; ma=2592000,h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] i  functions: scheduler job firebase-schedule-scheduledFunction-us-central1 is up to date, no changes required 
+[debug] [2020-06-17T07:21:38.408Z] >>> HTTP REQUEST PATCH https://cloudfunctions.googleapis.com/v1/projects/seniorgryphon-df706/locations/us-central1/functions/scheduledFunction {"updateMask":"sourceUploadUrl,name,labels,runtime,environmentVariables,eventTrigger.resource,eventTrigger.eventType,eventTrigger.service"} 
+ {"sourceUploadUrl":"https://storage.googleapis.com/gcf-upload-us-central1-19af074b-2a6c-43db-9703-d0cc5905d45d/b612677c-b1d3-424f-b8fb-247a2b78f1f6.zip?GoogleAccessId=service-990142616456@gcf-admin-robot.iam.gserviceaccount.com&Expires=1592380294&Signature=GpFO50CTT82XXgmwxYP98STc6YKW7uzQpMKKBQdicFZ94mtZo9Rz1AwxHKoM0X1lJ8Uz0NrLEmRI%2BW8pmxd2b7LSrYsyS48Pu%2FeNmbkPBnAsyzLofk73E0caXLN2SwHbCWU4%2F5nCBIrQvTHzddLyJYtNjoXXNnZH8g44r4mdmFwmdaM4WWGMzSPmilsVaM5%2FUOsTgNic466bdYa%2BbZ2xJ6Ow2b1%2BEqAKJHfnR%2FnRvPI24GYwgZxdNzBoqmxVVRoeTPTZc%2Bf7xChfWFaQQQbxeQwYkkD10Kc0PfnF0SBZFzyN1IUuBKN%2BnRs93SQA%2FUXhCkrOTpP6eg%2BElFQR4lUxsw%3D%3D","name":"projects/seniorgryphon-df706/locations/us-central1/functions/scheduledFunction","labels":{"deployment-tool":"cli-firebase","deployment-scheduled":"true"},"eventTrigger":{"resource":"projects/seniorgryphon-df706/topics/firebase-schedule-scheduledFunction-us-central1","eventType":"google.pubsub.topic.publish","service":"pubsub.googleapis.com"},"runtime":"nodejs8","environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"seniorgryphon-df706\",\"databaseURL\":\"https://seniorgryphon-df706.firebaseio.com\",\"storageBucket\":\"seniorgryphon-df706.appspot.com\",\"locationId\":\"us-central\"}"}}

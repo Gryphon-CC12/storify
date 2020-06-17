@@ -74,7 +74,7 @@ function DisplayStory(props) {
 
 
   useEffect(()=> {
-    console.log(storyArr)
+    // console.log(storyArr)
   }, [storyArr])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
