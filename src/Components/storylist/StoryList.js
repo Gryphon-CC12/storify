@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 
 function StoryList() {
   const [stories, setStories] = useState([]);
+  const [storiesComp, setStoriesComp] = useState([]);
   const classes = useStyles();
   const [genre, setGenre] = useState("All");
   const storyGenre = useRef("");
@@ -109,15 +110,18 @@ function StoryList() {
   };
 
   const retrieveAllStoriesByCompletion = async (completion) => {
-
-    if (completion == "Finished Stories") {
-    const data = await db.collection('StoryDatabase').where('isCompleted', "==", true).orderBy('dateCreated', 'desc').get();
-    setStories([]);
-    setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+    if (completion === "All" || completion === undefined) {
+      const data = await db.collection('StoryDatabase').orderBy('dateCreated', 'desc').get();
+      setStoriesComp([]);
+      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
+    } else if (completion == "Finished Stories") {
+      const data = await db.collection('StoryDatabase').where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
+      setStoriesComp([]);
+      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   } else if (completion == "Unfinished Stories") {
-    const data = await db.collection('StoryDatabase').where('isCompleted', "==", false).orderBy('dateCreated', 'desc').get();
-    setStories([]);
-    setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      const data = await db.collection('StoryDatabase').where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
+      setStoriesComp([]);
+      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   }
 };
 
@@ -127,7 +131,7 @@ function StoryList() {
       <CssBaseline />      
       <Container maxWidth="lg" className={classes.root}>
         <Grid container spacing={3}>
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <FormControl className={classes.formControl}>
               <InputLabel id="select-genre">Story Genres</InputLabel>
               <Select
@@ -152,24 +156,7 @@ function StoryList() {
             </FormControl>
           </Grid>
 
-          <Grid item xs={12}>
-            <FormControl className={classes.formControl}>             
-            <InputLabel id="select-completion">Filter Stories By Completion Status</InputLabel>
-            <Select
-                labelId="select-completion"
-               id="select-dropdown"
-               value={completion}
-               onChange={selectCompletion}
-               ref={storyCompletion}
-             >
-               <MenuItem value={"Finished Stories"}>Finished Stories</MenuItem>
-               <MenuItem value={"Unfinished Stories"}>Unfinished Stories</MenuItem>
-             </Select>
-           </FormControl>
-         </Grid>
-
-          {/* {stories.map((story) => {          */}
-          <Grid item xs={6}>
+          <Grid item xs={4}>
             <FormControl className={classes.formControl}>
               <InputLabel id="select-genre">Filter Stories</InputLabel>
               <Select
@@ -184,16 +171,45 @@ function StoryList() {
               </Select>
             </FormControl>
           </Grid>
-          {/* }) */}
-          {/* } */}
+   
 
-           {stories.map((story) => {
-            return (
-              <Grid container item xs={6} key={uuidv4()}>
-                <StoryPreview storyProp={story.id} />
-              </Grid>
-            );
-          })}
+          <Grid item xs={4}>
+            <FormControl className={classes.formControl}>             
+            <InputLabel id="select-genre">Story Completion</InputLabel>
+            <Select
+                labelId="select-completion"
+               id="select-dropdown"
+               value={completion}
+               onChange={selectCompletion}
+               ref={storyCompletion}
+             >
+               <MenuItem value={"All"}>All</MenuItem>
+               <MenuItem value={"Finished"}>Finished Stories</MenuItem>
+               <MenuItem value={"Unfinished"}>Unfinished Stories</MenuItem>
+             </Select>
+           </FormControl>
+         </Grid>
+
+           {
+            completion != "All" ?
+            storiesComp.map((story) => {
+              return (
+                <Grid container item xs={6} key={uuidv4()}>
+                  <StoryPreview storyProp={story.id} />
+                </Grid>
+              );
+            })
+            :
+              stories.map((story) => {
+                return (
+                  <Grid container item xs={6} key={uuidv4()}>
+                    <StoryPreview storyProp={story.id} />
+                  </Grid>
+                );
+              })
+           }
+           
+          {/* } */}
         {/* // })} */}
         </Grid>
       </Container>

@@ -49,8 +49,6 @@ function StoryPreview(props) {
           setTitle(doc.data().title)
           ids_array.push(doc.data().entries)
         })
-        console.log('id for storyProp in StoryPreview', id);
-          console.log('ids_array[0][0]', ids_array[0][0]);
           
           return ids_array[0][0];
         })
