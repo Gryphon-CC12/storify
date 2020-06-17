@@ -30,6 +30,7 @@ const ProfilePage = () => {
   const { photoURL, displayName, email } = user;
 
   const mapUserStories = () => {
+    console.log('user', user)
     console.log('user.linkToStories:', user.linkToStories)
     return (user.linkToStories.map((story) => {
         return <StoryPreview storyProp={story} />
