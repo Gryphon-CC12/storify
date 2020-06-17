@@ -144,9 +144,11 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
     querySnapshot.forEach(async function(doc) {
       await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
       await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
-       
+      
       let currentEnries = await doc.data().entries.length;
       let maxEnries = await doc.data().maxEntries;
+      let currentTimeLimit = doc.data().timeLimit;
+      let title = doc.data().title;
       await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
       
       let currentInTurn = await doc.data().inTurn; 
@@ -167,17 +169,17 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       
       await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
       const userData = await db.collection('users').where('email', '==', nextInTurn).get();
-      nextUserName = userData.docs[0].data().displayName;
-      // if (nextInTurn != "storify.io@gmail.com") {
-      //   await sendEmailToNextUser(nextInTurn, nextUserName, currentTimeLimit)
-      // }
+      let nextUserName = userData.docs[0].data().displayName;
+      if (nextInTurn != "storify.io@gmail.com") {
+        await sendEmailToNextUser(title, story_id, nextInTurn, nextUserName, currentTimeLimit)
+      }
 
 })
 })
 }
 
 
-  async function sendEmailToNextUser(author, nextUserName, currentTimeLimit) {
+  async function sendEmailToNextUser(title, story_id, author, nextUserName, storyTimeLimit) {
     //   //////  SEND EMAIL  ////
     let template_params = {
       "email": author,
@@ -185,7 +187,7 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       "from_name": "Storify Team",
       "to_name": nextUserName,
       "time_limit": currentTimeLimit,
-      "message_html": ("<h1>It's your turn to create! You have "+ currentTimeLimit + " to add your entry.</h1>")
+      "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3> <br></br> <h4>Visit https://www.storifyapp.com/displaystory/" + story_id + "</h4>")
     }
       
     let service_id = "storify_io_gmail_com";

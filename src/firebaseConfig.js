@@ -27,13 +27,13 @@ import { v4 as uuidv4 } from "uuid";
       const { email, displayName, photoURL } = user;
       try {
         await userRef.set({
+          admin: false,
           displayName,
           email,
           photoURL,
           "likedEntries": [], 
           "linkToEntries" :[], 
           "linkToStories" : [], 
-          "upVotesStories" : [], 
           "date" : new Date(),
           id:uuidv4()
         });

@@ -13,10 +13,41 @@ import Container from '@material-ui/core/Container';
 import Grid from '@material-ui/core/Grid';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  TwitterShareButton,
+  RedditShareButton,
+  LineShareButton,
+  LinkedinShareButton
+} from "react-share";
+
+import {
+  FacebookShareCount,
+  RedditShareCount
+} from "react-share";
+
+import {
+  EmailIcon,
+  FacebookIcon,
+  RedditIcon,
+  TwitterIcon,
+  LineIcon,
+  LinkedinIcon
+} from "react-share";
+
+// const {
+//   FacebookShareButton,
+//   TwitterShareButton
+// } = ShareButtons;
+
+
 const db = firebase.firestore();
 
 function DisplayStory(props) {
   const user = useContext(UserContext);
+  const story_id = props.match.params.id;
+
   const [storyArr, setStoryArr] = useState([]);
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
   const [title, setTitle] = useState("")
@@ -40,6 +71,11 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id)
   }, [user.email, props.match.params.id])  
+
+
+  useEffect(()=> {
+    console.log(storyArr)
+  }, [storyArr])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -89,23 +125,32 @@ function DisplayStory(props) {
       })
   };
 
-  const getLikes = (entryId) => {
+  const getLikes = (entryId) => {    
+    if (likes.length > 0) {
     for (const item of likes) {
       if (item.entryId === entryId) {
         return item.likes;
       }
-    }
+    } 
+  } else return 0;
   }
 
-  const updateLikeState = (entryId) => {
+  const updateLikeState = (entryId, operation) => {
     let newLikes = [...likes]
-    for (let i = 0; i < likes.length; i++) {
-      if (likes[i].entryId === entryId) {
-        newLikes[i].likes += 1;
-        setLikes(newLikes);
-      }
+    if (likes.length > 0) {
+        for (let i = 0; i < likes.length; i++) {
+          if (likes[i].entryId === entryId) {
+            if (operation == "inc") {
+              newLikes[i].likes += 1;
+            } else if (operation == "dec") {
+              newLikes[i].likes -= 1;
+            }
+            setLikes(newLikes);
+          }
+        }
+      } 
     }
-  }
+  
 
   // READ FROM DB ///
   const fetchImageURL = async (id) => {
@@ -114,24 +159,58 @@ function DisplayStory(props) {
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
-  const addLike = async (entryId, storyId) => {
-    db.collection('Entries').where("id", "==", entryId)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-        });
-        updateLikeState(entryId)
-      })
-    setLikes(likes + 1)
+  const addLike = async (entryId, storyId, user_email) => {
 
-    db.collection('StoryDatabase').where("id", "==", storyId)
-      .get()
-      .then(function (querySnapshot) {
-        querySnapshot.forEach(function (doc) {
-          db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
-        });
-      })
+    await db.collection('users').where('email', '==', user_email).get()
+    .then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+        if (!doc.data().likedEntries.includes(entryId)) {
+          db.collection('users').doc(doc.id).update({ "likedEntries": firebase.firestore.FieldValue.arrayUnion(entryId)});
+          console.log('ADDED');
+          db.collection('Entries').where("id", "==", entryId)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+            });
+            updateLikeState(entryId, "inc")
+          })
+          setLikes(likes + 1)
+
+          db.collection('StoryDatabase').where("id", "==", storyId)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(1) });
+            });
+          })
+          
+        }
+        else {
+          db.collection('users').doc(doc.id).update({ "likedEntries": firebase.firestore.FieldValue.arrayRemove(entryId)});
+          console.log('DELETED');
+          db.collection('Entries').where("id", "==", entryId)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              db.collection("Entries").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(-1) });
+            });
+            updateLikeState(entryId, "dec")
+          })
+        setLikes(likes - 1)
+
+        db.collection('StoryDatabase').where("id", "==", storyId)
+          .get()
+          .then(function (querySnapshot) {
+            querySnapshot.forEach(function (doc) {
+              db.collection("StoryDatabase").doc(doc.id).update({ "likes": firebase.firestore.FieldValue.increment(-1) });
+            });
+          })
+        }
+        
+      });
+    })
+    
   }
 
   async function checkTurns(email, storyId) { 
@@ -255,6 +334,8 @@ function DisplayStory(props) {
   }));
   const classes = useStyles();
   
+  
+
   return (
     <Container maxWidth="md" key={uuidv4()}>
       <Grid container spacing={2}>
@@ -265,6 +346,65 @@ function DisplayStory(props) {
         <Grid item xs={12} lg={3}>
           <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
         </Grid>
+
+      <TwitterShareButton
+        url={"https://www.storifyapp.com/displaystory/" + story_id}
+        title={title}
+        className="Demo__some-network__share-button">
+        <TwitterIcon
+          size={32}
+          round />
+      </TwitterShareButton>
+
+      <FacebookShareButton
+        url={"https://www.storifyapp.com/displaystory/" + story_id}
+        title={title}
+        className="Demo__some-network__share-button">
+        <FacebookIcon
+          size={32}
+          round />
+      </FacebookShareButton>
+
+      <RedditShareButton
+        url={"https://www.storifyapp.com/displaystory/" + story_id}
+        title={title}
+        className="Demo__some-network__share-button">
+        <RedditIcon
+          size={32}
+          round />
+      </RedditShareButton>
+  
+        <EmailShareButton
+        subject={title}
+        body={"Read this amazing story in Storify: https://www.storifyapp.com/displaystory/" + story_id}
+        separator={" "}
+        className="Demo__some-network__share-button">
+        <EmailIcon
+          size={32}
+          round />
+      </EmailShareButton>
+
+
+      <LineShareButton
+        url={"https://www.storifyapp.com/displaystory/" + story_id}
+        title={title}
+        className="Demo__some-network__share-button">
+        <LineIcon
+          size={32}
+          round />
+      </LineShareButton>
+
+
+      {/* <LinkedinShareButton
+        url={"https://www.storifyapp.com/displaystory/" + story_id}
+        title={title}
+        summary={"Read this amazing story in Storify"}
+        source={"https://www.storifyapp.com/displaystory/" + story_id}
+        className="Demo__some-network__share-button">
+        <LinkedinIcon
+          size={32}
+          round />
+      </LinkedinShareButton> */}
 
         <Grid id="story-title" item xs={12} lg={9}>
           <h1 className="story-title">{title}</h1>
@@ -285,7 +425,7 @@ function DisplayStory(props) {
  
               <Grid item xs={6}>
                 <Typography id="story-author" className={classes.details}>
-                  <span id="likes" onClick={() => addLike(item.entry_id, item.story_id)}>
+                  <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
                     {getLikes(item.entry_id)}
                     <FavoriteIcon /> <br />
                   </span>
@@ -306,7 +446,7 @@ function DisplayStory(props) {
                 isUserInTurn ?
                   <Grid item xs={12} lg={12}>
                     <p>This story has {numOfEntries} entries left</p>
-                    <AddEntry id={props.match.params.id} />
+                    <AddEntry setStoryArr={setStoryArr} id={props.match.params.id}  />
                   </Grid>
                 :
                   <>

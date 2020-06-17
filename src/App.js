@@ -10,28 +10,28 @@ import firebase from "./firebaseConfig";
 
 function App() {
 
-  // const [userState, setUserState] = useState(true);
-  // useEffect(() => {
+  const [userState, setUserState] = useState(true);
+  useEffect(() => {
 
-  // firebase.auth().onAuthStateChanged(user=>{
-  //   if (userState) {
-  //       // store the user on local storage
-  //       console.log('userToken', user);
+  firebase.auth().onAuthStateChanged(user=>{
+    if (userState) {
+        // store the user on local storage
+        console.log('userToken', user);
         
-  //     localStorage.setItem('userToken', JSON.stringify(user));
-  //     setUserState(true);
+      localStorage.setItem('userToken', JSON.stringify(user));
+      setUserState(true);
       
-  //     //setTimeout(function(){ window.location.reload(); }, 12000);
-  //     console.log("token set");
-  //   } else {
-  //       // removes the user from local storage on logOut
-  //     localStorage.removeItem('userToken');
-  //     setUserState(false);
-  //     //window.location.reload();
-  //     console.log("token deleted");
-  //   }
-  // })
-  // }, [userState])
+      //setTimeout(function(){ window.location.reload(); }, 12000);
+      console.log("token set");
+    } else {
+        // removes the user from local storage on logOut
+      localStorage.removeItem('userToken');
+      setUserState(false);
+      //window.location.reload();
+      console.log("token deleted");
+    }
+  })
+  }, [userState])
   
   
   return (
