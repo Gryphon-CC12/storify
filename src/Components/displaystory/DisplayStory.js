@@ -67,7 +67,9 @@ function DisplayStory(props) {
 
 
   useEffect(()=> {
-    console.log(storyArr)
+    console.log("storyArr.length", storyArr.length)
+    checkMaxEntries(user.email, props.match.params.id)
+    checkTurns(user.email, props.match.params.id)
   }, [storyArr])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later

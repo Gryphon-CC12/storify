@@ -5,7 +5,7 @@ import saveToUserEntries from '../../utils/saveToUserEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import emailjs from 'emailjs-com';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 
 const db = firebase.firestore();
 
@@ -14,7 +14,7 @@ function AddEntry(props) {
 
   let setStoryArr = props.setStoryArr;
 
-  const history = useHistory();
+  // const history = useHistory();
 
   const author = useContext(UserContext);
   const inputEl = useRef(null);
