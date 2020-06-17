@@ -25,7 +25,6 @@ const userLocal = JSON.parse(localStorage.getItem('userToken'));
 
 function Application() {
   const user = useContext(UserContext);
-  console.log('user in Application', user);
   
   return user ? (
     <ThemeProvider theme={theme}>

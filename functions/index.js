@@ -41,17 +41,19 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
           const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
           let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
           let last_entry_clean =  last_entry_text_list.map(sent => sent.trim());
-          let last_entry_text = last_entry_text_list.slice(Math.max(0, last_entry_text_list.length-3)).join(". ");
+          let last_entry_text = last_entry_clean.slice(Math.max(0, last_entry_clean.length-3)).join(". ");
           let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
+          let robot_user = robot_data.docs[0].data();
           fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
           .then(response => {
             return response.json()
           })
             .then(async output=>{
               let entry_id = uuidv4()
-              await saveToEntries(story_id, output.result, entry_id, robot_data.docs[0].data());
-              await saveToUserEntries(robot_data.docs[0].data().email, entry_id, story_id)
-              await pushToStory(story_id, entry_id, robot_data.docs[0].data(), currentTimeLimit); 
+              let trimmed_output = output.result.trim();
+              await saveToEntries(story_id, trimmed_output, entry_id, robot_user);
+              await saveToUserEntries(robot_user.email, entry_id, story_id)
+              await pushToStory(story_id, entry_id, robot_user, currentTimeLimit); 
           })
         }
   
@@ -81,7 +83,6 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
   
       if (currentDate >= currentEndingTime) {  //If we're past the deadline
         // Modifty the collaborator in turn and notify him/her/
-        console.log("AllEmails array", allEmails)
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++){
             if (allEmails[i] === currentInTurn){
@@ -92,11 +93,9 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
               }
             }
           }
-          console.log('nextInTurn', nextInTurn);
           await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
           await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": new Date() });
           const userData = await db.collection('users').where('email', '==', nextInTurn).get();
-          console.log("next displayName",userData.docs[0].data().displayName)
           nextUserName = userData.docs[0].data().displayName;
   
         // Notify email
@@ -157,7 +156,6 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       
       let currentInTurn = await doc.data().inTurn; 
       let allEmails = await doc.data().emails;
-      console.log('allEmails', allEmails);
       
       let nextInTurn = ""
       for (let i = 0; i < allEmails.length; i++){
@@ -169,7 +167,6 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
           }
         }
       }
-      console.log('nextInTurn after adding entry', nextInTurn);
       
       await db.collection("StoryDatabase").doc(doc.id).update({"inTurn": nextInTurn});
       const userData = await db.collection('users').where('email', '==', nextInTurn).get();
@@ -190,7 +187,7 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       "reply_to": "storify.io@gmail.com",
       "from_name": "Storify Team",
       "to_name": nextUserName,
-      "time_limit": currentTimeLimit,
+      "time_limit": storyTimeLimit,
       "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3> <br></br> <h4>Visit https://www.storifyapp.com/displaystory/" + story_id + "</h4>")
     }
       
