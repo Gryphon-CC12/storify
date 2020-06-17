@@ -30,6 +30,8 @@ function AddEntry(props) {
       .then(function (querySnapshot) {
         querySnapshot.forEach(async function (doc) {
 
+          console.log("PUSHING to story in add entry")
+
           await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": firebase.firestore.FieldValue.serverTimestamp() });
           await db.collection("StoryDatabase").doc(doc.id).update({ "entries": firebase.firestore.FieldValue.arrayUnion(entry_id) });
           
@@ -37,7 +39,8 @@ function AddEntry(props) {
           let maxEnries = await doc.data().maxEntries;
           let storyTimeLimit = await doc.data().timeLimit;
           let storyTitle = await doc.data().title;
-          await db.collection("StoryDatabase").doc(doc.id).update({ "isCompleted": maxEnries - currentEnries == 0 });
+          
+          await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
           
           let currentInTurn = await doc.data().inTurn;
           let allEmails = await doc.data().emails;
@@ -95,7 +98,6 @@ function AddEntry(props) {
     // from display story
     // whatever is in the text box you pass as a new story item
 
-
     setStoryArr(storyArr => storyArr.concat([
       {
         "author": author.displayName,
@@ -134,6 +136,7 @@ function AddEntry(props) {
               ref={inputEl}
               rows='15'
               spellCheck='true'
+              placeholder="Keep in mind once you submit your entry you can't change it for story coherence purposes. Read Storify rules in 'About' page."
             />
             <button className="btn btn-dark" id="entry-input" onClick={onButtonClick}>Submit your entry</button>
           </div>

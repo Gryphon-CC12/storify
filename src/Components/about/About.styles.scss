@@ -1,11 +1,19 @@
-.About {
+#about {
   text-decoration: none;
   color: grey;
   font-family: "Roboto Slab", serif;
-  margin-left: 100px;
-  margin-top: 200px;
+  margin: 0px 5%;
 }
 
 h1 {
   color: black;
+}
+
+.styled {
+  color: #1282A2;
+  font-family: 'Pacifico', cursive;
+  font-size: 1.6em;
+  align-self: center;
+  text-align: center;
+  margin-top: 10%;
 }
