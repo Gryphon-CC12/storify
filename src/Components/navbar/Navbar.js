@@ -148,9 +148,9 @@ export default function Navbar() {
               <Button classes={{ label: "navbar-link" }}>HOME</Button>
             </Link>
 
-            <Link to="/featuredstory">
+            {/* <Link to="/featuredstory">
               <Button classes={{ label: "navbar-link" }}>FEATURED STORY</Button>
-            </Link>
+            </Link> */}
 
             <Link to="/createstory">
               <Button classes={{ label: "navbar-link" }}>CREATE STORY</Button>
@@ -187,11 +187,7 @@ export default function Navbar() {
 
           <Divider />
           <List>
-            <Link
-              className="side-link"
-              to="/profile"
-              onClick={handleDrawerClose}
-            >
+            <Link className="side-link" to="/profile" onClick={handleDrawerClose}>
               <ListItem button key="profile">
                 <ListItemIcon>
                   {" "}
@@ -202,23 +198,24 @@ export default function Navbar() {
             </Link>
 
             {/* <Link className="side-link" to=""> */}
-            <ListItem button key="stories" onClick={handleDrawerClose}>
+            {/* <ListItem button key="stories" onClick={handleDrawerClose}>
               <ListItemIcon>
                 {" "}
                 <BorderColorIcon />{" "}
               </ListItemIcon>
               <ListItemText primary="My Stories" />
-            </ListItem>
+            </ListItem> */}
             {/* </Link> */}
 
-            {/* <Link className="side-link" to=""> */}
-            <ListItem button key="entries" onClick={handleDrawerClose}>
+
+            {/* <Link className="side-link" to=""> */}            
+            {/* <ListItem button key="entries" onClick={handleDrawerClose}>
               <ListItemIcon>
                 {" "}
                 <ListAlt />{" "}
               </ListItemIcon>
               <ListItemText primary="My Entries" />
-            </ListItem>
+            </ListItem> */}
             {/* </Link> */}
 
             <Link className="side-link" to="/createstory">
@@ -230,18 +227,29 @@ export default function Navbar() {
                 <ListItemText primary="Create A Story" />
               </ListItem>
             </Link>
-          </List>
+          {/* </List> */}
 
           <Divider />
 
-          <List className="side-link">
+          <Link className="side-link" to="/featuredstory">               
+            <ListItem button key="create" onClick={handleDrawerClose}>                 
+            <ListItemIcon>                   
+              {" "}                   
+              <PostAddIcon />{" "}                 
+            </ListItemIcon>                 
+            <ListItemText primary="Featured Story" />               
+            </ListItem>             
+          </Link>
+
+
+          {/* <List className="side-link" to="/featuredstory">   
             <ListItem button key="liked" onClick={handleDrawerClose}>
               <ListItemIcon>
                 {" "}
                 <FavoriteIcon />{" "}
               </ListItemIcon>
-              <ListItemText primary="Most Liked Stories" />
-            </ListItem>
+              <ListItemText primary="Featured Stories" />
+            </ListItem> */}
 
             <Link className="side-link" to="/about">
               <ListItem button key="about" onClick={handleDrawerClose}>

@@ -38,16 +38,18 @@ function StoryPreview(props) {
   const [likes, setLikes] = useState(0);
 
   async function fetchFirstEntryForStory(id) {
+    
     try {          
-        db.collection('StoryDatabase').where('id', '==', id).get()
-        .then(function (querySnapshot) {
-          let ids_array = [];
-          querySnapshot.forEach(function (doc) {
-            setGenre(doc.data().genre);
-            setLikes(doc.data().likes);
-            setTitle(doc.data().title)
-            ids_array.push(doc.data().entries)
-          })
+      db.collection('StoryDatabase').where('id', '==', id).get()
+      .then(function (querySnapshot) {
+        let ids_array = [];
+        querySnapshot.forEach(function (doc) {
+          setGenre(doc.data().genre);
+          setLikes(doc.data().likes);
+          setTitle(doc.data().title)
+          ids_array.push(doc.data().entries)
+        })
+          
           return ids_array[0][0];
         })
         .then(async id => {
