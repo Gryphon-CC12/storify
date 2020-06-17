@@ -76,11 +76,13 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
             break; 
           case "1 day":
             currentEndingTime = currentLastModified + 86400;
-            break;   
+            break;  
+          default:
+            currentEndingTime = currentLastModified + 300;
         }          
   
       if (currentDate >= currentEndingTime) {  //If we're past the deadline
-        // Modifty the collaborator in turn and notify him/her/
+        // Modify the collaborator in turn and notify him/her/
         console.log("AllEmails array", allEmails)
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++){
@@ -190,7 +192,7 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       "reply_to": "storify.io@gmail.com",
       "from_name": "Storify Team",
       "to_name": nextUserName,
-      "time_limit": currentTimeLimit,
+      "time_limit": storyTimeLimit,
       "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3> <br></br> <h4>Visit https://www.storifyapp.com/displaystory/" + story_id + "</h4>")
     }
       

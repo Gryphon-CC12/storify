@@ -22,7 +22,7 @@ function About() {
             <p><b>
               DISCLAIMER: Storify uses <a target="_blank" href="https://openai.com/blog/better-language-models/">Open AI GPT-2</a>, a large-scale, unsupervised language model to generate coherent paragraphs of text. Given the unsupervised nature of Open AI GPT-2, it's impossible to predict the contents of the AI-generated text. For this reason, it's possible that swear words, sexual topics, or other NSFW elements may be included in the story. Please keep this in mind while using Storify.
             </b></p>
-            <p className="styled">
+            <p className="styled bigger">
               Happy writing!
             </p>
           </div>
