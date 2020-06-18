@@ -62,61 +62,70 @@ const ProfilePage = () => {
   }
 
   return (
-    <>
-      <div style={{ padding: 100 }} id="profile" className={classes.root}>
-        <Grid
-          container
-          direction="column"
-          justify="center"
-          alignItems="center"
-          spacing={1}
-        ></Grid>
-        <Paper className={classes.paper}>
-          <Grid
-            container
-            direction="column"
-            justify="center"
-            alignItems="center"
-            spacing={3} // VS spacing={1} in commit conflict
-          >
-            {user.admin === true ? renderDeleteButton() : ""}
-            <Grid item xs={12} md={12} lg={3}>
-              <div
-                style={{
-                  background: `url(${
-                    photoURL ||
-                    "https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png"
-                  })  no-repeat center center`,
-                  backgroundSize: "cover",
-                  height: "100px",
-                  width: "100px",
-                }}
-              ></div>
-            </Grid>
+    <div className="display-story">
+      <div className="container">
+        <div className="row">
+          {/* <div style={{ padding: 100 }} id="profile" className={classes.root}>
             <Grid
-              item
               container
-              direction="row"
+              direction="column"
               justify="center"
               alignItems="center"
-              spacing={3}
-            >
-              <Grid item xs={12}>
-                <Typography>{email}</Typography>
+              spacing={1}
+            ></Grid>
+            <Paper className={classes.paper}>
+              <Grid
+                container
+                direction="column"
+                justify="center"
+                alignItems="center"
+                spacing={3} // VS spacing={1} in commit conflict
+              >
+                {user.admin === true ? renderDeleteButton() : ""}
+                <Grid item xs={12} md={12} lg={3}>
+                  <div
+                    style={{
+                      background: `url(${
+                        photoURL ||
+                        "https://res.cloudinary.com/dqcsk8rsc/image/upload/v1577268053/avatar-1-bitmoji_upgwhc.png"
+                      })  no-repeat center center`,
+                      backgroundSize: "cover",
+                      height: "100px",
+                      width: "100px",
+                    }}
+                  ></div>
+                </Grid>
+                <Grid
+                  item
+                  container
+                  direction="row"
+                  justify="center"
+                  alignItems="center"
+                  spacing={3}
+                >
+                  <Grid item xs={12}>
+                    <Typography>{email}</Typography>
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Typography>{displayName}</Typography>
+                  </Grid>
+                </Grid>
               </Grid>
-              <Grid item xs={12}>
-                <Typography>{displayName}</Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
-      </div>
-      <Typography>My Stories</Typography>
-      {user.linkToStories ? mapUserStories() : <p>Nothing!</p>}
+            </Paper>
+          <div> */}
 
-      <Typography>My Entries</Typography>
-      {user.linkToStories ? mapUserEntries() : <p>Nothing!</p>}
-    </>
+          <div>
+            <h3>My Stories</h3>
+            {user.linkToStories ? mapUserStories() : <p>Nothing!</p>}
+          </div>
+
+          <div>
+            <h3>My Entries</h3>
+            {user.linkToStories ? mapUserEntries() : <p>Nothing!</p>}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 
