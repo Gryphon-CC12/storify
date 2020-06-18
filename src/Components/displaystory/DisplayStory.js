@@ -7,46 +7,40 @@ import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
-import Container from '@material-ui/core/Container';
+
 import Grid from '@material-ui/core/Grid';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-
 import {
   EmailShareButton,
   FacebookShareButton,
   TwitterShareButton,
   RedditShareButton,
   LineShareButton,
-  // LinkedinShareButton
 } from "react-share";
-
-import {
-  // FacebookShareCount,
-  // RedditShareCount
-} from "react-share";
-
 import {
   EmailIcon,
   FacebookIcon,
   RedditIcon,
   TwitterIcon,
   LineIcon,
-  // LinkedinIcon
 } from "react-share";
-
-// const {
-//   FacebookShareButton,
-//   TwitterShareButton
-// } = ShareButtons;
-
 
 const db = firebase.firestore();
 
 function DisplayStory(props) {
-  const user = useContext(UserContext);
+  // const user = useContext(UserContext);
+  const user = {
+    admin: true,
+    displayName: "Polly Sutcliffe",
+    email: "psutcl@gmail.com",
+    id: "56a59ef6-726e-42cc-9c53-ab25293442e0",
+    likedEntries: [],
+    linkToEntries: [],
+    linkToStories: ["e8c711ef-6346-4803-a088-f07fac5c9487"],
+    photoURL: "https://lh6.googleusercontent.com/-vWVLpBU9rzU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclaTb7MIbSyXnAk8Dqg-SlLcsbAKw/photo.jpg",
+    uid: "ihOVZpoq5Ra7t776FS8uUcnlayx1"
+    }
+  console.log('user:', user)
   const story_id = props.match.params.id;
 
   const [storyArr, setStoryArr] = useState([]);
@@ -152,7 +146,6 @@ function DisplayStory(props) {
         }
       } 
     }
-  
 
   // READ FROM DB ///
   const fetchImageURL = async (id) => {
@@ -168,7 +161,6 @@ function DisplayStory(props) {
       querySnapshot.forEach((doc) => {
         if (!doc.data().likedEntries.includes(entryId)) {
           db.collection('users').doc(doc.id).update({ "likedEntries": firebase.firestore.FieldValue.arrayUnion(entryId)});
-          console.log('ADDED');
           db.collection('Entries').where("id", "==", entryId)
           .get()
           .then(function (querySnapshot) {
@@ -190,7 +182,6 @@ function DisplayStory(props) {
         }
         else {
           db.collection('users').doc(doc.id).update({ "likedEntries": firebase.firestore.FieldValue.arrayRemove(entryId)});
-          console.log('DELETED');
           db.collection('Entries').where("id", "==", entryId)
           .get()
           .then(function (querySnapshot) {
@@ -300,9 +291,9 @@ function DisplayStory(props) {
   const renderDeleteButton = () => {
     return (
       <button
-      className="btn btn-danger"
+      className="btn btn-danger btn-sm"
       onClick={handleDeleteStory}
-      >Delete Story
+      >X
       </button>
     )
   }
@@ -319,122 +310,90 @@ function DisplayStory(props) {
     }
   }
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    entry: {
-      padding: theme.spacing(2),
-      textAlign: 'justified',
-      color: theme.palette.text.secondary,
-    },
-    details: {
-      padding: theme.spacing(2),
-      textAlign: 'end',
-      color: theme.palette.text.secondary,
-    },
-  }));
-  const classes = useStyles();
-  
-  
-
   return (
-    <Container maxWidth="md" key={uuidv4()}>
-      <Grid container spacing={2}>
-        {
-          user.email === authorEmail || user.admin === true ?
-            renderDeleteButton() : ""
-        }
-        <Grid item xs={12} lg={3}>
-          <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
-        </Grid>
+    <div className="display-story-component container" key={uuidv4()}>
+      
+        <div className="prompt-details-grid-container">
+          <div className="ds-title">
+            <h1>{title}</h1>
+          </div>
+          <div className="ds-image">
+            <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
+          </div>
+          <div className="ds-options">
+            <TwitterShareButton
+              url={"https://www.storifyapp.com/displaystory/" + story_id}
+              title={title}
+              className="Demo__some-network__share-button">
+              <TwitterIcon
+                size={32}
+                round />
+            </TwitterShareButton>
 
-      <TwitterShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        className="Demo__some-network__share-button">
-        <TwitterIcon
-          size={32}
-          round />
-      </TwitterShareButton>
+            <FacebookShareButton
+              url={"https://www.storifyapp.com/displaystory/" + story_id}
+              title={title}
+              className="Demo__some-network__share-button">
+              <FacebookIcon
+                size={32}
+                round />
+            </FacebookShareButton>
 
-      <FacebookShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        className="Demo__some-network__share-button">
-        <FacebookIcon
-          size={32}
-          round />
-      </FacebookShareButton>
+            <RedditShareButton
+              url={"https://www.storifyapp.com/displaystory/" + story_id}
+              title={title}
+              className="Demo__some-network__share-button">
+              <RedditIcon
+                size={32}
+                round />
+            </RedditShareButton>
+    
+            <EmailShareButton
+              subject={title}
+              body={"Read this amazing story in Storify: https://www.storifyapp.com/displaystory/" + story_id}
+              separator={" "}
+              className="Demo__some-network__share-button">
+              <EmailIcon
+                size={32}
+                round />
+            </EmailShareButton>
 
-      <RedditShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        className="Demo__some-network__share-button">
-        <RedditIcon
-          size={32}
-          round />
-      </RedditShareButton>
-  
-        <EmailShareButton
-        subject={title}
-        body={"Read this amazing story in Storify: https://www.storifyapp.com/displaystory/" + story_id}
-        separator={" "}
-        className="Demo__some-network__share-button">
-        <EmailIcon
-          size={32}
-          round />
-      </EmailShareButton>
+            <LineShareButton
+              url={"https://www.storifyapp.com/displaystory/" + story_id}
+              title={title}
+              className="Demo__some-network__share-button">
+              <LineIcon
+                size={32}
+                round />
+            </LineShareButton>
 
+            {
+              user.email === authorEmail || user.admin === true ?
+                renderDeleteButton() : ""
+            }
+          </div>
+        </div>
 
-      <LineShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        className="Demo__some-network__share-button">
-        <LineIcon
-          size={32}
-          round />
-      </LineShareButton>
-
-
-      {/* <LinkedinShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        summary={"Read this amazing story in Storify"}
-        source={"https://www.storifyapp.com/displaystory/" + story_id}
-        className="Demo__some-network__share-button">
-        <LinkedinIcon
-          size={32}
-          round />
-      </LinkedinShareButton> */}
-
-        <Grid id="story-title" item xs={12} lg={9}>
-          <h1 className="story-title">{title}</h1>
-        </Grid>
-        
         {storyArr.map((item) => { 
           return (
-            <React.Fragment key={uuidv4()}>
-              <Grid key={uuidv4()} item xs={12}>
-                <Paper id="story-text" className={classes.entry} elevation={3}>
-                  {item.text.map(paragraph => {
+            <div className="entry-grid-container" key={uuidv4()}>
+              <div className="ds-text">
+                {item.text.map(paragraph => {
                     return (
                       <p key={uuidv4()}>{paragraph}</p>
                     )
                   })}
-                </Paper>
-              </Grid>
- 
-              <Grid item xs={6}>
-                <Typography id="story-author" className={classes.details}>
-                  <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
-                    {getLikes(item.entry_id)}
-                    <FavoriteIcon /> <br />
-                  </span>
-                  {item.author}
-                </Typography>
-              </Grid>
-            </React.Fragment>
+              </div>
+              <div className="ds-likes">
+                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
+                      {getLikes(item.entry_id)}
+                  <FavoriteIcon /> <br />
+                </span>
+              </div>
+              <div className="ds-author">
+                {item.author}
+              </div>
+            </div>
           )
         })}
         
@@ -473,8 +432,7 @@ function DisplayStory(props) {
                   >Join the Story</button>
           }
         </div>
-      </Grid>
-    </Container>
+    </div>
   );
 }
 
