@@ -2,40 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './StoryPreview.styles.scss';
 import firebase from "../../firebaseConfig";
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
-import Typography from '@material-ui/core/Typography';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-
-
+import heartSvg from "../../assets/heart.svg";
 const db = firebase.firestore();
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: 'justified',
-    color: theme.palette.text.secondary,
-  },
-  img: {
-    margin: 'auto',
-    display: 'block',
-    maxWidth: '100%',
-    maxHeight: '100%',
-  },
-
-}));
-
 function StoryPreview(props) {
+  console.log('props:', props)
   
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
   const [genre, setGenre] = useState("");
   const [likes, setLikes] = useState(0);
+  const [promptAuthor, setPromptAuthor] = useState("");
+  const [maxCollab, setMaxCollab] = useState(0);
+  const [currentCollab, setCurrentCollab] = useState(0);
 
   async function fetchFirstEntryForStory(id) {
     
@@ -47,7 +27,11 @@ function StoryPreview(props) {
           setGenre(doc.data().genre);
           setLikes(doc.data().likes);
           setTitle(doc.data().title)
+          setPromptAuthor(doc.data().author)
+          setMaxCollab(doc.data().maxUsers)
           ids_array.push(doc.data().entries)
+          setCurrentCollab(ids_array.length);
+
         })
           
           return ids_array[0][0];
@@ -75,45 +59,37 @@ function StoryPreview(props) {
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
-  const classes = useStyles();
   if (!props) {
     return <div></div>
   }
+
   return (
-    <div className={classes.root}>
-      <Link className="details read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
-        <Paper className={classes.paper}>
-          <Grid id="preview" container spacing={2}>
-            <Grid item>
-              <img className={classes.img} alt="user-uploaded story artwork" src={imageURL} width="200" height="150" />
-            </Grid>
-            <Grid item xs={12} sm container>
-              <Grid item xs container direction="column" spacing={2}>
-                <Grid id="story" item xs>
-                  <Typography gutterBottom variant="subtitle1">
-                    {title}
-                  </Typography>
-                  <Typography variant="body2" gutterBottom>
-                    {storyText}
-                  </Typography>
-                  
-                </Grid>
-                <Grid item xs container direction="row" spacing={2}>
-                  <Grid item>
-                    <p className="details">
-                      {genre}
-                    </p>
-                  </Grid>
-                  <Grid item>
-                    <p className="details likes" style={{ cursor: 'pointer' }}>
-                      <FavoriteIcon id="heart" /> {likes}
-                    </p>
-                  </Grid>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
+    <div className="story-preview-component col-12">
+      <Link className="read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
+        <div class="grid-container">
+          <div class="image">
+            <img className="story-image" alt="user-uploaded story artwork" src={imageURL}/>
+          </div>
+          <div class="title">
+            {title}
+          </div>
+          <div class="preview-text">
+            {storyText}
+          </div>
+          <div class="likes">
+            {likes} ♥️
+          </div>
+          <div class="author">
+            <span className="prompt-text">Prompt by: </span><br />
+            <span className="author-name">{promptAuthor}</span>
+          </div>
+          <div class="collab">
+            {currentCollab} / {maxCollab} authors
+          </div>
+          <div class="genre">
+            {genre}
+          </div>
+        </div>
       </Link>
     </div>
   );

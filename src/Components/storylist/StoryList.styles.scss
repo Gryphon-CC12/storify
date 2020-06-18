@@ -1,18 +1,12 @@
-.display-story {
-    margin-bottom: 200px;
+.filter-wrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 2% 5% 5% 0;
 }
 
-#select-genre {
-    color: #B1B1B8;
-    font-size: 1em;
-}
-
-#select-dropdown {
-    color: #B1B1B8;
-    font-size: 0.8em;
-}
-
-.MenuItem {
-    color: red;
+.filter-wrapper > div {
+    margin-left: 5%;
 }
 

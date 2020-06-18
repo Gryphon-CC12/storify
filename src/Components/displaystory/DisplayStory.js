@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
 import firebase from '../../firebaseConfig';
@@ -19,12 +20,12 @@ import {
   TwitterShareButton,
   RedditShareButton,
   LineShareButton,
-  LinkedinShareButton
+  // LinkedinShareButton
 } from "react-share";
 
 import {
-  FacebookShareCount,
-  RedditShareCount
+  // FacebookShareCount,
+  // RedditShareCount
 } from "react-share";
 
 import {
@@ -33,7 +34,7 @@ import {
   RedditIcon,
   TwitterIcon,
   LineIcon,
-  LinkedinIcon
+  // LinkedinIcon
 } from "react-share";
 
 // const {

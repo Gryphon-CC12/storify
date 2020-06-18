@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./FeaturedStory.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
@@ -7,10 +7,6 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 
 const db = firebase.firestore();
 
@@ -36,9 +32,9 @@ function FeaturedStory() {
   const [stories, setStories] = useState([]);
   const classes = useStyles();
   const [genre, setGenre] = useState("All");
-  const storyGenre = useRef("");
-  const [like, setLike] = useState("By Newest");
-  const storyLike = useRef("");
+  // const storyGenre = useRef("");
+  // const [like, setLike] = useState("By Newest");
+  // const storyLike = useRef("");
 
   useEffect(() => {
     retrieveAllStories(genre);
@@ -48,13 +44,13 @@ function FeaturedStory() {
   //   retrieveAllStoriesByLikes(like);
   // }, [like]);
 
-  const selectGenre = (event) => {
-    setGenre(event.target.value);
-  };
+  // const selectGenre = (event) => {
+  //   setGenre(event.target.value);
+  // };
 
-  const selectLike = (event) => {
-    setLike(event.target.value);
-  };
+  // const selectLike = (event) => {
+  //   setLike(event.target.value);
+  // };
 
   const retrieveAllStories = async (genre) => {
     if (genre === "All" || genre === undefined) {
