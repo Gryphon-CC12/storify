@@ -114,7 +114,7 @@ function StoryList() {
         <div className="row">
           <div className="col-12 filter-wrapper">
             <button className="filter-button" onClick={handleFilterButtonClick}>Filter Stories</button>
-            <div className="select-wrapper" style={{ visibility: "visible" }} >
+            <div className="select-wrapper" style={{ visibility: "hidden" }} >
               <div className="selects">
               <div className="genre-filter">
                 <form>
