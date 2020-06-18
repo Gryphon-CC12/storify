@@ -135,19 +135,15 @@ export default function Navbar() {
             >
               <MenuIcon />
             </IconButton>
-            <Link to="/">
+            <Link to="/" id="logo">
               <Typography id="app-title" variant="h6" noWrap>
                 Storify
               </Typography>
             </Link>
 
-            <Link to="/">
+            <Link to="/" id="home-link">
               <Button classes={{ label: "navbar-link" }}>HOME</Button>
             </Link>
-
-            {/* <Link to="/featuredstory">
-              <Button classes={{ label: "navbar-link" }}>FEATURED STORY</Button>
-            </Link> */}
 
             <Link to="/createstory">
               <Button classes={{ label: "navbar-link" }}>CREATE STORY</Button>
