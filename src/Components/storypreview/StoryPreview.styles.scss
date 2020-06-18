@@ -9,7 +9,7 @@
     color: rgb(50, 121, 109);
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
-    grid-template-rows: 0.8fr 1.8fr 0.2fr;
+    grid-template-rows: 0.8fr 2.5fr 0.2fr;
     gap: 1px 1px;
     grid-template-areas: 
         "image title title author"
@@ -18,7 +18,7 @@
     margin-bottom: 2%;
     padding: 2%;
     padding-top: 1%;
-  }
+}
   
 .image { 
     grid-area: image; 

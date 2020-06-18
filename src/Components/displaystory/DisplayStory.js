@@ -75,7 +75,6 @@ function DisplayStory(props) {
 
 
   useEffect(()=> {
-    console.log("storyArr.length", storyArr.length)
     checkMaxEntries(user.email, props.match.params.id)
     checkTurns(user.email, props.match.params.id)
   }, [storyArr])

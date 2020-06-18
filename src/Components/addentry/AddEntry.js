@@ -11,7 +11,6 @@ const db = firebase.firestore();
 
 ///SEND EMAIL TO NEXT USER////
 function AddEntry(props) {
-
   let setStoryArr = props.setStoryArr;
 
   const author = useContext(UserContext);
@@ -28,7 +27,6 @@ function AddEntry(props) {
       .then(function (querySnapshot) {
         querySnapshot.forEach(async function (doc) {
 
-          console.log("PUSHING to story in add entry")
 
           await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": firebase.firestore.FieldValue.serverTimestamp() });
           await db.collection("StoryDatabase").doc(doc.id).update({ "entries": firebase.firestore.FieldValue.arrayUnion(entry_id) });
@@ -43,7 +41,6 @@ function AddEntry(props) {
           // let currentInTurn = await doc.data().inTurn;
           let allEmails = await doc.data().emails;
 
-          console.log('allEmails', allEmails);
           
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++) {
@@ -55,7 +52,6 @@ function AddEntry(props) {
               }
             }
           }
-          console.log('nextInTurn after adding entry', nextInTurn);
           await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
           const userData = await db.collection('users').where('email', '==', nextInTurn).get();
           let nextUserName = userData.docs[0].data().displayName;

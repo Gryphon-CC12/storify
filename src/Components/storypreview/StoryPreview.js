@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import './StoryPreview.styles.scss';
 import firebase from "../../firebaseConfig";
-import heartSvg from "../../assets/heart.svg";
 const db = firebase.firestore();
 
 function StoryPreview(props) {
-  console.log('props:', props)
+  // console.log('props:', props)
   
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
@@ -39,7 +38,7 @@ function StoryPreview(props) {
         .then(async id => {
           const data = await db.collection('Entries').where('id', '==', id).get();
           setStoryText(data.docs.map((doc) => {
-            return (doc.data().text.split('. ')[0] + ".").substring(0,100);   // Returns previous only till the first.
+            return (doc.data().text.substring(0, 280) + "...");   // Returns previous only till the first.
           }));
         })
     } catch (error) {
@@ -66,27 +65,27 @@ function StoryPreview(props) {
   return (
     <div className="story-preview-component col-12">
       <Link className="read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
-        <div class="grid-container">
-          <div class="image">
+        <div className="grid-container">
+          <div className="image">
             <img className="story-image" alt="user-uploaded story artwork" src={imageURL}/>
           </div>
-          <div class="title">
+          <div className="title">
             {title}
           </div>
-          <div class="preview-text">
+          <div className="preview-text">
             {storyText}
           </div>
-          <div class="likes">
+          <div className="likes">
             {likes} ♥️
           </div>
-          <div class="author">
+          <div className="author">
             <span className="prompt-text">Prompt by: </span><br />
             <span className="author-name">{promptAuthor}</span>
           </div>
-          <div class="collab">
+          <div className="collab">
             {currentCollab} / {maxCollab} authors
           </div>
-          <div class="genre">
+          <div className="genre">
             {genre}
           </div>
         </div>

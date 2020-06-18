@@ -4,39 +4,12 @@ import "./StoryList.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 
 const db = firebase.firestore();
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
 
 function StoryList() {
   const [stories, setStories] = useState([]);
   const [storiesComp, setStoriesComp] = useState([]);
-  const classes = useStyles();
   const [genre, setGenre] = useState("All");
   const storyGenre = useRef("");
   const storyCompletion = useRef("");
@@ -113,11 +86,11 @@ function StoryList() {
       const data = await db.collection('StoryDatabase').orderBy('dateCreated', 'desc').get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-    } else if (completion == "Finished Stories") {
+    } else if (completion == "Finished") {
       const data = await db.collection('StoryDatabase').where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-  } else if (completion == "Unfinished Stories") {
+  } else if (completion == "Unfinished") {
       const data = await db.collection('StoryDatabase').where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
@@ -128,11 +101,11 @@ function StoryList() {
     <div className="display-story">     
       <div className="container-fluid">
         <div className="row">
-          <div className="container col-12 filter-wrapper">
-            <p>Filter By...</p>
+          <div className="col-12 filter-wrapper">
+            <button className="button">Filter Stories</button>
             <div className="genre-filter">
               <form>
-                <label id="select-genre">Story Genres</label>
+                <label id="select-genre">Genre:</label>
                 <select
                   labelId="select-genre"
                   id="select-dropdown"
@@ -157,9 +130,9 @@ function StoryList() {
 
             <div className="sort-filter">
               <form>
-                <label id="select-sort">Sort by</label>
+                <label id="select-sort">Sort by:</label>
                 <select
-                  labelId="select-sort"
+                  labelid="select-sort"
                   id="sort-dropdown"
                   value={like}
                   onChange={selectLike}
@@ -173,9 +146,9 @@ function StoryList() {
             
             <div className="completion-filter">
               <form>
-                <label id="select-completion">Completion</label>
+                <label id="select-completion">Completion:</label>
                 <select
-                  labelId="select-completion"
+                  labelid="select-completion"
                   id="completion-dropdown"
                   value={completion}
                   onChange={selectCompletion}
