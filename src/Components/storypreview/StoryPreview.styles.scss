@@ -84,3 +84,60 @@
   font-weight: 500;
   color: rgb(116, 151, 145);
 }
+
+@media only screen and (max-width: 600px) {
+  .grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto 1fr 0.3fr 0.3fr;
+    gap: 1px 1px;
+    grid-template-areas:
+      "image image"
+      "title title"
+      "preview-text preview-text"
+      "author author"
+      "genre likes"
+      "collab .";
+    padding: 4%;
+    margin-bottom: 5%;
+  }
+
+  .image {
+    grid-area: image;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .title {
+    grid-area: title;
+    margin-top: 2%;
+  }
+
+  .preview-text {
+    grid-area: preview-text;
+  }
+
+  .author {
+    grid-area: author;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+  }
+
+  .author-name {
+    margin-left: 2%;
+  }
+
+  .genre {
+    grid-area: genre;
+  }
+
+  .likes {
+    grid-area: likes;
+  }
+
+  .collab {
+    grid-area: collab;
+  }
+}

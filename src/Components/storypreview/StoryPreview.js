@@ -32,7 +32,6 @@ function StoryPreview(props) {
             ids_array.push(doc.data().entries);
             setCurrentCollab(ids_array.length);
           });
-
           return ids_array[0][0];
         })
         .then(async (id) => {
@@ -71,7 +70,7 @@ function StoryPreview(props) {
   }
 
   return (
-    <div className="story-preview-component col-12">
+    <div className="story-preview-component">
       <Link
         className="read-more"
         to={{ pathname: `/displaystory/${props.storyProp}` }}
@@ -88,7 +87,7 @@ function StoryPreview(props) {
           <div className="preview-text">{storyText}</div>
           <div className="likes">{likes} ♥️</div>
           <div className="author">
-            <span className="prompt-text">Prompt by: </span>
+            <span className="prompt-text">Prompt by:</span>
             <br />
             <span className="author-name">{promptAuthor}</span>
           </div>

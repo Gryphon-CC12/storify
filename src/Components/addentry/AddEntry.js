@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
@@ -5,23 +6,19 @@ import saveToUserEntries from '../../utils/saveToUserEntries';
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import emailjs from 'emailjs-com';
-import { useHistory } from 'react-router-dom';
 
 const db = firebase.firestore();
 
 ///SEND EMAIL TO NEXT USER////
 function AddEntry(props) {
-
   let setStoryArr = props.setStoryArr;
-
-  const history = useHistory();
 
   const author = useContext(UserContext);
   const inputEl = useRef(null);
   const id = uuidv4();
-  let nextUserEmail = "";
-  let nextUserName = "";
-  let storyTimeLimit = "";
+  // let nextUserEmail = "";
+  // let nextUserName = "";
+  // let storyTimeLimit = "";
 
 
   const pushToStory = (story_id, entry_id, author) => {
@@ -41,7 +38,7 @@ function AddEntry(props) {
           
           await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
           
-          let currentInTurn = await doc.data().inTurn;
+          // let currentInTurn = await doc.data().inTurn;
           let allEmails = await doc.data().emails;
 
           
@@ -129,7 +126,6 @@ function AddEntry(props) {
             <textarea
               className="form-control"
               aria-label="empty textarea"
-              placeholder="Add your entry!"
               ref={inputEl}
               rows='15'
               spellCheck='true'
