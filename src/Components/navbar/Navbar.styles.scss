@@ -37,3 +37,12 @@ a:hover {
     color: #000;
 }
 
+@media only screen and (max-width: 600px) {
+    #logo {
+        margin-left: -16px;
+    }
+    
+    #home-link {
+        display: none;
+    }
+}

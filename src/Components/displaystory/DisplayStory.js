@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useState, useEffect, useContext } from 'react';
 import './DisplayStory.styles.scss';
 import firebase from '../../firebaseConfig';
@@ -19,12 +20,12 @@ import {
   TwitterShareButton,
   RedditShareButton,
   LineShareButton,
-  LinkedinShareButton
+  // LinkedinShareButton
 } from "react-share";
 
 import {
-  FacebookShareCount,
-  RedditShareCount
+  // FacebookShareCount,
+  // RedditShareCount
 } from "react-share";
 
 import {
@@ -33,7 +34,7 @@ import {
   RedditIcon,
   TwitterIcon,
   LineIcon,
-  LinkedinIcon
+  // LinkedinIcon
 } from "react-share";
 
 // const {
@@ -74,7 +75,8 @@ function DisplayStory(props) {
 
 
   useEffect(()=> {
-    // console.log(storyArr)
+    checkMaxEntries(user.email, props.match.params.id)
+    checkTurns(user.email, props.match.params.id)
   }, [storyArr])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later

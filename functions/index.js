@@ -16,7 +16,7 @@ admin.initializeApp();
 const db = firebase.firestore();
 
 exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
-    console.log('This will be run every 1 minutes! with Google function');
+    // console.log('This will be run every 1 minutes! with Google function');
     // const data = await db.collection('StoryDatabase').get();
     // console.log('data', data);
 
@@ -78,7 +78,9 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
             break; 
           case "1 day":
             currentEndingTime = currentLastModified + 86400;
-            break;   
+            break;  
+          default:
+            currentEndingTime = currentLastModified + 300;
         }          
   
       if (currentDate >= currentEndingTime) {  //If we're past the deadline

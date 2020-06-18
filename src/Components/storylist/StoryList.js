@@ -1,48 +1,23 @@
+/* eslint-disable eqeqeq */
 import React, { useState, useEffect, useRef } from "react";
 import "./StoryList.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import FormControl from "@material-ui/core/FormControl";
-import Select from "@material-ui/core/Select";
 
 const db = firebase.firestore();
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
 
 function StoryList() {
   const [stories, setStories] = useState([]);
   const [storiesComp, setStoriesComp] = useState([]);
-  const classes = useStyles();
   const [genre, setGenre] = useState("All");
   const storyGenre = useRef("");
   const storyCompletion = useRef("");
   const [completion, setCompletion] = useState("All")
- 
   const [like, setLike] = useState("By Newest");
   const storyLike = useRef("");
+  const filterButton = useRef("")
+  console.log('filterButton:', filterButton)
 
 
   useEffect(() => {
@@ -66,8 +41,6 @@ function StoryList() {
   const selectLike = (event) => {
     setLike(event.target.value)
   }
-
-  // const retrieveAllStories = async (genre) => {
 
   const retrieveAllStoriesByGenre = async (genre) => {
       if (genre === "All" || genre === undefined) {
@@ -123,96 +96,112 @@ function StoryList() {
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   }
-};
+  };
+  
+  const handleFilterButtonClick = () => {
+    const filters = document.body.querySelector(".select-wrapper");
+    const filterButton = document.body.querySelector(".filter-button");
+    if (filters.style.visibility === "hidden") {
+      filters.style.visibility = "visible"
+    } else {
+      filters.style.visibility = "hidden"
+    }
+  }
 
   return (
-    <div className="display-story">
+    <div className="display-story">     
+      <div className="container">
+        <div className="row">
+          <div className="col-12 filter-wrapper">
+            <button className="filter-button" onClick={handleFilterButtonClick}>Filter Stories</button>
+            <div className="select-wrapper" style={{ visibility: "visible" }} >
+              <div className="selects">
+              <div className="genre-filter">
+                <form>
+                  <label id="select-genre">Genre:</label>
+                  <select
+                    labelId="select-genre"
+                    id="select-dropdown"
+                    value={genre}
+                    onChange={selectGenre}
+                    ref={storyGenre}
+                  >
+                    <option value={"All"}>All</option>
+                    <option value={"Crime"}>Crime</option>
+                    <option value={"Fan Fiction"}>Fan Fiction</option>
+                    <option value={"Fantasy"}>Fantasy</option>
+                    <option value={"Historical"}>Historical</option>
+                    <option value={"Horror"}>Horror</option>
+                    <option value={"Humor"}>Humor</option>
+                    <option value={"Romance"}>Romance</option>
+                    <option value={"Sci-fi"}>Sci-fi</option>
+                    <option value={"Thriller"}>Thriller</option>
+                    <option value={"Other"}>Other</option>
+                  </select>
+              </form>
+              </div>
 
-      <CssBaseline />      
-      <Container maxWidth="lg" className={classes.root}>
-        <Grid container spacing={3}>
-          <Grid item xs={4}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-genre">Story Genres</InputLabel>
-              <Select
-                labelId="select-genre"
-                id="select-dropdown"
-                value={genre}
-                onChange={selectGenre}
-                ref={storyGenre}
-              >
-                <MenuItem value={"All"}>All</MenuItem>
-                <MenuItem value={"Crime"}>Crime</MenuItem>
-                <MenuItem value={"Fan Fiction"}>Fan Fiction</MenuItem>
-                <MenuItem value={"Fantasy"}>Fantasy</MenuItem>
-                <MenuItem value={"Historical"}>Historical</MenuItem>
-                <MenuItem value={"Horror"}>Horror</MenuItem>
-                <MenuItem value={"Humor"}>Humor</MenuItem>
-                <MenuItem value={"Romance"}>Romance</MenuItem>
-                <MenuItem value={"Sci-fi"}>Sci-fi</MenuItem>
-                <MenuItem value={"Thriller"}>Thriller</MenuItem>
-                <MenuItem value={"Other"}>Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
+              <div className="sort-filter">
+                <form>
+                  <label id="select-sort">Sort by:</label>
+                  <select
+                    labelid="select-sort"
+                    id="sort-dropdown"
+                    value={like}
+                    onChange={selectLike}
+                    ref={storyLike}
+                  >
+                    <option value={"By Newest"}>By Newest</option>
+                    <option value={"Most Liked"}>By Likes</option>
+                  </select>
+                </form>
+              </div>
+              
+              <div className="completion-filter">
+                <form>
+                  <label id="select-completion">Completion:</label>
+                  <select
+                    labelid="select-completion"
+                    id="completion-dropdown"
+                    value={completion}
+                    onChange={selectCompletion}
+                    ref={storyCompletion}
+                  >
+                    <option value={"All"}>All</option>
+                    <option value={"Finished"}>Finished Stories</option>
+                    <option value={"Unfinished"}>Unfinished Stories</option>
+                  </select>
+                </form>
+              </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          <Grid item xs={4}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-genre">Filter Stories</InputLabel>
-              <Select
-                labelId="select-genre"
-                id="select-dropdown"
-                value={like}
-                onChange={selectLike}
-                ref={storyLike}
-              >
-                <MenuItem value={"By Newest"}>By Newest</MenuItem>
-                <MenuItem value={"Most Liked"}>By Likes</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-   
+        <div className="row">
+          <div className="">
 
-          <Grid item xs={4}>
-            <FormControl className={classes.formControl}>             
-            <InputLabel id="select-genre">Story Completion</InputLabel>
-            <Select
-                labelId="select-completion"
-               id="select-dropdown"
-               value={completion}
-               onChange={selectCompletion}
-               ref={storyCompletion}
-             >
-               <MenuItem value={"All"}>All</MenuItem>
-               <MenuItem value={"Finished"}>Finished</MenuItem>
-               <MenuItem value={"Unfinished"}>Unfinished</MenuItem>
-             </Select>
-           </FormControl>
-         </Grid>
-
-           {
-            completion != "All" ?
-            storiesComp.map((story) => {
-              return (
-                <Grid container item xs={6} key={uuidv4()}>
-                  <StoryPreview storyProp={story.id} />
-                </Grid>
-              );
-            })
-            :
-              stories.map((story) => {
+            {
+              completion != "All" ?
+              storiesComp.map((story) => {
                 return (
-                  <Grid container item xs={6} key={uuidv4()}>
+                  <div className="container-fluid" key={uuidv4()}>
                     <StoryPreview storyProp={story.id} />
-                  </Grid>
+                  </div>
                 );
               })
-           }
-           
-          {/* } */}
-        {/* // })} */}
-        </Grid>
-      </Container>
+              :
+                stories.map((story) => {
+                  return (
+                    <div className="container-fluid" key={uuidv4()}>
+                      <StoryPreview storyProp={story.id} />
+                    </div>
+                  );
+                })
+            }
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
