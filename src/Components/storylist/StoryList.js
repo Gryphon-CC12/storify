@@ -14,9 +14,10 @@ function StoryList() {
   const storyGenre = useRef("");
   const storyCompletion = useRef("");
   const [completion, setCompletion] = useState("All")
- 
   const [like, setLike] = useState("By Newest");
   const storyLike = useRef("");
+  const filterButton = useRef("")
+  console.log('filterButton:', filterButton)
 
 
   useEffect(() => {
@@ -95,82 +96,96 @@ function StoryList() {
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   }
-};
+  };
+  
+  const handleFilterButtonClick = () => {
+    const filters = document.body.querySelector(".select-wrapper");
+    const filterButton = document.body.querySelector(".filter-button");
+    if (filters.style.visibility === "hidden") {
+      filters.style.visibility = "visible"
+    } else {
+      filters.style.visibility = "hidden"
+    }
+  }
 
   return (
     <div className="display-story">     
-      <div className="container-fluid">
+      <div className="container">
         <div className="row">
           <div className="col-12 filter-wrapper">
-            <button className="button">Filter Stories</button>
-            <div className="genre-filter">
-              <form>
-                <label id="select-genre">Genre:</label>
-                <select
-                  labelId="select-genre"
-                  id="select-dropdown"
-                  value={genre}
-                  onChange={selectGenre}
-                  ref={storyGenre}
-                >
-                  <option value={"All"}>All</option>
-                  <option value={"Crime"}>Crime</option>
-                  <option value={"Fan Fiction"}>Fan Fiction</option>
-                  <option value={"Fantasy"}>Fantasy</option>
-                  <option value={"Historical"}>Historical</option>
-                  <option value={"Horror"}>Horror</option>
-                  <option value={"Humor"}>Humor</option>
-                  <option value={"Romance"}>Romance</option>
-                  <option value={"Sci-fi"}>Sci-fi</option>
-                  <option value={"Thriller"}>Thriller</option>
-                  <option value={"Other"}>Other</option>
-                </select>
-            </form>
-            </div>
+            <button className="filter-button" onClick={handleFilterButtonClick}>Filter Stories</button>
+            <div className="select-wrapper" style={{ visibility: "visible" }} >
+              <div className="selects">
+              <div className="genre-filter">
+                <form>
+                  <label id="select-genre">Genre:</label>
+                  <select
+                    labelId="select-genre"
+                    id="select-dropdown"
+                    value={genre}
+                    onChange={selectGenre}
+                    ref={storyGenre}
+                  >
+                    <option value={"All"}>All</option>
+                    <option value={"Crime"}>Crime</option>
+                    <option value={"Fan Fiction"}>Fan Fiction</option>
+                    <option value={"Fantasy"}>Fantasy</option>
+                    <option value={"Historical"}>Historical</option>
+                    <option value={"Horror"}>Horror</option>
+                    <option value={"Humor"}>Humor</option>
+                    <option value={"Romance"}>Romance</option>
+                    <option value={"Sci-fi"}>Sci-fi</option>
+                    <option value={"Thriller"}>Thriller</option>
+                    <option value={"Other"}>Other</option>
+                  </select>
+              </form>
+              </div>
 
-            <div className="sort-filter">
-              <form>
-                <label id="select-sort">Sort by:</label>
-                <select
-                  labelid="select-sort"
-                  id="sort-dropdown"
-                  value={like}
-                  onChange={selectLike}
-                  ref={storyLike}
-                >
-                  <option value={"By Newest"}>By Newest</option>
-                  <option value={"Most Liked"}>By Likes</option>
-                </select>
-              </form>
+              <div className="sort-filter">
+                <form>
+                  <label id="select-sort">Sort by:</label>
+                  <select
+                    labelid="select-sort"
+                    id="sort-dropdown"
+                    value={like}
+                    onChange={selectLike}
+                    ref={storyLike}
+                  >
+                    <option value={"By Newest"}>By Newest</option>
+                    <option value={"Most Liked"}>By Likes</option>
+                  </select>
+                </form>
+              </div>
+              
+              <div className="completion-filter">
+                <form>
+                  <label id="select-completion">Completion:</label>
+                  <select
+                    labelid="select-completion"
+                    id="completion-dropdown"
+                    value={completion}
+                    onChange={selectCompletion}
+                    ref={storyCompletion}
+                  >
+                    <option value={"All"}>All</option>
+                    <option value={"Finished"}>Finished Stories</option>
+                    <option value={"Unfinished"}>Unfinished Stories</option>
+                  </select>
+                </form>
+              </div>
+              </div>
             </div>
-            
-            <div className="completion-filter">
-              <form>
-                <label id="select-completion">Completion:</label>
-                <select
-                  labelid="select-completion"
-                  id="completion-dropdown"
-                  value={completion}
-                  onChange={selectCompletion}
-                  ref={storyCompletion}
-                >
-                  <option value={"All"}>All</option>
-                  <option value={"Finished"}>Finished Stories</option>
-                  <option value={"Unfinished"}>Unfinished Stories</option>
-                </select>
-              </form>
-            </div>
-         </div>
+          </div>
         </div>
 
         <div className="row">
-          <div className="col-12">
+          <div className="">
 
             {
               completion != "All" ?
               storiesComp.map((story) => {
                 return (
-                  <div className="col-12" key={uuidv4()}>
+                  <div className="container-fluid" key={uuidv4()}>
                     <StoryPreview storyProp={story.id} />
                   </div>
                 );
@@ -178,7 +193,7 @@ function StoryList() {
               :
                 stories.map((story) => {
                   return (
-                    <div className="container" key={uuidv4()}>
+                    <div className="container-fluid" key={uuidv4()}>
                       <StoryPreview storyProp={story.id} />
                     </div>
                   );

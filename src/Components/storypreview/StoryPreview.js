@@ -5,7 +5,6 @@ import firebase from "../../firebaseConfig";
 const db = firebase.firestore();
 
 function StoryPreview(props) {
-  // console.log('props:', props)
   
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
@@ -30,17 +29,15 @@ function StoryPreview(props) {
           setMaxCollab(doc.data().maxUsers)
           ids_array.push(doc.data().entries)
           setCurrentCollab(ids_array.length);
-
         })
-          
           return ids_array[0][0];
-        })
-        .then(async id => {
-          const data = await db.collection('Entries').where('id', '==', id).get();
-          setStoryText(data.docs.map((doc) => {
-            return (doc.data().text.substring(0, 280) + "...");   // Returns previous only till the first.
-          }));
-        })
+      })
+      .then(async id => {
+        const data = await db.collection('Entries').where('id', '==', id).get();
+        setStoryText(data.docs.map((doc) => {
+          return (doc.data().text.substring(0, 280) + "...");   // Returns previous only till the first.
+        }));
+      })
     } catch (error) {
       console.error(error)
     }
@@ -63,7 +60,7 @@ function StoryPreview(props) {
   }
 
   return (
-    <div className="story-preview-component col-12">
+    <div className="story-preview-component">
       <Link className="read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
         <div className="grid-container">
           <div className="image">
@@ -79,7 +76,7 @@ function StoryPreview(props) {
             {likes} ♥️
           </div>
           <div className="author">
-            <span className="prompt-text">Prompt by: </span><br />
+            <span className="prompt-text">Prompt by:</span><br />
             <span className="author-name">{promptAuthor}</span>
           </div>
           <div className="collab">
