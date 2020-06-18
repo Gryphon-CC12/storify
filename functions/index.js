@@ -78,11 +78,18 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
             break; 
           case "1 day":
             currentEndingTime = currentLastModified + 86400;
-            break;   
+            break;  
+          default:
+            currentEndingTime = currentLastModified + 300;
         }          
   
       if (currentDate >= currentEndingTime) {  //If we're past the deadline
+<<<<<<< HEAD
         // Modifty the collaborator in turn and notify him/her/
+=======
+        // Modify the collaborator in turn and notify him/her/
+        console.log("AllEmails array", allEmails)
+>>>>>>> 8a6f433559169a1db7795210b3af2ac65c2f04dc
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++){
             if (allEmails[i] === currentInTurn){

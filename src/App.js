@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './App.scss';
 import { Router } from "react-router-dom";
-
 import Application from "./Components/application/Application";
 import UserProvider from "./providers/UserProvider";
 import history from './history.js'
@@ -16,19 +15,19 @@ function App() {
   firebase.auth().onAuthStateChanged(user=>{
     if (userState) {
         // store the user on local storage
-        console.log('userToken', user);
+        // console.log('userToken', user);
         
       localStorage.setItem('userToken', JSON.stringify(user));
       setUserState(true);
       
       //setTimeout(function(){ window.location.reload(); }, 12000);
-      console.log("token set");
+      // console.log("token set");
     } else {
         // removes the user from local storage on logOut
       localStorage.removeItem('userToken');
       setUserState(false);
       //window.location.reload();
-      console.log("token deleted");
+      // console.log("token deleted");
     }
   })
   }, [userState])

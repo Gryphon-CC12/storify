@@ -1,3 +1,4 @@
+/* eslint-disable eqeqeq */
 import React, { useRef, useContext } from "react";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
@@ -32,7 +33,7 @@ function CreateStory(props) {
   //////////////
 
   function saveToStories(
-    event,
+    // event,
     storyId,
     promptId,
     user,
