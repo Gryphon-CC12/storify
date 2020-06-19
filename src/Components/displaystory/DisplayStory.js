@@ -7,7 +7,6 @@ import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
-
 import Grid from '@material-ui/core/Grid';
 import {
   EmailShareButton,
@@ -27,19 +26,7 @@ import {
 const db = firebase.firestore();
 
 function DisplayStory(props) {
-  // const user = useContext(UserContext);
-  const user = {
-    admin: true,
-    displayName: "Polly Sutcliffe",
-    email: "psutcl@gmail.com",
-    id: "56a59ef6-726e-42cc-9c53-ab25293442e0",
-    likedEntries: [],
-    linkToEntries: [],
-    linkToStories: ["e8c711ef-6346-4803-a088-f07fac5c9487"],
-    photoURL: "https://lh6.googleusercontent.com/-vWVLpBU9rzU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclaTb7MIbSyXnAk8Dqg-SlLcsbAKw/photo.jpg",
-    uid: "ihOVZpoq5Ra7t776FS8uUcnlayx1"
-    }
-  console.log('user:', user)
+  const user = useContext(UserContext);
   const story_id = props.match.params.id;
 
   const [storyArr, setStoryArr] = useState([]);
