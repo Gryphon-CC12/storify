@@ -46,6 +46,9 @@ function DisplayStory(props) {
   const [userInTurnName, setUserInTurnName] = useState("");
   const [isUserInTurn, setIsUserInTurn] = useState(false);
   const [likes, setLikes] = useState([]);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     fetchEntriesForStory(props.match.params.id, user.email);
@@ -55,7 +58,66 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id);
+    calculateTimeLeft();
   }, [user.email, props.match.params.id]);
+
+  function calculateTimeLeft() {
+    db.collection("StoryDatabase")
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(async function (doc) {
+          let currentTimeLimit = doc.data().timeLimit;
+          let currentLastModified = doc.data().lastModified.seconds;
+          let currentEndingTime = 0;
+          let currentTimeStamp = Math.round(new Date().getTime() / 1000);
+          // let currentTimeStamp = (new Date()).seconds;
+          switch (currentTimeLimit) {
+            case "5 minutes":
+              currentEndingTime = currentLastModified + 300;
+              break;
+            case "15 minutes":
+              currentEndingTime = currentLastModified + 900;
+              break;
+            case "30 minutes":
+              currentEndingTime = currentLastModified + 1800;
+              break;
+            case "1 hour":
+              currentEndingTime = currentLastModified + 3600;
+              break;
+            case "3 hours":
+              currentEndingTime = currentLastModified + 10800;
+              break;
+            case "12 hours":
+              currentEndingTime = currentLastModified + 43200;
+              break;
+            case "1 day":
+              currentEndingTime = currentLastModified + 86400;
+              break;
+            default:
+              currentEndingTime = currentLastModified + 300;
+          }
+          console.log("CurrentEndingTime", currentEndingTime);
+          console.log("currentLastModified", currentLastModified);
+          console.log(
+            "Result remainingTime",
+            currentTimeStamp - currentEndingTime
+          );
+          let remainingTime = currentTimeStamp - currentEndingTime;
+
+          // let hours = Math.floor(remainingTime / 60 / 60);
+          // let minutes = Math.floor(remainingTime / 60) - (hours * 60);
+          // let seconds = remainingTime % 60;
+          let chours = Math.floor(currentEndingTime / 60 / 60);
+          let cminutes = Math.floor(currentEndingTime / 60) - hours * 60;
+          let cseconds = currentEndingTime % 60;
+          console.log("hours, minutes, seconds", chours, cminutes, cseconds);
+
+          setHours(chours);
+          setMinutes(cminutes);
+          setSeconds(cseconds);
+        });
+      });
+  }
 
   function setIsSubmittedFunc(vis, val) {
     setIsSubmitted(vis);
@@ -361,6 +423,7 @@ function DisplayStory(props) {
       ? (noOfUsersString = `${noOfUsersState} authors are`)
       : (noOfUsersString = `${noOfUsersState} author is`);
 
+    let formatted = hours + ":" + minutes + ":" + seconds;
     const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
@@ -371,8 +434,8 @@ function DisplayStory(props) {
             This is the last entry, wrap up the story!
           </div>
           <p>
-            {noOfUsersString} currently participating in this Story!
-            <br />
+            {noOfUsersString} currently participating in this Story! | Time
+            remaining: {formatted} <br />
           </p>
         </>
       );
@@ -382,7 +445,7 @@ function DisplayStory(props) {
           {noOfUsersString} currently participating in this Story!
           <br />
           Spots remaining: {authorSpotsRemaining} | Entries remaining:{" "}
-          {entriesRemaining}
+          {entriesRemaining} | Time remaining: {formatted}
         </p>
       );
     }
@@ -473,7 +536,7 @@ function DisplayStory(props) {
                 >
                   {getLikes(item.entry_id) + " "}
                   <svg
-                    class="bi bi-heart-fill"
+                    className="bi bi-heart-fill"
                     width="1em"
                     height="0.9em"
                     viewBox="0 0 16 16"
@@ -481,7 +544,7 @@ function DisplayStory(props) {
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      fill-rule="evenodd"
+                      fillRule="evenodd"
                       d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
                     />
                   </svg>{" "}
