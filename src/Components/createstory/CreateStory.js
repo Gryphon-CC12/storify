@@ -39,9 +39,6 @@ function CreateStory(props) {
     title,
     imageAsUrl
   ) {
-    if (imageAsUrl === "") {
-      imageAsUrl = "https://bit.ly/2MEQ1yJ";
-    }
 
     if (useRobot.current.checked){
       db.collection("StoryDatabase")

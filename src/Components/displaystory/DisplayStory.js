@@ -9,7 +9,6 @@ import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
 
 import Grid from '@material-ui/core/Grid';
-import FavoriteIcon from '@material-ui/icons/Favorite';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -28,18 +27,18 @@ import {
 const db = firebase.firestore();
 
 function DisplayStory(props) {
-  const user = useContext(UserContext);
-  // const user = {
-  //   admin: true,
-  //   displayName: "Polly Sutcliffe",
-  //   email: "psutcl@gmail.com",
-  //   id: "56a59ef6-726e-42cc-9c53-ab25293442e0",
-  //   likedEntries: [],
-  //   linkToEntries: [],
-  //   linkToStories: ["e8c711ef-6346-4803-a088-f07fac5c9487"],
-  //   photoURL: "https://lh6.googleusercontent.com/-vWVLpBU9rzU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclaTb7MIbSyXnAk8Dqg-SlLcsbAKw/photo.jpg",
-  //   uid: "ihOVZpoq5Ra7t776FS8uUcnlayx1"
-  //   }
+  // const user = useContext(UserContext);
+  const user = {
+    admin: true,
+    displayName: "Polly Sutcliffe",
+    email: "psutcl@gmail.com",
+    id: "56a59ef6-726e-42cc-9c53-ab25293442e0",
+    likedEntries: [],
+    linkToEntries: [],
+    linkToStories: ["e8c711ef-6346-4803-a088-f07fac5c9487"],
+    photoURL: "https://lh6.googleusercontent.com/-vWVLpBU9rzU/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuclaTb7MIbSyXnAk8Dqg-SlLcsbAKw/photo.jpg",
+    uid: "ihOVZpoq5Ra7t776FS8uUcnlayx1"
+    }
   console.log('user:', user)
   const story_id = props.match.params.id;
 
@@ -49,8 +48,11 @@ function DisplayStory(props) {
   const [isContributor, setIsContributor] = useState(false)
   // const [author, setAuthor] = useState("")
   const [noOfUsersState, setNoOfUsersState] = useState(0)
+  const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
   const [isMaxEntries, setIsMaxEntries] = useState(true)
+  const [maxNoOfEntries, setMaxNoOfEntries] = useState(true)
+  const [currentEntries, setCurrentEntries] = useState(0)
   const [numOfEntries, setNumOfEntries] = useState(0)
   const [userInTurn, setUserInTurn] = useState("")
   const [userInTurnName, setUserInTurnName] = useState("");
@@ -230,6 +232,7 @@ function DisplayStory(props) {
 
     const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
     let maxUsers = data.docs[0].data().maxUsers;   //fetch max Users limit from database
+    setMaxNoOfUsersState(maxUsers);
     let currentUsers = data.docs[0].data().emails.length;  //fetch current user number of story from database
 
     if (currentUsers < maxUsers) {    //if current users is not maxed set the state accordingly
@@ -244,7 +247,9 @@ function DisplayStory(props) {
   async function checkMaxEntries(email, story_id) {
     const data = await db.collection('StoryDatabase').where('id', '==', story_id).get();
     let maxEntries = data.docs[0].data().maxEntries;   //fetch max Users limit from database
+    setMaxNoOfEntries(maxEntries)
     let currentEntries = data.docs[0].data().entries.length;  //fetch current user number of story from database
+    setCurrentEntries(currentEntries);
 
     setNumOfEntries(maxEntries - currentEntries);
     if (currentEntries < maxEntries) {    //if current users is not maxed set the state accordingly
@@ -299,26 +304,31 @@ function DisplayStory(props) {
   }
 
   const DisplayPlayerNumbers = () => {
-    if (noOfUsersState > 0) {
-      return (
-        <p> Currently {noOfUsersState} authors in the game!</p>
-      )
-    } else {
-      return (
-        <p>Waiting for players to join! Click join to write the next entry.</p>
-      )
-    }
+    // prompt writer automatically joins the story so there will never be less than 1 user participating.
+    let noOfUsersString;
+    noOfUsersState > 1
+      ? noOfUsersString = `${noOfUsersState} authors are`
+      : noOfUsersString = `${noOfUsersState} author is`;
+    
+    
+    const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
+    const entriesRemaining = maxNoOfEntries - currentEntries;
+
+    return (
+      <p>{noOfUsersString} currently participating in this Story!<br />
+      Spots remaining: {authorSpotsRemaining} | Entries remaining: {entriesRemaining}
+      </p>
+    )
   }
 
   return (
     <div className="display-story-component container" key={uuidv4()}>
-      
         <div className="prompt-details-grid-container">
           <div className="ds-title">
             <h1>{title}</h1>
           </div>
           <div className="ds-image">
-            <img key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} className="img-fluid" width="600" height="400" />
+          <img className="display-image" key={uuidv4()} alt="user-uploaded story artwork" src={imageURL} />
           </div>
           <div className="ds-options">
             <TwitterShareButton
@@ -384,20 +394,23 @@ function DisplayStory(props) {
                     )
                   })}
               </div>
-              <div className="ds-likes">
-                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
-                      {getLikes(item.entry_id)}
-                  <FavoriteIcon /> <br />
-                </span>
-              </div>
+              
               <div className="ds-author">
                 {item.author}
+                <div className="ds-likes">
+                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
+                      {getLikes(item.entry_id) + " "}
+                  <svg class="bi bi-heart-fill" width="1em" height="0.9em" viewBox="0 0 16 16" fill="#C52A0D" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                  </svg> <br />
+                </span>
+              </div>
               </div>
             </div>
           )
         })}
         
-        <div className="container">
+        <div className="container-fluid g-0">
           <DisplayPlayerNumbers />
           {
             isContributor ?

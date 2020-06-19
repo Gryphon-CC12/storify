@@ -5,7 +5,7 @@
 
 .prompt-details-grid-container {
     display: grid;
-    grid-template-columns: auto auto 1.5fr 1fr;
+    grid-template-columns: 1fr 1fr 1.5fr 1fr;
     grid-template-rows: 0.2fr 1fr 0.3fr;
     gap: 1px 1px;
     grid-template-areas: 
@@ -30,12 +30,16 @@
     max-height: 300px;
  }
 
+ .display-image {
+    max-width: 450px;
+    max-height: 300px;
+ }
+
 .ds-options { 
     grid-area: ds-options;
     display: flex;
     justify-content: flex-end;
  }
-
 
 .entry-grid-container {
     display: grid;
@@ -55,6 +59,8 @@
   
 .ds-text { 
     grid-area: ds-text;
+    border-bottom: 1px solid rgb(233, 233, 233);
+    padding-bottom: 20px;
 }
 
 .ds-text > p {
@@ -73,11 +79,21 @@
 
 .ds-likes { 
     grid-area: ds-likes;
-    font-size: 0.8em;
+    align-self: flex-end;
+    font-family: 'Roboto Slab', serif;
+    font-weight: bold;
+ }
+
+ .bi-heart-fill {
+     margin-bottom: 2px;
  }
 
 .ds-author { 
-    font-size: 0.8em;
+    font-size: 0.9em;
     grid-area: ds-author;
     text-align: end;
+    color: #1282A2;
+    font-family: 'Pacifico', cursive;
+    padding-top: 30px;
+    padding-right: 30px;
  }
