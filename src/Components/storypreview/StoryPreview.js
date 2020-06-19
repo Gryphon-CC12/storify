@@ -5,8 +5,6 @@ import firebase from "../../firebaseConfig";
 const db = firebase.firestore();
 
 function StoryPreview(props) {
-  // console.log('props:', props)
-
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
@@ -104,9 +102,6 @@ function StoryPreview(props) {
               />
             </svg>
           </div>
-          <div className="title">{title}</div>
-          <div className="preview-text">{storyText}</div>
-          <div className="likes">{likes} ♥️</div>
           <div className="author">
             <span className="prompt-text">Prompt by:</span>
             <br />
