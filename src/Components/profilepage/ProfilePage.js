@@ -113,6 +113,10 @@ const ProfilePage = () => {
               </Grid>
             </Paper>
           <div> */}
+          <div className="container">
+            <div className="row"></div>
+            <h2>Welcome to your page, {displayName}!</h2>
+          </div>
 
           <div>
             <h3>My Stories</h3>
