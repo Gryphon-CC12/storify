@@ -33,7 +33,8 @@ function DisplayStory(props) {
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
   const [title, setTitle] = useState("")
   const [isContributor, setIsContributor] = useState(false)
-  // const [author, setAuthor] = useState("")
+  const [isSubmitted, setIsSubmitted] = useState(false)  //makes textarea disapear after clicking submit entry in addEntry
+  const [numOfEntry, setNumOfEntry] = useState(0)  //makes textarea disapear after clicking submit entry in addEntry
   const [noOfUsersState, setNoOfUsersState] = useState(0)
   const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0)
   const [isMaxContributors, setIsMaxContributors] = useState(true)
@@ -56,6 +57,11 @@ function DisplayStory(props) {
     getCurrentNumberOfParticipants(props.match.params.id)
   }, [user.email, props.match.params.id])  
 
+  
+  function setIsSubmittedFunc(vis, val) {
+    setIsSubmitted(vis);
+    setNumOfEntry(val);
+  }
 
   useEffect(()=> {
     checkMaxEntries(user.email, props.match.params.id)
@@ -301,11 +307,25 @@ function DisplayStory(props) {
     const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
-    return (
-      <p>{noOfUsersString} currently participating in this Story!<br />
-      Spots remaining: {authorSpotsRemaining} | Entries remaining: {entriesRemaining}
-      </p>
-    )
+    if (entriesRemaining == 1 && isSubmitted == false) {
+      return (
+        <>
+        <div className="ds-author2">
+          This is the last entry, wrap up the story!
+        </div>
+        <p>{noOfUsersString} currently participating in this Story!<br />
+        </p>
+        
+        </>
+      )
+    } else {  
+      return (
+        <p>{noOfUsersString} currently participating in this Story!<br />
+        Spots remaining: {authorSpotsRemaining} | Entries remaining: {entriesRemaining}
+        </p>
+      )
+    }
+
   }
 
   return (
@@ -402,12 +422,19 @@ function DisplayStory(props) {
           {
             isContributor ?
               isMaxEntries ?
+              <div className="ds-author2">
                 <p key={uuidv4()}>This Story has completed</p>  
+              </div>
               :
                 isUserInTurn ?
+                
                   <Grid item xs={12} lg={12}>
-                    <p>This story has {numOfEntries} entries left</p>
-                    <AddEntry setStoryArr={setStoryArr} id={props.match.params.id}  />
+                    <p>This story has {numOfEntries - numOfEntry} entries left</p>
+                      {console.log("isSubmitted", isSubmitted)}
+                      {!isSubmitted ?
+                      <AddEntry setIsSubmittedFunc={setIsSubmittedFunc} setStoryArr={setStoryArr} id={props.match.params.id}  />
+                      :
+                      <></>}
                   </Grid>
                 :
                   <>

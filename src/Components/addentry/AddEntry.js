@@ -23,23 +23,24 @@ function AddEntry(props) {
   // let storyTimeLimit = "";
 
 
-  const pushToStory = (story_id, entry_id, author) => {
+  const pushToStory = (story_id, entry_id, author, passed) => {
     db.collection('StoryDatabase').where("id", "==", story_id)
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(async function (doc) {
 
-
-          await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": firebase.firestore.FieldValue.serverTimestamp() });
-          await db.collection("StoryDatabase").doc(doc.id).update({ "entries": firebase.firestore.FieldValue.arrayUnion(entry_id) });
-          await db.collection("StoryDatabase").doc(doc.id).update({ "lastAuthor": author.email });
-          
-          let currentEnries = await doc.data().entries.length;
-          let maxEnries = await doc.data().maxEntries;
-          let storyTimeLimit = await doc.data().timeLimit;
-          let storyTitle = await doc.data().title;
-          
-          await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) == 0 });
+          if (!passed) {
+            await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": firebase.firestore.FieldValue.serverTimestamp() });
+            await db.collection("StoryDatabase").doc(doc.id).update({ "entries": firebase.firestore.FieldValue.arrayUnion(entry_id) });
+            await db.collection("StoryDatabase").doc(doc.id).update({ "lastAuthor": author.email });
+            
+            let currentEnries = await doc.data().entries.length;
+            let maxEnries = await doc.data().maxEntries;
+            let storyTimeLimit = await doc.data().timeLimit;
+            let storyTitle = await doc.data().title;
+            
+            await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) == 0 });
+          }
           
           // let currentInTurn = await doc.data().inTurn;
           let allEmails = await doc.data().emails;
@@ -91,7 +92,7 @@ function AddEntry(props) {
     }
   }
 
-  const onButtonClick = async (event) => {
+  const onSubmitButtonClick = async (event) => {
 
     // here our problem is this: we need the new story data
     // from display story
@@ -114,12 +115,22 @@ function AddEntry(props) {
     if (inputEl.current.value === "") {
       alert("Please enter a longer entry")   //Checks that story is not empty
     } else {
+      let pass = false;
       await saveToEntries(props.id, inputEl.current.value, id, author);
       await saveToUserEntries(author.email, id, props.id)
-      await pushToStory(props.id, id, author);  //props.id is story.id
-      props.setIsSubmittedFunc(true);
+      await pushToStory(props.id, id, author, pass);  //props.id is story.id
+      props.setIsSubmittedFunc(true, 1);
       
     };
+  };
+
+  const onPassButtonClick = async (event) => {
+    event.preventDefault()
+    // `current` points to the mounted text input element
+    let pass = true;
+    await pushToStory(props.id, id, author, pass);  //props.id is story.id
+    props.setIsSubmittedFunc(true, 0);
+    
   };
 
     return (
@@ -135,7 +146,8 @@ function AddEntry(props) {
               spellCheck='true'
               placeholder="Keep in mind once you submit your entry you can't change it for story coherence purposes. Read Storify rules in 'About' page."
             />
-            <button className="btn btn-dark" id="entry-input" onClick={onButtonClick}>Submit your entry</button>
+            <button className="btn btn-dark" id="entry-input" onClick={onSubmitButtonClick}>Submit your entry</button>
+            <button className="btn btn-dark" id="entry-input" onClick={onPassButtonClick}>Pass this turn</button>
           </div>
         </form>
       </>
