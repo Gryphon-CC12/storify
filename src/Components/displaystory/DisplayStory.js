@@ -31,21 +31,24 @@ function DisplayStory(props) {
 
   const [storyArr, setStoryArr] = useState([]);
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
-  const [title, setTitle] = useState("")
-  const [isContributor, setIsContributor] = useState(false)
-  const [isSubmitted, setIsSubmitted] = useState(false)  //makes textarea disapear after clicking submit entry in addEntry
-  const [numOfEntry, setNumOfEntry] = useState(0)  //makes textarea disapear after clicking submit entry in addEntry
-  const [noOfUsersState, setNoOfUsersState] = useState(0)
-  const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0)
-  const [isMaxContributors, setIsMaxContributors] = useState(true)
-  const [isMaxEntries, setIsMaxEntries] = useState(true)
-  const [maxNoOfEntries, setMaxNoOfEntries] = useState(true)
-  const [currentEntries, setCurrentEntries] = useState(0)
-  const [numOfEntries, setNumOfEntries] = useState(0)
+  const [title, setTitle] = useState("");
+  const [isContributor, setIsContributor] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);  //makes textarea disapear after clicking submit entry in addEntry
+  const [numOfEntry, setNumOfEntry] = useState(0);  //makes textarea disapear after clicking submit entry in addEntry
+  const [noOfUsersState, setNoOfUsersState] = useState(0);
+  const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0);
+  const [isMaxContributors, setIsMaxContributors] = useState(true);
+  const [isMaxEntries, setIsMaxEntries] = useState(true);
+  const [maxNoOfEntries, setMaxNoOfEntries] = useState(true);
+  const [currentEntries, setCurrentEntries] = useState(0);
+  const [numOfEntries, setNumOfEntries] = useState(0);
   const [userInTurn, setUserInTurn] = useState("")
   const [userInTurnName, setUserInTurnName] = useState("");
-  const [isUserInTurn, setIsUserInTurn] = useState(false)
-  const [likes, setLikes] = useState([])
+  const [isUserInTurn, setIsUserInTurn] = useState(false);
+  const [likes, setLikes] = useState([]);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
 
   useEffect(() => {
     fetchEntriesForStory(props.match.params.id, user.email);
@@ -55,9 +58,64 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id)
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id)
+    calculateTimeLeft();
   }, [user.email, props.match.params.id])  
 
-  
+  function calculateTimeLeft(){
+    db.collection('StoryDatabase').get()
+    .then(function(querySnapshot) {
+      querySnapshot.forEach(async function(doc) {
+        let currentTimeLimit = doc.data().timeLimit;
+        let currentLastModified = doc.data().lastModified.seconds;
+        let currentEndingTime = 0;
+        let currentTimeStamp = Math.round((new Date()).getTime() / 1000);
+        // let currentTimeStamp = (new Date()).seconds;
+        switch (currentTimeLimit) {
+          case "5 minutes":
+            currentEndingTime = currentLastModified + 300;
+            break;
+          case "15 minutes":
+            currentEndingTime = currentLastModified + 900;
+          break;
+          case "30 minutes":
+            currentEndingTime = currentLastModified + 1800;
+            break;
+          case "1 hour":
+            currentEndingTime = currentLastModified + 3600;
+            break;        
+          case "3 hours":
+            currentEndingTime = currentLastModified + 10800;
+            break;
+          case "12 hours":
+            currentEndingTime = currentLastModified + 43200;
+            break; 
+          case "1 day":
+            currentEndingTime = currentLastModified + 86400;
+            break;  
+          default:
+            currentEndingTime = currentLastModified + 300;
+        } 
+        console.log("CurrentEndingTime",currentEndingTime)
+        console.log("currentLastModified",currentLastModified)
+        console.log("Result remainingTime",currentTimeStamp - currentEndingTime )
+        let remainingTime = currentTimeStamp - currentEndingTime;
+
+        // let hours = Math.floor(remainingTime / 60 / 60);
+        // let minutes = Math.floor(remainingTime / 60) - (hours * 60);
+        // let seconds = remainingTime % 60;
+        let chours = Math.floor((currentEndingTime / 60) / 60);
+        let cminutes = Math.floor(currentEndingTime / 60) - (hours * 60);
+        let cseconds = currentEndingTime % 60;
+        console.log('hours, minutes, seconds', chours, cminutes, cseconds);
+        
+        setHours(chours)
+        setMinutes(cminutes)
+        setSeconds(cseconds)
+      })
+    })
+  }
+
+
   function setIsSubmittedFunc(vis, val) {
     setIsSubmitted(vis);
     setNumOfEntry(val);
@@ -303,7 +361,7 @@ function DisplayStory(props) {
       ? noOfUsersString = `${noOfUsersState} authors are`
       : noOfUsersString = `${noOfUsersState} author is`;
     
-    
+    let formatted = hours + ':' + minutes + ':' + seconds;
     const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
@@ -313,7 +371,7 @@ function DisplayStory(props) {
         <div className="ds-author2">
           This is the last entry, wrap up the story!
         </div>
-        <p>{noOfUsersString} currently participating in this Story!<br />
+        <p>{noOfUsersString} currently participating in this Story! | Time remaining: {formatted} <br />
         </p>
         
         </>
@@ -321,7 +379,7 @@ function DisplayStory(props) {
     } else {  
       return (
         <p>{noOfUsersString} currently participating in this Story!<br />
-        Spots remaining: {authorSpotsRemaining} | Entries remaining: {entriesRemaining}
+        Spots remaining: {authorSpotsRemaining} | Entries remaining: {entriesRemaining} | Time remaining: {formatted}
         </p>
       )
     }
@@ -407,8 +465,8 @@ function DisplayStory(props) {
                 <div className="ds-likes">
                 <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
                       {getLikes(item.entry_id) + " "}
-                  <svg class="bi bi-heart-fill" width="1em" height="0.9em" viewBox="0 0 16 16" fill="#C52A0D" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
+                  <svg className="bi bi-heart-fill" width="1em" height="0.9em" viewBox="0 0 16 16" fill="#C52A0D" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                   </svg> <br />
                 </span>
               </div>
