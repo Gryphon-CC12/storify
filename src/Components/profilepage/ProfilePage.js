@@ -8,6 +8,7 @@ import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import deleteAllStories from "../../utils/deleteAllStories";
 import deleteAllEntries from "../../utils/deleteAllEntries";
+import "./ProfilePage.styles.scss";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -113,18 +114,18 @@ const ProfilePage = () => {
               </Grid>
             </Paper>
           <div> */}
-          <div className="container">
-            <div className="row"></div>
-            <h2>Welcome to your page, {displayName}!</h2>
-          </div>
+          {/* <div className="container">
+            <div className="row"></div> */}
+          <div className="greeting">Welcome to your page, {displayName}!</div>
+          {/* </div> */}
 
           <div>
-            <h3>My Stories</h3>
+            <h3 className="title">My Stories</h3>
             {user.linkToStories ? mapUserStories() : <p>Nothing!</p>}
           </div>
 
           <div>
-            <h3>My Entries</h3>
+            <h3 className="title">My Entries</h3>
             {user.linkToStories ? mapUserEntries() : <p>Nothing!</p>}
           </div>
         </div>

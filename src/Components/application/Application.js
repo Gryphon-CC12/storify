@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Switch, Route } from "react-router-dom";
+import firebase from "../../firebaseConfig";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../../theme";
@@ -19,7 +20,8 @@ const userLocal = JSON.parse(localStorage.getItem('userToken'));
 function Application() {
   const user = useContext(UserContext);
   
-  return userLocal ? (
+  // return userLocal ? (
+    return user ? (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Navbar />

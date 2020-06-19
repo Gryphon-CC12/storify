@@ -7,39 +7,21 @@ import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import "./DisplayStory.styles.scss";
 import deleteOneStory from "../../utils/deleteOneStory";
-import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Typography from "@material-ui/core/Typography";
-import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
-import FavoriteIcon from "@material-ui/icons/Favorite";
-
 import {
   EmailShareButton,
   FacebookShareButton,
   TwitterShareButton,
   RedditShareButton,
   LineShareButton,
-  // LinkedinShareButton
 } from "react-share";
-
-import // FacebookShareCount,
-// RedditShareCount
-"react-share";
-
 import {
   EmailIcon,
   FacebookIcon,
   RedditIcon,
   TwitterIcon,
   LineIcon,
-  // LinkedinIcon
 } from "react-share";
-
-// const {
-//   FacebookShareButton,
-//   TwitterShareButton
-// } = ShareButtons;
 
 const db = firebase.firestore();
 
@@ -51,10 +33,14 @@ function DisplayStory(props) {
   const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
   const [title, setTitle] = useState("");
   const [isContributor, setIsContributor] = useState(false);
-  // const [author, setAuthor] = useState("")
+  const [isSubmitted, setIsSubmitted] = useState(false); //makes textarea disapear after clicking submit entry in addEntry
+  const [numOfEntry, setNumOfEntry] = useState(0); //makes textarea disapear after clicking submit entry in addEntry
   const [noOfUsersState, setNoOfUsersState] = useState(0);
+  const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0);
   const [isMaxContributors, setIsMaxContributors] = useState(true);
   const [isMaxEntries, setIsMaxEntries] = useState(true);
+  const [maxNoOfEntries, setMaxNoOfEntries] = useState(true);
+  const [currentEntries, setCurrentEntries] = useState(0);
   const [numOfEntries, setNumOfEntries] = useState(0);
   const [userInTurn, setUserInTurn] = useState("");
   const [userInTurnName, setUserInTurnName] = useState("");
@@ -70,6 +56,11 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id);
   }, [user.email, props.match.params.id]);
+
+  function setIsSubmittedFunc(vis, val) {
+    setIsSubmitted(vis);
+    setNumOfEntry(val);
+  }
 
   useEffect(() => {
     checkMaxEntries(user.email, props.match.params.id);
@@ -181,7 +172,6 @@ function DisplayStory(props) {
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayUnion(entryId),
               });
-            console.log("ADDED");
             db.collection("Entries")
               .where("id", "==", entryId)
               .get()
@@ -217,7 +207,6 @@ function DisplayStory(props) {
                   entryId
                 ),
               });
-            console.log("DELETED");
             db.collection("Entries")
               .where("id", "==", entryId)
               .get()
@@ -279,6 +268,7 @@ function DisplayStory(props) {
       .where("id", "==", story_id)
       .get();
     let maxUsers = data.docs[0].data().maxUsers; //fetch max Users limit from database
+    setMaxNoOfUsersState(maxUsers);
     let currentUsers = data.docs[0].data().emails.length; //fetch current user number of story from database
 
     if (currentUsers < maxUsers) {
@@ -296,7 +286,9 @@ function DisplayStory(props) {
       .where("id", "==", story_id)
       .get();
     let maxEntries = data.docs[0].data().maxEntries; //fetch max Users limit from database
+    setMaxNoOfEntries(maxEntries);
     let currentEntries = data.docs[0].data().entries.length; //fetch current user number of story from database
+    setCurrentEntries(currentEntries);
 
     setNumOfEntries(maxEntries - currentEntries);
     if (currentEntries < maxEntries) {
@@ -356,191 +348,197 @@ function DisplayStory(props) {
 
   const renderDeleteButton = () => {
     return (
-      <button className="btn btn-danger" onClick={handleDeleteStory}>
-        Delete Story
+      <button className="btn btn-danger btn-sm" onClick={handleDeleteStory}>
+        X
       </button>
     );
   };
 
   const DisplayPlayerNumbers = () => {
-    if (noOfUsersState > 0) {
-      return <p> Currently {noOfUsersState} authors in the game!</p>;
+    // prompt writer automatically joins the story so there will never be less than 1 user participating.
+    let noOfUsersString;
+    noOfUsersState > 1
+      ? (noOfUsersString = `${noOfUsersState} authors are`)
+      : (noOfUsersString = `${noOfUsersState} author is`);
+
+    const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
+    const entriesRemaining = maxNoOfEntries - currentEntries;
+
+    if (entriesRemaining == 1 && isSubmitted == false) {
+      return (
+        <>
+          <div className="ds-author2">
+            This is the last entry, wrap up the story!
+          </div>
+          <p>
+            {noOfUsersString} currently participating in this Story!
+            <br />
+          </p>
+        </>
+      );
     } else {
       return (
-        <p>Waiting for players to join! Click join to write the next entry.</p>
+        <p>
+          {noOfUsersString} currently participating in this Story!
+          <br />
+          Spots remaining: {authorSpotsRemaining} | Entries remaining:{" "}
+          {entriesRemaining}
+        </p>
       );
     }
   };
 
-  const useStyles = makeStyles((theme) => ({
-    root: {
-      flexGrow: 1,
-    },
-    entry: {
-      padding: theme.spacing(2),
-      textAlign: "justified",
-      color: theme.palette.text.secondary,
-    },
-    details: {
-      padding: theme.spacing(2),
-      textAlign: "end",
-      color: theme.palette.text.secondary,
-    },
-  }));
-  const classes = useStyles();
-
   return (
-    <Container maxWidth="md" key={uuidv4()}>
-      <Grid container spacing={2}>
-        {user.email === authorEmail || user.admin === true
-          ? renderDeleteButton()
-          : ""}
-        <Grid item xs={12} lg={3}>
+    <div className="display-story-component container" key={uuidv4()}>
+      <div className="prompt-details-grid-container">
+        <div className="ds-title">
+          <h1>{title}</h1>
+        </div>
+        <div className="ds-image">
           <img
+            className="display-image"
             key={uuidv4()}
             alt="user-uploaded story artwork"
             src={imageURL}
-            className="img-fluid"
-            width="600"
-            height="400"
           />
-        </Grid>
-
-        <TwitterShareButton
-          url={"https://www.storifyapp.com/displaystory/" + story_id}
-          title={title}
-          className="Demo__some-network__share-button"
-        >
-          <TwitterIcon size={32} round />
-        </TwitterShareButton>
-
-        <FacebookShareButton
-          url={"https://www.storifyapp.com/displaystory/" + story_id}
-          title={title}
-          className="Demo__some-network__share-button"
-        >
-          <FacebookIcon size={32} round />
-        </FacebookShareButton>
-
-        <RedditShareButton
-          url={"https://www.storifyapp.com/displaystory/" + story_id}
-          title={title}
-          className="Demo__some-network__share-button"
-        >
-          <RedditIcon size={32} round />
-        </RedditShareButton>
-
-        <EmailShareButton
-          subject={title}
-          body={
-            "Read this amazing story in Storify: https://www.storifyapp.com/displaystory/" +
-            story_id
-          }
-          separator={" "}
-          className="Demo__some-network__share-button"
-        >
-          <EmailIcon size={32} round />
-        </EmailShareButton>
-
-        <LineShareButton
-          url={"https://www.storifyapp.com/displaystory/" + story_id}
-          title={title}
-          className="Demo__some-network__share-button"
-        >
-          <LineIcon size={32} round />
-        </LineShareButton>
-
-        {/* <LinkedinShareButton
-        url={"https://www.storifyapp.com/displaystory/" + story_id}
-        title={title}
-        summary={"Read this amazing story in Storify"}
-        source={"https://www.storifyapp.com/displaystory/" + story_id}
-        className="Demo__some-network__share-button">
-        <LinkedinIcon
-          size={32}
-          round />
-      </LinkedinShareButton> */}
-
-        <Grid id="story-title" item xs={12} lg={9}>
-          <h1 className="story-title">{title}</h1>
-        </Grid>
-
-        {storyArr.map((item) => {
-          return (
-            <React.Fragment key={uuidv4()}>
-              <Grid key={uuidv4()} item xs={12}>
-                <Paper id="story-text" className={classes.entry} elevation={3}>
-                  {item.text.map((paragraph) => {
-                    return <p key={uuidv4()}>{paragraph}</p>;
-                  })}
-                </Paper>
-              </Grid>
-
-              <Grid item xs={6}>
-                <Typography id="story-author" className={classes.details}>
-                  <span
-                    id="likes"
-                    onClick={() =>
-                      addLike(item.entry_id, item.story_id, item.user_email)
-                    }
-                  >
-                    {getLikes(item.entry_id)}
-                    <FavoriteIcon /> <br />
-                  </span>
-                  {item.author}
-                </Typography>
-              </Grid>
-            </React.Fragment>
-          );
-        })}
-
-        <div className="container">
-          <DisplayPlayerNumbers />
-          {isContributor ? (
-            isMaxEntries ? (
-              <p key={uuidv4()}>This Story has completed</p>
-            ) : isUserInTurn ? (
-              numOfEntries === 1 ? (
-                <Grid item xs={12} lg={12}>
-                  <h5 style={{ color: "grey" }}>
-                    Last entry here. End the story your way!
-                  </h5>
-                  <AddEntry id={props.match.params.id} />
-                </Grid>
-              ) : (
-                <Grid item xs={12} lg={12}>
-                  <p>This story has {numOfEntries} entries left</p>
-                  <AddEntry id={props.match.params.id} />
-                </Grid>
-              )
-            ) : (
-              <>
-                <p key={uuidv4()}>
-                  {userInTurn ? (
-                    <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
-                  ) : (
-                    "Waiting for players!"
-                  )}
-                </p>
-                <br />{" "}
-              </>
-            )
-          ) : isMaxContributors ? (
-            <p key={uuidv4()}>This Story has Max Contributor</p>
-          ) : (
-            <button
-              className="btn btn-dark"
-              key={uuidv4()}
-              onClick={() =>
-                addToContributors(user.email, storyArr[0].story_id)
-              }
-            >
-              Join the Story
-            </button>
-          )}
         </div>
-      </Grid>
-    </Container>
+        <div className="ds-options">
+          <TwitterShareButton
+            url={"https://www.storifyapp.com/displaystory/" + story_id}
+            title={title}
+            className="Demo__some-network__share-button"
+          >
+            <TwitterIcon size={32} round />
+          </TwitterShareButton>
+
+          <FacebookShareButton
+            url={"https://www.storifyapp.com/displaystory/" + story_id}
+            title={title}
+            className="Demo__some-network__share-button"
+          >
+            <FacebookIcon size={32} round />
+          </FacebookShareButton>
+
+          <RedditShareButton
+            url={"https://www.storifyapp.com/displaystory/" + story_id}
+            title={title}
+            className="Demo__some-network__share-button"
+          >
+            <RedditIcon size={32} round />
+          </RedditShareButton>
+
+          <EmailShareButton
+            subject={title}
+            body={
+              "Read this amazing story in Storify: https://www.storifyapp.com/displaystory/" +
+              story_id
+            }
+            separator={" "}
+            className="Demo__some-network__share-button"
+          >
+            <EmailIcon size={32} round />
+          </EmailShareButton>
+
+          <LineShareButton
+            url={"https://www.storifyapp.com/displaystory/" + story_id}
+            title={title}
+            className="Demo__some-network__share-button"
+          >
+            <LineIcon size={32} round />
+          </LineShareButton>
+
+          {user.email === authorEmail || user.admin === true
+            ? renderDeleteButton()
+            : ""}
+        </div>
+      </div>
+
+      {storyArr.map((item) => {
+        return (
+          <div className="entry-grid-container" key={uuidv4()}>
+            <div className="ds-text">
+              {item.text.map((paragraph) => {
+                return <p key={uuidv4()}>{paragraph}</p>;
+              })}
+            </div>
+
+            <div className="ds-author">
+              {item.author}
+              <div className="ds-likes">
+                <span
+                  id="likes"
+                  onClick={() =>
+                    addLike(item.entry_id, item.story_id, item.user_email)
+                  }
+                >
+                  {getLikes(item.entry_id) + " "}
+                  <svg
+                    class="bi bi-heart-fill"
+                    width="1em"
+                    height="0.9em"
+                    viewBox="0 0 16 16"
+                    fill="#C52A0D"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+                    />
+                  </svg>{" "}
+                  <br />
+                </span>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+
+      <div className="container-fluid g-0">
+        <DisplayPlayerNumbers />
+        {isContributor ? (
+          isMaxEntries ? (
+            <div className="ds-author2">
+              <p key={uuidv4()}>This Story has completed</p>
+            </div>
+          ) : isUserInTurn ? (
+            <Grid item xs={12} lg={12}>
+              <p>This story has {numOfEntries - numOfEntry} entries left</p>
+              {console.log("isSubmitted", isSubmitted)}
+              {!isSubmitted ? (
+                <AddEntry
+                  setIsSubmittedFunc={setIsSubmittedFunc}
+                  setStoryArr={setStoryArr}
+                  id={props.match.params.id}
+                />
+              ) : (
+                <></>
+              )}
+            </Grid>
+          ) : (
+            <>
+              <p key={uuidv4()}>
+                {userInTurn ? (
+                  <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
+                ) : (
+                  "Waiting for players!"
+                )}
+              </p>
+              <br />{" "}
+            </>
+          )
+        ) : isMaxContributors ? (
+          <p key={uuidv4()}>This Story has Max Contributor</p>
+        ) : (
+          <button
+            className="btn btn-dark"
+            key={uuidv4()}
+            onClick={() => addToContributors(user.email, storyArr[0].story_id)}
+          >
+            Join the Story
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 

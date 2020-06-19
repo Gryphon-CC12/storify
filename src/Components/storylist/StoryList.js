@@ -4,6 +4,8 @@ import "./StoryList.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
+import rightChevron from '../../assets/rightChevron.svg'
+import downChevron from '../../assets/downChevron.svg'
 
 const db = firebase.firestore();
 
@@ -16,9 +18,7 @@ function StoryList() {
   const [completion, setCompletion] = useState("All")
   const [like, setLike] = useState("By Newest");
   const storyLike = useRef("");
-  const filterButton = useRef("")
-  console.log('filterButton:', filterButton)
-
+  // const filterButton = useRef("")
 
   useEffect(() => {
     retrieveAllStoriesByGenre(genre);
@@ -100,11 +100,19 @@ function StoryList() {
   
   const handleFilterButtonClick = () => {
     const filters = document.body.querySelector(".select-wrapper");
+    const filterIcon = document.body.querySelector("#filter-button-icon");
     const filterButton = document.body.querySelector(".filter-button");
-    if (filters.style.visibility === "hidden") {
-      filters.style.visibility = "visible"
+    const filterContainer = document.body.querySelector(".filter-wrapper");
+    if (filters.style.display === "none") {
+      filters.style.display = "flex";
+      filterContainer.style.backgroundColor = "rgb(255, 255, 255)";
+      filterContainer.style.boxShadow = "0px 3px 9px rgba(0,0,0,0.12), 0px 3px 18px rgba(0,0,0,0.08)"
+      filterIcon.src = downChevron;
     } else {
-      filters.style.visibility = "hidden"
+      filters.style.display = "none";
+      filterIcon.src = rightChevron;
+      filterContainer.style.backgroundColor = "inherit";
+      filterContainer.style.boxShadow = "none"
     }
   }
 
@@ -112,15 +120,17 @@ function StoryList() {
     <div className="display-story">     
       <div className="container">
         <div className="row">
-          <div className="col-12 filter-wrapper">
-            <button className="filter-button" onClick={handleFilterButtonClick}>Filter Stories</button>
-            <div className="select-wrapper" style={{ visibility: "visible" }} >
+          <div className="col-12 filter-wrapper g-0 hvr-sweep-to-right">
+            <div className="filter-button" onClick={handleFilterButtonClick}>Filter Stories
+            <img id="filter-button-icon" src={rightChevron} alt="filter button icon" />
+            </div>
+            <div className="select-wrapper" style={{ display: "none" }} >
               <div className="selects">
               <div className="genre-filter">
                 <form>
                   <label id="select-genre">Genre:</label>
                   <select
-                    labelId="select-genre"
+                    labelid="select-genre"
                     id="select-dropdown"
                     value={genre}
                     onChange={selectGenre}
@@ -179,13 +189,13 @@ function StoryList() {
         </div>
 
         <div className="row">
-          <div className="">
+          <div className="g-0">
 
             {
               completion != "All" ?
               storiesComp.map((story) => {
                 return (
-                  <div className="container-fluid" key={uuidv4()}>
+                  <div className="container-fluid g-0" key={uuidv4()}>
                     <StoryPreview storyProp={story.id} />
                   </div>
                 );
@@ -193,7 +203,7 @@ function StoryList() {
               :
                 stories.map((story) => {
                   return (
-                    <div className="container-fluid" key={uuidv4()}>
+                    <div className="container-fluid g-0" key={uuidv4()}>
                       <StoryPreview storyProp={story.id} />
                     </div>
                   );

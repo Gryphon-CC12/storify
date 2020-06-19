@@ -39,9 +39,6 @@ function CreateStory(props) {
     title,
     imageAsUrl
   ) {
-    if (imageAsUrl === "") {
-      imageAsUrl = "https://bit.ly/2MEQ1yJ";
-    }
 
     if (useRobot.current.checked){
       db.collection("StoryDatabase")
@@ -64,6 +61,7 @@ function CreateStory(props) {
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
+        lastAuthor: user.email,
         isCompleted: Number(maxEntries.current.value) - 1 == 0
       })
       .then(function () {
@@ -93,6 +91,7 @@ function CreateStory(props) {
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
+        lastAuthor: user.email,
         isCompleted: Number(maxEntries.current.value) - 1 == 0
       })
       .then(function () {

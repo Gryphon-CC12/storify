@@ -15,6 +15,8 @@ function StoryPreview(props) {
   const [promptAuthor, setPromptAuthor] = useState("");
   const [maxCollab, setMaxCollab] = useState(0);
   const [currentCollab, setCurrentCollab] = useState(0);
+  const [maxEntries, setMaxEntries] = useState(0);
+  const [currentEntries, setCurrentEntries] = useState(0);
 
   async function fetchFirstEntryForStory(id) {
     try {
@@ -29,8 +31,10 @@ function StoryPreview(props) {
             setTitle(doc.data().title);
             setPromptAuthor(doc.data().author);
             setMaxCollab(doc.data().maxUsers);
+            setCurrentCollab(doc.data().emails.length);
+            setMaxEntries(doc.data().maxEntries);
+            setCurrentEntries(doc.data().entries.length);
             ids_array.push(doc.data().entries);
-            setCurrentCollab(ids_array.length);
           });
           return ids_array[0][0];
         })
@@ -53,11 +57,10 @@ function StoryPreview(props) {
   useEffect(() => {
     fetchFirstEntryForStory(props.storyProp);
     fetchImageURL(props.storyProp);
-  }, [props.storyProp]);
+  }, []);
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
-    const db = firebase.firestore();
     const data = await db
       .collection("StoryDatabase")
       .where("id", "==", id)
@@ -83,16 +86,37 @@ function StoryPreview(props) {
               src={imageURL}
             />
           </div>
+          <div className="title text-truncate">{title}</div>
+          <div className="preview-text text-truncate">{storyText}</div>
+          <div className="likes">
+            {likes + " "}
+            <svg
+              className="bi bi-heart-fill"
+              width="1em"
+              height="1em"
+              viewBox="0 0 16 16"
+              fill="#C52A0D"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                fillRule="evenodd"
+                d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
+              />
+            </svg>
+          </div>
           <div className="title">{title}</div>
           <div className="preview-text">{storyText}</div>
           <div className="likes">{likes} ♥️</div>
           <div className="author">
             <span className="prompt-text">Prompt by:</span>
             <br />
-            <span className="author-name">{promptAuthor}</span>
+            <span className="author-name text-truncate">{promptAuthor}</span>
           </div>
           <div className="collab">
             {currentCollab} / {maxCollab} authors
+          </div>
+          <div className="sp-entries">
+            {currentEntries} / {maxEntries} entries
           </div>
           <div className="genre">{genre}</div>
         </div>
