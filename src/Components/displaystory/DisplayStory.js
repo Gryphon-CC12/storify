@@ -26,7 +26,6 @@ import {
 
 const db = firebase.firestore();
 
-let unixDate;
 function DisplayStory(props) {
   const user = useContext(UserContext);
   const story_id = props.match.params.id;
@@ -403,7 +402,7 @@ function DisplayStory(props) {
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
     let unixDate = moment.unix(deadlineSec)._d.toString()
-    console.log("imageURL",imageURL)
+    //console.log("imageURL",imageURL)
 
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (

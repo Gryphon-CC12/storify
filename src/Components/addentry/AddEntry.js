@@ -1,5 +1,5 @@
 /* eslint-disable eqeqeq */
-import React, { useRef, useContext, useState, useEffect } from 'react';
+import React, { useRef, useContext } from 'react';
 import firebase from "../../firebaseConfig";
 import saveToEntries from '../../utils/saveToEntries';
 import saveToUserEntries from '../../utils/saveToUserEntries';
@@ -15,8 +15,8 @@ function AddEntry(props) {
 
   const author = useContext(UserContext);
   const inputEl = useRef(null);
-  const divEl = useRef(null);
-  const buttonEl = useRef(null);
+  //const divEl = useRef(null);
+  //const buttonEl = useRef(null);
   const id = uuidv4();
   // let nextUserEmail = "";
   // let nextUserName = "";
@@ -36,14 +36,14 @@ function AddEntry(props) {
             
             let currentEnries = await doc.data().entries.length;
             let maxEnries = await doc.data().maxEntries;
-            let storyTimeLimit = await doc.data().timeLimit;
-            let storyTitle = await doc.data().title;
             
             await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) == 0 });
           }
           
           // let currentInTurn = await doc.data().inTurn;
           let allEmails = await doc.data().emails;
+          let storyTimeLimit = await doc.data().timeLimit;
+          let storyTitle = await doc.data().title;
 
           
           let nextInTurn = ""
@@ -59,8 +59,8 @@ function AddEntry(props) {
           await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
           const userData = await db.collection('users').where('email', '==', nextInTurn).get();
           let nextUserName = userData.docs[0].data().displayName;
-          //ACTIVATE BEFORE PROD
-          //sendEmailToNextUser(storyTitle, story_id, nextInTurn, nextUserName, storyTimeLimit);
+          //ACTIVATE BEFORE PRODUCTION
+          sendEmailToNextUser(storyTitle, story_id, nextInTurn, nextUserName, storyTimeLimit);
         });
       })
   }
@@ -83,12 +83,12 @@ function AddEntry(props) {
       let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";
   
       //REACTIVATE BEFORE PRODUCTION
-      // emailjs.send(service_id, template_id, template_params, user_id)
-      //   .then(function (response) {
-      //     console.log('SUCCESS!', response.status, response.text);
-      //   }, function (error) {
-      //     console.log('FAILED...', error);
-      //   });
+      emailjs.send(service_id, template_id, template_params, user_id)
+        .then(function (response) {
+          console.log('SUCCESS!', response.status, response.text);
+        }, function (error) {
+          console.log('FAILED...', error);
+        });
     }
   }
 

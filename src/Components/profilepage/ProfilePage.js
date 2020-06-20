@@ -2,9 +2,9 @@ import React, { useContext } from "react";
 import { UserContext } from "../../providers/UserProvider";
 import StoryPreview from "../storypreview/StoryPreview";
 import EntryPreview from "../entrypreview/EntryPreview";
-import Typography from "@material-ui/core/Typography";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
+//import Typography from "@material-ui/core/Typography";
+//import Paper from "@material-ui/core/Paper";
+//import Grid from "@material-ui/core/Grid";
 import { makeStyles } from "@material-ui/core/styles";
 import deleteAllStories from "../../utils/deleteAllStories";
 import deleteAllEntries from "../../utils/deleteAllEntries";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 
 const ProfilePage = () => {
   const user = useContext(UserContext);
-  const classes = useStyles();
+  //const classes = useStyles();
 
   const { photoURL, displayName, email } = user;
 

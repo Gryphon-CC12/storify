@@ -3,10 +3,10 @@ import { Link } from "react-router-dom";
 import "./EntryPreview.styles.scss";
 import firebase from "../../firebaseConfig";
 import { makeStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
-import FavoriteIcon from "@material-ui/icons/Favorite";
+//import Paper from "@material-ui/core/Paper";
+//import Grid from "@material-ui/core/Grid";
+//import Typography from "@material-ui/core/Typography";
+//import FavoriteIcon from "@material-ui/icons/Favorite";
 
 const db = firebase.firestore();
 

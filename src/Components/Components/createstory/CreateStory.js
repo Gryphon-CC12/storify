@@ -19,7 +19,7 @@ function CreateStory(props) {
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
   const user = useContext(UserContext);
-  console.log('user:', user)
+  //console.log('user:', user)
   let imageAsUrl = "";
   /////
 
@@ -64,7 +64,7 @@ function CreateStory(props) {
         timeLimit: deadline.current.value,
       })
       .then(function () {
-        console.log("Document successfully written!");
+        //console.log("Document successfully written!");
       })
       .catch(function (error) {
         console.error("Error writing document: ", error);
@@ -86,7 +86,7 @@ function CreateStory(props) {
       "state_changed",
       (snapShot) => {
         //takes a snap shot of the process as it is happening
-        console.log("Snapshot", snapShot);
+        //console.log("Snapshot", snapShot);
       },
       (err) => {
         //catches the errors

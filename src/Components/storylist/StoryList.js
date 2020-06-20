@@ -108,7 +108,7 @@ function StoryList() {
   const handleFilterButtonClick = () => {
     const filters = document.body.querySelector(".select-wrapper");
     const filterIcon = document.body.querySelector("#filter-button-icon");
-    const filterButton = document.body.querySelector(".filter-button");
+    //const filterButton = document.body.querySelector(".filter-button");
     const filterContainer = document.body.querySelector(".filter-wrapper");
     if (filters.style.display === "none") {
       filters.style.display = "flex";
