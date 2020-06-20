@@ -6,6 +6,7 @@ import AddEntry from "../addentry/AddEntry";
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import "./DisplayStory.styles.scss";
+import heartIcon from '../../assets/heart.svg'
 import deleteOneStory from "../../utils/deleteOneStory";
 import Grid from "@material-ui/core/Grid";
 import moment from 'moment';
@@ -34,7 +35,7 @@ function DisplayStory(props) {
   const [imageURL, setImageURL] = useState("https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2Fdefault.jpg?alt=media&token=234b347d-e761-465d-8004-e914ef8d0360");
   const [title, setTitle] = useState("");
   const [isContributor, setIsContributor] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false); //makes textarea disapear after clicking submit entry in addEntry
+  const [isSubmitted, setIsSubmitted] = useState(false); //makes textarea disappear after clicking submit entry in addEntry
   const [numOfEntry, setNumOfEntry] = useState(0); //changes num of left entries after clicking submit entry in addEntry
   const [noOfUsersState, setNoOfUsersState] = useState(0);
   const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0);
@@ -71,8 +72,7 @@ function DisplayStory(props) {
     setNumOfEntry(val);
   }
 
-  
-  let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
+  let authorEmail; // TODO somehow couldn't use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
     db.collection("StoryDatabase")
       .where("id", "==", storyId)
@@ -391,7 +391,7 @@ function DisplayStory(props) {
     );
   };
 
-  const DisplayPlayerNumbers = () => {
+  const displayPlayerNumbers = () => {
     // prompt writer automatically joins the story so there will never be less than 1 user participating.
     let noOfUsersString;
     noOfUsersState > 1
@@ -434,7 +434,6 @@ function DisplayStory(props) {
           <h1>{title}</h1>
         </div>
         <div className="ds-image">
-          {/* {(imageURL === "") ? (imageURL = "https://bit.ly/2MEQ1yJ") : console.log("")} */}
           <img
             className="display-image"
             key={uuidv4()}
@@ -501,32 +500,28 @@ function DisplayStory(props) {
                 return <p key={uuidv4()}>{paragraph}</p>;
               })}
             </div>
+          </div>
+        )}
+      )}
 
+      {storyArr.map((item) => { 
+        return (
+          <div className="entry-grid-container" key={uuidv4()}>
+            <div className="ds-text">
+              {item.text.map(paragraph => {
+                  return (
+                    <p key={uuidv4()}>{paragraph}</p>
+                  )
+                })}
+            </div>
+            
             <div className="ds-author">
               {item.author}
               <div className="ds-likes">
-                <span
-                  id="likes"
-                  onClick={() =>
-                    addLike(item.entry_id, item.story_id, item.user_email)
-                  }
-                >
-                  {getLikes(item.entry_id) + " "}
-                  <svg
-                    className="bi bi-heart-fill"
-                    width="1em"
-                    height="0.9em"
-                    viewBox="0 0 16 16"
-                    fill="#C52A0D"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
-                    />
-                  </svg>{" "}
-                  <br />
-                </span>
+                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
+                    {getLikes(item.entry_id) + " "}
+                  <img src={heartIcon} alt="heart icon" className="heart icon" /> <br />
+              </span>
               </div>
             </div>
           </div>
@@ -534,49 +529,70 @@ function DisplayStory(props) {
       })}
 
       <div className="container-fluid g-0">
-        <DisplayPlayerNumbers />
-        {isContributor ? (
-          isMaxEntries ? (
-            <div className="ds-author2">
-              <p key={uuidv4()}>This Story has completed</p>
-            </div>
-          ) : isUserInTurn ? (
-            <Grid item xs={12} lg={12}>
-              <p>This story has {numOfEntries - numOfEntry} entries left</p>
-              {console.log("isSubmitted", isSubmitted)}
-              {!isSubmitted ? (
-                <AddEntry
-                  setIsSubmittedFunc={setIsSubmittedFunc}
-                  setStoryArr={setStoryArr}
-                  id={props.match.params.id}
-                />
-              ) : (
-                <></>
-              )}
-            </Grid>
-          ) : (
-            <>
-              <p key={uuidv4()}>
-                {userInTurn ? (
-                  <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
-                ) : (
-                  "Waiting for players!"
-                )}
-              </p>
-              <br />{" "}
-            </>
+        
+        {displayPlayerNumbers()}
+
+        {isContributor
+          ?
+          (
+            isMaxEntries
+              ?
+              (
+                <div className="ds-author2">
+                  <p key={uuidv4()}>This Story has completed</p>
+                </div>
+              )
+              : isUserInTurn ?
+                (
+                <Grid item xs={12} lg={12}>
+                  <p>This story has {numOfEntries - numOfEntry} entries left</p>
+                    {!isSubmitted
+                      ?
+                      (
+                        <AddEntry
+                          setIsSubmittedFunc={setIsSubmittedFunc}
+                          setStoryArr={setStoryArr}
+                          id={props.match.params.id}
+                        />
+                      )
+                      :
+                      (
+                        ""
+                      )}
+                </Grid>
+                )
+                :
+                (
+                  <>
+                    <p key={uuidv4()}>
+                      {userInTurn
+                        ?
+                        (
+                          <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
+                        )
+                        :
+                        (
+                          "Waiting for players!"
+                        )}
+                    </p>
+                    <br />{" "}
+                  </>
+                )
           )
-        ) : isMaxContributors ? (
-          <p key={uuidv4()}>This Story has Max Contributor</p>
-        ) : (
-          <button
-            className="btn btn-dark"
-            key={uuidv4()}
-            onClick={() => addToContributors(user.email, storyArr[0].story_id)}
-          >
-            Join the Story
-          </button>
-        )}
+          : isMaxContributors
+            ? (
+                <p key={uuidv4()}>This Story has Max Contributor</p>
+            )
+            :
+            (
+              <button
+                className="btn btn-dark"
+                key={uuidv4()}
+                onClick={() => addToContributors(user.email, storyArr[0].story_id)}
+              >
+                Join the Story
+              </button>
+              )}
       </div>
     </div>
   );

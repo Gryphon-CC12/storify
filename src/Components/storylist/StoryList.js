@@ -18,7 +18,6 @@ function StoryList() {
   const [completion, setCompletion] = useState("All")
   const [like, setLike] = useState("By Newest");
   const storyLike = useRef("");
-  // const filterButton = useRef("")
 
   useEffect(() => {
     retrieveAllStoriesByGenre(genre);
@@ -108,7 +107,6 @@ function StoryList() {
   const handleFilterButtonClick = () => {
     const filters = document.body.querySelector(".select-wrapper");
     const filterIcon = document.body.querySelector("#filter-button-icon");
-    //const filterButton = document.body.querySelector(".filter-button");
     const filterContainer = document.body.querySelector(".filter-wrapper");
     if (filters.style.display === "none") {
       filters.style.display = "flex";
@@ -127,8 +125,8 @@ function StoryList() {
     <div className="display-story">     
       <div className="container">
         <div className="row">
-          <div className="col-12 filter-wrapper g-0 hvr-sweep-to-right">
-            <div className="filter-button" onClick={handleFilterButtonClick}>Filter Stories
+          <div className="col filter-wrapper g-0 hvr-sweep-to-right">
+            <div className="col-12 filter-button" onClick={handleFilterButtonClick}>Filter Stories{" "}
             <img id="filter-button-icon" src={rightChevron} alt="filter button icon" />
             </div>
             <div className="select-wrapper" style={{ display: "none" }} >
@@ -202,7 +200,7 @@ function StoryList() {
               completion != "All" ?
               storiesComp.map((story) => {
                 return (
-                  <div className="container-fluid g-0" key={uuidv4()}>
+                  <div className="container-fluid g-0 story-preview-component" key={uuidv4()}>
                     <StoryPreview storyProp={story.id} />
                   </div>
                 );

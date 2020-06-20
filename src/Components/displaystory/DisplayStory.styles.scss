@@ -19,21 +19,20 @@
     grid-area: ds-title;
     margin-left: 5%;
     font-size: 2em;
- }
- .ds-title::first-letter {
-     text-transform: uppercase;
- }
+}
+
+.ds-title::first-letter {
+    text-transform: uppercase;
+}
 
 .ds-image { 
     grid-area: ds-image;
-    max-width: 450px;
-    max-height: 300px;
- }
+}
 
- .display-image {
+.display-image {
     max-width: 100%;
     max-height: 100%;
- }
+}
 
 .ds-options { 
     grid-area: ds-options;
@@ -89,10 +88,10 @@
  }
 
 .ds-author { 
-    font-size: 0.9em;
+    font-size: 1em;
     grid-area: ds-author;
     text-align: end;
-    color: #1282A2;
+    color: rgb(104, 148, 160);
     font-family: 'Pacifico', cursive;
     padding-top: 30px;
     padding-right: 30px;

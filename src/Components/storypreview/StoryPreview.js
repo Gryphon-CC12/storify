@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./StoryPreview.styles.scss";
 import firebase from "../../firebaseConfig";
+import heartIcon from '../../assets/heart.svg'
 const db = firebase.firestore();
 
 function StoryPreview(props) {
@@ -48,14 +49,14 @@ function StoryPreview(props) {
           );
         });
     } catch (error) {
-      console.error(error);
+      //console.error(error)
     }
   }
 
   useEffect(() => {
     fetchFirstEntryForStory(props.storyProp);
     fetchImageURL(props.storyProp);
-  }, []);
+  }, [props.storyProp])
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
@@ -76,44 +77,32 @@ function StoryPreview(props) {
         className="read-more"
         to={{ pathname: `/displaystory/${props.storyProp}` }}
       >
-        <div className="grid-container">
-          <div className="image">
+        <div className="sp-grid-container">
+          <div className="sp-image">
             <img
-              className="story-image"
+              className="sp-story-image"
               alt="user-uploaded story artwork"
               src={imageURL}
             />
           </div>
-          <div className="title text-truncate">{title}</div>
-          <div className="preview-text text-truncate">{storyText}</div>
-          <div className="likes">
+          <div className="sp-title text-truncate">{title}</div>
+          <div className="sp-preview-text">{storyText}</div>
+          <div className="sp-likes">
             {likes + " "}
-            <svg
-              className="bi bi-heart-fill"
-              width="1em"
-              height="1em"
-              viewBox="0 0 16 16"
-              fill="#C52A0D"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                fillRule="evenodd"
-                d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"
-              />
-            </svg>
+            <img src={heartIcon} className="sp-heart-icon" alt="heart icon"></img>
           </div>
-          <div className="author">
-            <span className="prompt-text">Prompt by:</span>
+          <div className="sp-author">
+            <span className="sp-prompt-text">Prompt by:</span>
             <br />
-            <span className="author-name text-truncate">{promptAuthor}</span>
+            <span className="sp-author-name text-truncate">{promptAuthor}</span>
           </div>
-          <div className="collab">
+          <div className="sp-collab">
             {currentCollab} / {maxCollab} authors
           </div>
           <div className="sp-entries">
             {currentEntries} / {maxEntries} entries
           </div>
-          <div className="genre">{genre}</div>
+          <div className="sp-genre">{genre}</div>
         </div>
       </Link>
     </div>
