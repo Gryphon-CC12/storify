@@ -28,8 +28,8 @@
 }
 
 .story-image {
-    max-width: 200px;
-    max-height: 200px;
+    max-width: 100%;
+    max-height: 100%;
 }
 
 .title { 
@@ -37,6 +37,7 @@
     grid-area: title;
     font-size: 1.2em;
     font-weight: bold;
+    margin-left: 3%;
 }
 
 .author-name { 
@@ -51,12 +52,17 @@
     align-self: flex-end;
 }
 
+.author {
+    padding-left: 5%;
+}
+
 .prompt-text {
     font-size: 0.75em;
 }
 
 .preview-text { 
     grid-area: preview-text;
+    margin-left: 3%;
 }
 
 .genre { 
@@ -65,11 +71,6 @@
 
 .likes { 
     grid-area: likes;
-}
-
-.heart {
-    height: 15px;
-    width: 15px;
 }
 
 .collab {
@@ -86,6 +87,12 @@
     font-weight: 500;
     color: rgb(140, 182, 175);
     padding-left: 5%;
+}
+
+.heart-icon {
+    height: 1.1em;
+    width: 1.1em;
+    margin-bottom: -2px;
 }
 
 @media only screen and (max-width: 600px) {

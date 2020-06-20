@@ -7,6 +7,7 @@ import {v4 as uuidv4} from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import './DisplayStory.styles.scss';
 import deleteOneStory from '../../utils/deleteOneStory';
+import heartIcon from '../../assets/heart.svg';
 import Grid from '@material-ui/core/Grid';
 import {
   EmailShareButton,
@@ -387,9 +388,7 @@ function DisplayStory(props) {
                 <div className="ds-likes">
                 <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
                       {getLikes(item.entry_id) + " "}
-                  <svg class="bi bi-heart-fill" width="1em" height="0.9em" viewBox="0 0 16 16" fill="#C52A0D" xmlns="http://www.w3.org/2000/svg">
-                    <path fill-rule="evenodd" d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
-                  </svg> <br />
+                    <img src={heartIcon} alt="heart icon" className="heart icon" /> <br />
                 </span>
               </div>
               </div>
