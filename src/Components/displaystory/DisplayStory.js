@@ -32,11 +32,11 @@ function DisplayStory(props) {
   const story_id = props.match.params.id;
 
   const [storyArr, setStoryArr] = useState([]);
-  const [imageURL, setImageURL] = useState("https://bit.ly/2MEQ1yJ");
+  const [imageURL, setImageURL] = useState("https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2Fdefault.jpg?alt=media&token=234b347d-e761-465d-8004-e914ef8d0360");
   const [title, setTitle] = useState("");
   const [isContributor, setIsContributor] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false); //makes textarea disapear after clicking submit entry in addEntry
-  const [numOfEntry, setNumOfEntry] = useState(0); //makes textarea disapear after clicking submit entry in addEntry
+  const [numOfEntry, setNumOfEntry] = useState(0); //changes num of left entries after clicking submit entry in addEntry
   const [noOfUsersState, setNoOfUsersState] = useState(0);
   const [maxNoOfUsersState, setMaxNoOfUsersState] = useState(0);
   const [isMaxContributors, setIsMaxContributors] = useState(true);
@@ -59,18 +59,20 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id);
   }, [user.email, props.match.params.id]);
+  
 
+  useEffect(() => {
+    checkMaxEntries(user.email, props.match.params.id);
+    checkTurns(user.email, props.match.params.id);
+  }, [storyArr]);
+  
 
   function setIsSubmittedFunc(vis, val) {
     setIsSubmitted(vis);
     setNumOfEntry(val);
   }
 
-  useEffect(() => {
-    checkMaxEntries(user.email, props.match.params.id);
-    checkTurns(user.email, props.match.params.id);
-  }, [storyArr]);
-
+  
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
     db.collection("StoryDatabase")
@@ -381,8 +383,6 @@ function DisplayStory(props) {
     let currentUsers = data.docs[0].data().emails.length;
     setNoOfUsersState(currentUsers);
   }
-
-  console.log("unixDate after", unixDate)
   
   const renderDeleteButton = () => {
     return (
@@ -403,9 +403,8 @@ function DisplayStory(props) {
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
     let unixDate = moment.unix(deadlineSec)._d.toString()
-    console.log('deadlineSec', deadlineSec);
-    console.log('unixDate', unixDate);
-    
+    console.log("imageURL",imageURL)
+
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (
         <>
@@ -436,6 +435,7 @@ function DisplayStory(props) {
           <h1>{title}</h1>
         </div>
         <div className="ds-image">
+          {/* {(imageURL === "") ? (imageURL = "https://bit.ly/2MEQ1yJ") : console.log("")} */}
           <img
             className="display-image"
             key={uuidv4()}

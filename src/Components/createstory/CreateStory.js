@@ -20,7 +20,7 @@ function CreateStory(props) {
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
   const user = useContext(UserContext);
-  let imageAsUrl = "";
+  let imageAsUrl = "https://bit.ly/2MEQ1yJ";
   /////
 
   /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
