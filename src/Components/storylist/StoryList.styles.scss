@@ -6,8 +6,12 @@
     justify-content: flex-start;
     margin: 2% 3% 3% 20px;
     transition: all ease .3s;
-    width: auto;
-
+    width: fit-content;
+    font-family: 'Roboto', serif;
+    color: rgb(50, 121, 109);
+    font-size: 0.8em;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 label {
@@ -21,14 +25,13 @@ select {
 }
 
 .filter-button {
-    font-family: 'Roboto', serif;
-    font-size: 1.1em;
+    color: #1582A2;
     padding: 10px;
     padding-left: 20px;
     border-radius: 5px;
     display: flex;
     align-items: center;
-    width: auto;
+    width: fit-content;
 }
 
 .hvr-sweep-to-right {
@@ -72,6 +75,15 @@ select {
     0px 3px 18px rgba(0,0,0,0.08);
   }
 
+  .story-preview-component {
+    margin-bottom: 5%;
+  }
+
+  .story-preview-component:hover {
+    box-shadow: 0px 3px 9px rgba(0,0,0,0.12), 
+    0px 3px 18px rgba(0,0,0,0.08);
+  }
+
 .select-wrapper {
     display: none;
     transition: all ease-in-out .3s;
@@ -91,12 +103,26 @@ select {
 }
 
 @media only screen and (max-width: 600px) {
-    .filter-wrapper {
-        flex-direction: column;
+    .selects {
+        margin-top: -10px;
+        margin-bottom: -10px;
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: flex-start;
+        align-items: center;
     }
 
-    .filter-button {
-        margin-bottom: 5%;
+    label {
+        color: #034078;
+        font-size: 0.9em;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    select {
+        background-color: #FAFAFA;
+        border: 1px solid rgb(221, 221, 221);
+        margin-bottom: 3%;
     }
 
 }

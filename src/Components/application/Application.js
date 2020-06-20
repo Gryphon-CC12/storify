@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Switch, Route } from "react-router-dom";
-//import firebase from "../../firebaseConfig";
+// import firebase from "../../firebaseConfig";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../../theme";
@@ -15,7 +15,7 @@ import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
 import PasswordReset from "../passwordreset/PasswordReset";
 import { UserContext } from "../../providers/UserProvider";
-//const userLocal = JSON.parse(localStorage.getItem('userToken'));
+// const userLocal = JSON.parse(localStorage.getItem('userToken'));
 
 function Application() {
   const user = useContext(UserContext);

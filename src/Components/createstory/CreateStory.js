@@ -7,6 +7,7 @@ import { storage } from "../../firebaseConfig";
 import { UserContext } from "../../providers/UserProvider";
 import "firebase/storage";
 import saveToUserStories from '../../utils/saveToUserStories';
+import './CreateStory.scss';
 
 //import emailjs from 'emailjs-com';
 //require('dotenv').config()
@@ -69,7 +70,7 @@ function CreateStory(props) {
         // console.log("Document successfully written!");
       })
       .catch(function (error) {
-        console.error("Error writing document: ", error);
+        //console.error("Error writing document: ", error);
       });
     } else {
       db.collection("StoryDatabase")
@@ -97,10 +98,10 @@ function CreateStory(props) {
         isPrivate: isPrivate.current.checked
       })
       .then(function () {
-        console.log("Document successfully written!");
+        //console.log("Document successfully written!");
       })
       .catch(function (error) {
-        console.error("Error writing document: ", error);
+        //console.error("Error writing document: ", error);
       });
     }
   }
@@ -177,132 +178,201 @@ function CreateStory(props) {
       props.history.push(`/displaystory/${storyId}`);
     }
   };
+
+  const displayRobotDisclaimer = () => {
+    const robotWarningEl = document.querySelector("#robot-warning")
+    if (useRobot.current.checked) {
+      robotWarningEl.style.display = "block"
+    } else {
+      robotWarningEl.style.display = "none";
+    }
+  }
+
+
   return (
     <>
-      <div className="container">
-        <div className="col-12">
+      <div className="page container-fluid">
+        <div className="row">
+          <div className="col-12 top-banner">
+            <span className="banner-text">Tell your story.</span>
+          </div>
+        </div>
+
+        <div className="row">
           <form>
-            <div className="form-group">
-              <label htmlFor="exampleFormControlInput1">
-                Enter a title for your story!
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="story-title"
-                placeholder="Title"
-                ref={titleEl}
-              />
-            </div>
-            <input type="file" onChange={handleFireBaseUpload} />
+            <div className="container create-story-grid-container">
+              
+              <div className="col-12 create-story-title">
+                <label htmlFor="story-title">
+                  Title:
+                </label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="story-title"
+                  ref={titleEl}
+                />
+              </div>
 
-            <div className="form-group">
-              <label htmlFor="prompt-input">Enter story prompt</label>
-              <textarea
-                className="form-control"
-                ref={inputEl}
-                type="text"
-                rows="5"
-              />
-            </div>
-            <div className="form-group"></div>
+              <div className="col-12 create-story-text">
+                <div className="form-group">
+                  <label htmlFor="prompt-input">Text:</label>
+                  <textarea
+                    className="form-control"
+                    ref={inputEl}
+                    type="text"
+                    rows="10"
+                  />
+                </div>
+              </div>
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="defaultCheck1"
-                ref={useRobot}
-              />
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Use Robot as a player?
-              </label>
-            </div>
+  {/* OPTIONS START */}
+              <div className="container-fluid g-0 create-story-options">
+              {/* Collaborators */}
+                <div className="col-12">
+                  <div>
+                    <label className="form-check-label" htmlFor="defaultCheck1">
+                      Number of human collaborators:
+                    </label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      min="1"
+                      max="100"
+                      step="1"
+                      ref={maxCollaborators}
+                    />
+                  </div>
+                </div>
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="defaultCheck1"
-                ref={isPrivate}
-              />
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Make this story private?
-              </label>
-            </div>
+              {/* Robot */}
+                <div className="col-12 robot-filter">
+                  <div className="form-check robot-check">
+                    <label className="form-check-label" htmlFor="robot-check">
+                      Include Robo-Writer:
+                    </label>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="robot-check"
+                      ref={useRobot}
+                      onChange={displayRobotDisclaimer}
+                    />
+                  </div>
+                    <p id="robot-warning">
+                    Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
+                    </p>
+                </div>
 
-            <div>
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Max number of Entries?
-              </label>
-              <input
-                className="form-control"
-                type="number"
-                min="1"
-                step="1"
-                ref={maxEntries}
-              />
+                <div className="col-12 private-filter">
+                  <div className="form-check private-story-check">
+                    <label className="form-check-label" htmlFor="private-story-check">
+                      Private Story:
+                    </label>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="private-story-check"
+                      ref={isPrivate}
+                    />
+                  </div>
+                </div>
+              
+              {/* Entries */}
+                <div className="col-12">
+                  <div>
+                    <label className="form-check-label" htmlFor="defaultCheck1">
+                      Number of entries:
+                    </label>
+                    <input
+                      className="form-control"
+                      type="number"
+                      min="1"
+                      max="100"
+                      step="1"
+                      ref={maxEntries}
+                    />
+                  </div>
+                </div>
+
+              {/* Genre */}
+                <div className="col-12">
+                  <div className="form-group">
+                    <label htmlFor="select-deadline">Genre:</label>
+                    <select
+                      select="true"
+                      className="form-control"
+                      id="exampleFormControlSelect1"
+                      ref={storyGenre}
+                    >
+                      <option>Crime</option>
+                      <option>Fan Fiction</option>
+                      <option>Fantasy</option>
+                      <option>Historical</option>
+                      <option>Horror</option>
+                      <option>Humor</option>
+                      <option>Romance</option>
+                      <option>Sci-fi</option>
+                      <option>Thriller</option>
+                      <option>Other</option>
+                    </select>
+                  </div>
+                </div>
+
+              {/* Deadline */}
+                <div className="col-12">
+                  <div className="form-group">
+                    <label htmlFor="select-deadline">Entry Deadline:</label>
+                    <select
+                      select="true"
+                      className="form-control"
+                      id="exampleFormControlSelect1"
+                      ref={deadline}
+                    >
+                      <option>5 minutes</option>
+                      <option>15 minutes</option>
+                      <option>30 minutes</option>
+                      <option>1 hour</option>
+                      <option>3 hours</option>
+                      <option>12 hours</option>
+                      <option>1 day</option>
+                    </select>
+                  </div>
+                </div>
+              </div> 
+  {/* OPTIONS EMD */}
+                
+              <div className="col-12">
+                <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
+                <div className="form-file">
+                  <label htmlFor="image-input" className="form-file-label">
+                    <span className="form-file-text text-truncate"></span>
+                    <span className="form-file-button">Browse</span>
+                  </label>
+                  <input
+                    type="file"
+                    className="form-file-input"
+                    id="image-input"
+                    onChange={handleFireBaseUpload} 
+                  />
+                </div>
+              </div>
+
             </div>
-            <div>
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Max number of Human Collaborators?
-              </label>
-              <input
-                className="form-control"
-                type="number"
-                min="1"
-                step="1"
-                ref={maxCollaborators}
-              />
-            </div>
-            <div className="form-group">
-              <label htmlFor="select-deadline">Submission Deadline</label>
-              <select
-                select="true"
-                className="form-control"
-                id="exampleFormControlSelect1"
-                ref={deadline}
-              >
-                <option>5 minutes</option>
-                <option>15 minutes</option>
-                <option>30 minutes</option>
-                <option>1 hour</option>
-                <option>3 hours</option>
-                <option>12 hours</option>
-                <option>1 day</option>
-              </select>
-            </div>
-            <div className="form-group">
-              <label htmlFor="select-deadline">Story Genre</label>
-              <select
-                select="true"
-                className="form-control"
-                id="exampleFormControlSelect1"
-                ref={storyGenre}
-              >
-                <option>Crime</option>
-                <option>Fan Fiction</option>
-                <option>Fantasy</option>
-                <option>Historical</option>
-                <option>Horror</option>
-                <option>Humor</option>
-                <option>Romance</option>
-                <option>Sci-fi</option>
-                <option>Thriller</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <button
-              id="entry-input"
-              onClick={onButtonClick}
-              className="btn btn-dark"
-            >
-              Submit
-            </button>
+              <div className="row button-wrapper">
+                <button
+                  id="entry-input"
+                  onClick={onButtonClick}
+                  className="btn btn-dark"
+                >
+                  Submit
+                </button>
+              </div>
           </form>
         </div>
+
       </div>
     </>
   );
