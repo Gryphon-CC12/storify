@@ -62,7 +62,8 @@ function CreateStory(props) {
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isPrivate: isPrivate.current.checked
       })
       .then(function () {
         // console.log("Document successfully written!");
@@ -92,7 +93,8 @@ function CreateStory(props) {
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isPrivate: isPrivate.current.checked
       })
       .then(function () {
         console.log("Document successfully written!");
@@ -143,6 +145,7 @@ function CreateStory(props) {
   const storyId = uuidv4();
   const titleEl = useRef();
   const useRobot = useRef(false);
+  const isPrivate = useRef(false);
   const maxEntries = useRef(1);
   const maxCollaborators = useRef(1);
   const storyGenre = useRef("Other");
@@ -214,6 +217,19 @@ function CreateStory(props) {
               />
               <label className="form-check-label" htmlFor="defaultCheck1">
                 Use Robot as a player?
+              </label>
+            </div>
+
+            <div className="form-check">
+              <input
+                className="form-check-input"
+                type="checkbox"
+                value=""
+                id="defaultCheck1"
+                ref={isPrivate}
+              />
+              <label className="form-check-label" htmlFor="defaultCheck1">
+                Make this story private?
               </label>
             </div>
 
