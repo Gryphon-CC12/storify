@@ -8,6 +8,7 @@ import { UserContext } from "../../providers/UserProvider";
 import "./DisplayStory.styles.scss";
 import deleteOneStory from "../../utils/deleteOneStory";
 import Grid from "@material-ui/core/Grid";
+import moment from 'moment';
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -25,6 +26,7 @@ import {
 
 const db = firebase.firestore();
 
+let unixDate;
 function DisplayStory(props) {
   const user = useContext(UserContext);
   const story_id = props.match.params.id;
@@ -46,9 +48,7 @@ function DisplayStory(props) {
   const [userInTurnName, setUserInTurnName] = useState("");
   const [isUserInTurn, setIsUserInTurn] = useState(false);
   const [likes, setLikes] = useState([]);
-  const [hours, setHours] = useState(0);
-  const [minutes, setMinutes] = useState(0);
-  const [seconds, setSeconds] = useState(0);
+  const [deadlineSec, setDeadlineSec] = useState(0);
 
   useEffect(() => {
     fetchEntriesForStory(props.match.params.id, user.email);
@@ -58,19 +58,36 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
     getCurrentNumberOfParticipants(props.match.params.id);
-    calculateTimeLeft();
   }, [user.email, props.match.params.id]);
 
-  function calculateTimeLeft() {
+
+  function setIsSubmittedFunc(vis, val) {
+    setIsSubmitted(vis);
+    setNumOfEntry(val);
+  }
+
+  useEffect(() => {
+    checkMaxEntries(user.email, props.match.params.id);
+    checkTurns(user.email, props.match.params.id);
+  }, [storyArr]);
+
+  let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
+  function fetchEntriesForStory(storyId, userEmail) {
     db.collection("StoryDatabase")
+      .where("id", "==", storyId)
       .get()
       .then(function (querySnapshot) {
-        querySnapshot.forEach(async function (doc) {
+        let idsArray = [];
+        querySnapshot.forEach(function (doc) {
+          idsArray.push(doc.data().entries);
+          setIsContributor(doc.data().emails.includes(userEmail));
+          setTitle(doc.data().title);
+          let emails = doc.data().emails;
+          authorEmail = emails[0];
+
           let currentTimeLimit = doc.data().timeLimit;
           let currentLastModified = doc.data().lastModified.seconds;
           let currentEndingTime = 0;
-          let currentTimeStamp = Math.round(new Date().getTime() / 1000);
-          // let currentTimeStamp = (new Date()).seconds;
           switch (currentTimeLimit) {
             case "5 minutes":
               currentEndingTime = currentLastModified + 300;
@@ -96,52 +113,10 @@ function DisplayStory(props) {
             default:
               currentEndingTime = currentLastModified + 300;
           }
-          console.log("CurrentEndingTime", currentEndingTime);
-          console.log("currentLastModified", currentLastModified);
-          console.log(
-            "Result remainingTime",
-            currentTimeStamp - currentEndingTime
-          );
-          let remainingTime = currentTimeStamp - currentEndingTime;
 
-          // let hours = Math.floor(remainingTime / 60 / 60);
-          // let minutes = Math.floor(remainingTime / 60) - (hours * 60);
-          // let seconds = remainingTime % 60;
-          let chours = Math.floor(currentEndingTime / 60 / 60);
-          let cminutes = Math.floor(currentEndingTime / 60) - hours * 60;
-          let cseconds = currentEndingTime % 60;
-          console.log("hours, minutes, seconds", chours, cminutes, cseconds);
+          //setUnixDate(unixDate => unixDate.concat(moment.unix(currentEndingTime)._d));
+          setDeadlineSec(currentEndingTime);
 
-          setHours(chours);
-          setMinutes(cminutes);
-          setSeconds(cseconds);
-        });
-      });
-  }
-
-  function setIsSubmittedFunc(vis, val) {
-    setIsSubmitted(vis);
-    setNumOfEntry(val);
-  }
-
-  useEffect(() => {
-    checkMaxEntries(user.email, props.match.params.id);
-    checkTurns(user.email, props.match.params.id);
-  }, [storyArr]);
-
-  let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
-  function fetchEntriesForStory(storyId, userEmail) {
-    db.collection("StoryDatabase")
-      .where("id", "==", storyId)
-      .get()
-      .then(function (querySnapshot) {
-        let idsArray = [];
-        querySnapshot.forEach(function (doc) {
-          idsArray.push(doc.data().entries);
-          setIsContributor(doc.data().emails.includes(userEmail));
-          setTitle(doc.data().title);
-          let emails = doc.data().emails;
-          authorEmail = emails[0];
         });
         return idsArray[0];
       })
@@ -170,7 +145,6 @@ function DisplayStory(props) {
                     },
                   ])
                 );
-
                 setLikes((likes) =>
                   likes.concat([
                     {
@@ -408,6 +382,8 @@ function DisplayStory(props) {
     setNoOfUsersState(currentUsers);
   }
 
+  console.log("unixDate after", unixDate)
+  
   const renderDeleteButton = () => {
     return (
       <button className="btn btn-danger btn-sm" onClick={handleDeleteStory}>
@@ -422,11 +398,14 @@ function DisplayStory(props) {
     noOfUsersState > 1
       ? (noOfUsersString = `${noOfUsersState} authors are`)
       : (noOfUsersString = `${noOfUsersState} author is`);
-
-    let formatted = hours + ":" + minutes + ":" + seconds;
+    
     const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
     const entriesRemaining = maxNoOfEntries - currentEntries;
 
+    let unixDate = moment.unix(deadlineSec)._d.toString()
+    console.log('deadlineSec', deadlineSec);
+    console.log('unixDate', unixDate);
+    
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (
         <>
@@ -434,8 +413,7 @@ function DisplayStory(props) {
             This is the last entry, wrap up the story!
           </div>
           <p>
-            {noOfUsersString} currently participating in this Story! | Time
-            remaining: {formatted} <br />
+            {noOfUsersString} currently participating in this Story! | Next entry deadline is: {unixDate} <br />
           </p>
         </>
       );
@@ -445,7 +423,7 @@ function DisplayStory(props) {
           {noOfUsersString} currently participating in this Story!
           <br />
           Spots remaining: {authorSpotsRemaining} | Entries remaining:{" "}
-          {entriesRemaining} | Time remaining: {formatted}
+          {entriesRemaining} |  Next entry deadline is: {unixDate}
         </p>
       );
     }
