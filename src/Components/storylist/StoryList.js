@@ -18,7 +18,6 @@ function StoryList() {
   const [completion, setCompletion] = useState("All")
   const [like, setLike] = useState("By Newest");
   const storyLike = useRef("");
-  // const filterButton = useRef("")
 
   useEffect(() => {
     retrieveAllStoriesByGenre(genre);
@@ -42,15 +41,20 @@ function StoryList() {
     setLike(event.target.value)
   }
 
-  const retrieveAllStoriesByGenre = async (genre) => {
+    const retrieveAllStoriesByGenre = async (genre) => {
+      const data = await db
+        .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
+        .orderBy('dateCreated', 'desc')
+        .get();
       if (genre === "All" || genre === undefined) {
       setStories([]);
-      const data = await db.collection('StoryDatabase').orderBy('dateCreated', 'desc').get();
       setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
     } else {
       const data = await db
         .collection("StoryDatabase")
         .where("genre", "==", genre)
+        .where("isPrivate", "==", false)
         .orderBy('dateCreated', 'desc')
         .get();
       setStories([]);
@@ -64,6 +68,7 @@ function StoryList() {
     if (genre === "By Newest" || genre === undefined) {
       const data = await db
         .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
         .orderBy("dateCreated", "desc")
         .get();
       setStories([]);
@@ -73,6 +78,7 @@ function StoryList() {
     } else {
       const data = await db
         .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
         .orderBy("likes", "desc")
         .get();
       setStories([]);
@@ -84,15 +90,15 @@ function StoryList() {
 
   const retrieveAllStoriesByCompletion = async (completion) => {
     if (completion === "All" || completion === undefined) {
-      const data = await db.collection('StoryDatabase').orderBy('dateCreated', 'desc').get();
+      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).orderBy('dateCreated', 'desc').get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
     } else if (completion == "Finished") {
-      const data = await db.collection('StoryDatabase').where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
+      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   } else if (completion == "Unfinished") {
-      const data = await db.collection('StoryDatabase').where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
+      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
       setStoriesComp([]);
       setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
   }

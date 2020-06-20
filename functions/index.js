@@ -36,15 +36,15 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
       let lastAuthor = doc.data().lastAuthor;
       let nextUserName = "";
 
-      console.log("currentInTurn",currentInTurn)
-      console.log("lastAuthor",lastAuthor)
-      console.log("maxEntries", maxEntries)
-      console.log("currentEntriesNum", currentEntriesNum)
-      console.log("is statement is ", maxEntries - currentEntriesNum > 0)
+      //console.log("currentInTurn",currentInTurn)
+      //console.log("lastAuthor",lastAuthor)
+      //console.log("maxEntries", maxEntries)
+      //console.log("currentEntriesNum", currentEntriesNum)
+      //console.log("is statement is ", maxEntries - currentEntriesNum > 0)
       if (maxEntries - currentEntriesNum > 0) {
-        console.log("Entered outer if")
+        //console.log("Entered outer if")
         if (currentInTurn == "storify.io@gmail.com" && lastAuthor != "storify.io@gmail.com") {  //Checks last author is not storify bot
-          console.log("Working with new schema of latest author")
+          //console.log("Working with new schema of latest author")
           let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
           const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
           let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
@@ -131,10 +131,10 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
         userId: user.id
     })
     .then(function () {
-        console.log("Document successfully written!");
+        //console.log("Document successfully written!");
     })
     .catch(function (error) {
-        console.error("Error writing document: ", error);
+        //console.error("Error writing document: ", error);
     });
 }
 

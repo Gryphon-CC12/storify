@@ -24,7 +24,7 @@ export default function deleteOneStory(storyIdToDelete, userEmail) {
           return entriesIdsArray[0];  
         })
         .then(entriesIdsArray => {
-            console.log('entriesIdsArray:', entriesIdsArray)
+            //console.log('entriesIdsArray:', entriesIdsArray)
             entriesIdsArray.forEach((id) => {
                 db.collection('Entries').where('id', '==', id)
                     .get()

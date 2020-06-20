@@ -21,7 +21,7 @@ function CreateStory(props) {
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
   const user = useContext(UserContext);
-  let imageAsUrl = "";
+  let imageAsUrl = "https://bit.ly/2MEQ1yJ";
   /////
 
   /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
@@ -63,7 +63,8 @@ function CreateStory(props) {
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isPrivate: isPrivate.current.checked
       })
       .then(function () {
         // console.log("Document successfully written!");
@@ -93,7 +94,8 @@ function CreateStory(props) {
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0
+        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isPrivate: isPrivate.current.checked
       })
       .then(function () {
         //console.log("Document successfully written!");
@@ -144,6 +146,7 @@ function CreateStory(props) {
   const storyId = uuidv4();
   const titleEl = useRef();
   const useRobot = useRef(false);
+  const isPrivate = useRef(false);
   const maxEntries = useRef(1);
   const maxCollaborators = useRef(1);
   const storyGenre = useRef("Other");
@@ -260,6 +263,21 @@ function CreateStory(props) {
                     <p id="robot-warning">
                     Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
                     </p>
+                </div>
+
+                <div className="col-12 private-filter">
+                  <div className="form-check private-story-check">
+                    <label className="form-check-label" htmlFor="private-story-check">
+                      Private Story:
+                    </label>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value=""
+                      id="private-story-check"
+                      ref={isPrivate}
+                    />
+                  </div>
                 </div>
               
               {/* Entries */}

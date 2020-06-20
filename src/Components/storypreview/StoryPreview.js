@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import './StoryPreview.styles.scss';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import "./StoryPreview.styles.scss";
 import firebase from "../../firebaseConfig";
 import heartIcon from '../../assets/heart.svg'
 const db = firebase.firestore();
 
 function StoryPreview(props) {
-  
   const [storyText, setStoryText] = useState([]);
   const [imageURL, setImageURL] = useState("");
   const [title, setTitle] = useState("");
@@ -19,33 +18,40 @@ function StoryPreview(props) {
   const [currentEntries, setCurrentEntries] = useState(0);
 
   async function fetchFirstEntryForStory(id) {
-    try {          
-      db.collection('StoryDatabase').where('id', '==', id).get()
-      .then(function (querySnapshot) {
-        let ids_array = [];
-        querySnapshot.forEach(function (doc) {
-          setGenre(doc.data().genre);
-          setLikes(doc.data().likes);
-          setTitle(doc.data().title);
-          setPromptAuthor(doc.data().author);
-          setMaxCollab(doc.data().maxUsers);
-          setCurrentCollab(doc.data().emails.length);
-          setMaxEntries(doc.data().maxEntries);
-          setCurrentEntries(doc.data().entries.length);
-          ids_array.push(doc.data().entries);
+    try {
+      db.collection("StoryDatabase")
+        .where("id", "==", id)
+        .get()
+        .then(function (querySnapshot) {
+          let ids_array = [];
+          querySnapshot.forEach(function (doc) {
+            setGenre(doc.data().genre);
+            setLikes(doc.data().likes);
+            setTitle(doc.data().title);
+            setPromptAuthor(doc.data().author);
+            setMaxCollab(doc.data().maxUsers);
+            setCurrentCollab(doc.data().emails.length);
+            setMaxEntries(doc.data().maxEntries);
+            setCurrentEntries(doc.data().entries.length);
+            ids_array.push(doc.data().entries);
+          });
+          return ids_array[0][0];
         })
-        return ids_array[0][0];
-      })
-      .then(async id => {
-        const data = await db.collection('Entries').where('id', '==', id).get();
-        setStoryText(data.docs.map((doc) => {
-          return (doc.data().text.substring(0, 280) + "...");   // Returns previous only till the first.
-        }));
-      })
+        .then(async (id) => {
+          const data = await db
+            .collection("Entries")
+            .where("id", "==", id)
+            .get();
+          setStoryText(
+            data.docs.map((doc) => {
+              return doc.data().text.substring(0, 280) + "..."; // Returns previous only till the first.
+            })
+          );
+        });
     } catch (error) {
       //console.error(error)
     }
-  };
+  }
 
   useEffect(() => {
     fetchFirstEntryForStory(props.storyProp);
@@ -54,44 +60,49 @@ function StoryPreview(props) {
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
-    const data = await db.collection('StoryDatabase').where('id', '==', id).get();
+    const data = await db
+      .collection("StoryDatabase")
+      .where("id", "==", id)
+      .get();
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
 
   if (!props) {
-    return <div></div>
+    return <div></div>;
   }
 
   return (
     <div className="story-preview-component">
-      <Link className="read-more" to={{ pathname: `/displaystory/${props.storyProp}` }}>
-        <div className="grid-container">
-          <div className="image">
-            <img className="story-image" alt="user-uploaded story artwork" src={imageURL}/>
+      <Link
+        className="read-more"
+        to={{ pathname: `/displaystory/${props.storyProp}` }}
+      >
+        <div className="sp-grid-container">
+          <div className="sp-image">
+            <img
+              className="sp-story-image"
+              alt="user-uploaded story artwork"
+              src={imageURL}
+            />
           </div>
-          <div className="title text-truncate">
-            {title}
-          </div>
-          <div className="preview-text">
-            {storyText}
-          </div>
-          <div className="likes">
+          <div className="sp-title text-truncate">{title}</div>
+          <div className="sp-preview-text">{storyText}</div>
+          <div className="sp-likes">
             {likes + " "}
-            <img src={heartIcon} className="heart-icon" alt="heart icon"></img>
+            <img src={heartIcon} className="sp-heart-icon" alt="heart icon"></img>
           </div>
-          <div className="author">
-            <span className="prompt-text">Prompt by:</span><br />
-            <span className="author-name text-truncate">{promptAuthor}</span>
+          <div className="sp-author">
+            <span className="sp-prompt-text">Prompt by:</span>
+            <br />
+            <span className="sp-author-name text-truncate">{promptAuthor}</span>
           </div>
-          <div className="collab">
+          <div className="sp-collab">
             {currentCollab} / {maxCollab} authors
           </div>
           <div className="sp-entries">
             {currentEntries} / {maxEntries} entries
           </div>
-          <div className="genre">
-            {genre}
-          </div>
+          <div className="sp-genre">{genre}</div>
         </div>
       </Link>
     </div>
@@ -99,4 +110,3 @@ function StoryPreview(props) {
 }
 
 export default StoryPreview;
-
