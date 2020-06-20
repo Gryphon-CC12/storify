@@ -330,8 +330,8 @@ function CreateStory(props) {
                 <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
                 <div className="form-file">
                   <label htmlFor="image-input" className="form-file-label">
-                    <span class="form-file-text text-truncate"></span>
-                    <span class="form-file-button">Browse</span>
+                    <span className="form-file-text text-truncate"></span>
+                    <span className="form-file-button">Browse</span>
                   </label>
                   <input
                     type="file"
