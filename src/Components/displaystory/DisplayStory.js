@@ -61,7 +61,7 @@ function DisplayStory(props) {
   useEffect(()=> {
     checkMaxEntries(user.email, props.match.params.id)
     checkTurns(user.email, props.match.params.id)
-  }, [storyArr])
+  }, [props.match.params.id, storyArr, user.email])
 
   let authorEmail; // TODO somehow couldnt use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {

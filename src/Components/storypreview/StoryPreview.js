@@ -43,22 +43,20 @@ function StoryPreview(props) {
         }));
       })
     } catch (error) {
-      console.error(error)
+      //console.error(error)
     }
   };
 
   useEffect(() => {
     fetchFirstEntryForStory(props.storyProp);
     fetchImageURL(props.storyProp);
-  }, [])
+  }, [props.storyProp])
 
   // READ FROM DB
   const fetchImageURL = async (id) => {
     const data = await db.collection('StoryDatabase').where('id', '==', id).get();
     setImageURL(data.docs.map((doc) => doc.data().imageUrl));
   };
-
-  
 
   if (!props) {
     return <div></div>
