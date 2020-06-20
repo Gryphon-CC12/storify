@@ -15,7 +15,6 @@ export default function deleteOneStory(storyIdToDelete, userEmail) {
 
     // get entry ids from story database
     // then delete each of the entries from entry db
-    let entryIds;
     db.collection('StoryDatabase').where('id', '==', storyIdToDelete).get()
       .then(function (querySnapshot) {
         let entriesIdsArray = [];
@@ -25,7 +24,7 @@ export default function deleteOneStory(storyIdToDelete, userEmail) {
           return entriesIdsArray[0];  
         })
         .then(entriesIdsArray => {
-            console.log('entriesIdsArray:', entriesIdsArray)
+            //console.log('entriesIdsArray:', entriesIdsArray)
             entriesIdsArray.forEach((id) => {
                 db.collection('Entries').where('id', '==', id)
                     .get()

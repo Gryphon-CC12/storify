@@ -19,13 +19,10 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import BorderColorIcon from "@material-ui/icons/BorderColor";
 import PostAddIcon from "@material-ui/icons/PostAdd";
-import FavoriteIcon from "@material-ui/icons/Favorite";
 import InfoIcon from "@material-ui/icons/Info";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import theme from "../../theme";
-import ListAlt from "@material-ui/icons/ListAlt";
 
 import "./Navbar.styles.scss";
 
@@ -138,19 +135,15 @@ export default function Navbar() {
             >
               <MenuIcon />
             </IconButton>
-            <Link to="/">
+            <Link to="/" id="logo">
               <Typography id="app-title" variant="h6" noWrap>
                 Storify
               </Typography>
             </Link>
 
-            <Link to="/">
+            <Link to="/" id="home-link">
               <Button classes={{ label: "navbar-link" }}>HOME</Button>
             </Link>
-
-            {/* <Link to="/featuredstory">
-              <Button classes={{ label: "navbar-link" }}>FEATURED STORY</Button>
-            </Link> */}
 
             <Link to="/createstory">
               <Button classes={{ label: "navbar-link" }}>CREATE STORY</Button>

@@ -16,7 +16,7 @@ admin.initializeApp();
 const db = firebase.firestore();
 
 exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
-    console.log('This will be run every 1 minutes! with Google function');
+    // console.log('This will be run every 1 minutes! with Google function');
     // const data = await db.collection('StoryDatabase').get();
     // console.log('data', data);
 
@@ -31,12 +31,20 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
       let story_id = doc.data().id;
       let currentEndingTime = 0;
       let currentDate = Math.round(new Date().getTime()/1000);
-      let isFinished = doc.data().isFinished;
+      let currentEntriesNum = Number(doc.data().entries.length);
+      let maxEntries = Number(doc.data().maxEntries);
+      let lastAuthor = doc.data().lastAuthor;
       let nextUserName = "";
 
-      if (!isFinished) {
-
-        if (currentInTurn == "storify.io@gmail.com") {
+      //console.log("currentInTurn",currentInTurn)
+      //console.log("lastAuthor",lastAuthor)
+      //console.log("maxEntries", maxEntries)
+      //console.log("currentEntriesNum", currentEntriesNum)
+      //console.log("is statement is ", maxEntries - currentEntriesNum > 0)
+      if (maxEntries - currentEntriesNum > 0) {
+        //console.log("Entered outer if")
+        if (currentInTurn == "storify.io@gmail.com" && lastAuthor != "storify.io@gmail.com") {  //Checks last author is not storify bot
+          //console.log("Working with new schema of latest author")
           let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
           const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
           let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
@@ -78,7 +86,9 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
             break; 
           case "1 day":
             currentEndingTime = currentLastModified + 86400;
-            break;   
+            break;  
+          default:
+            currentEndingTime = currentLastModified + 300;
         }          
   
       if (currentDate >= currentEndingTime) {  //If we're past the deadline
@@ -109,7 +119,6 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
     })
   });
 
-
   function saveToEntries(storyId, event, entry_id, user) {
     db.collection("Entries").add({
         id: entry_id,
@@ -122,10 +131,10 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
         userId: user.id
     })
     .then(function () {
-        console.log("Document successfully written!");
+        //console.log("Document successfully written!");
     })
     .catch(function (error) {
-        console.error("Error writing document: ", error);
+        //console.error("Error writing document: ", error);
     });
 }
 
@@ -147,12 +156,13 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
     querySnapshot.forEach(async function(doc) {
       await db.collection("StoryDatabase").doc(doc.id).update({"lastModified": firebase.firestore.FieldValue.serverTimestamp()});
       await db.collection("StoryDatabase").doc(doc.id).update({"entries": firebase.firestore.FieldValue.arrayUnion(entry_id)});
-      
+      await db.collection("StoryDatabase").doc(doc.id).update({ "lastAuthor": author.email });
+
       let currentEnries = await doc.data().entries.length;
-      let maxEnries = await doc.data().maxEntries;
+      let maxEntries = await doc.data().maxEntries;
       let currentTimeLimit = doc.data().timeLimit;
       let title = doc.data().title;
-      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": maxEnries - currentEnries == 0 });
+      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEntries) - Number(currentEnries) == 0 });
       
       let currentInTurn = await doc.data().inTurn; 
       let allEmails = await doc.data().emails;

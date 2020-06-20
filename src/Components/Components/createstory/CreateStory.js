@@ -1,4 +1,3 @@
-/* eslint-disable eqeqeq */
 import React, { useRef, useContext } from "react";
 import firebase from "../../firebaseConfig";
 import { v4 as uuidv4 } from "uuid";
@@ -20,7 +19,8 @@ function CreateStory(props) {
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
   const user = useContext(UserContext);
-  let imageAsUrl = "https://bit.ly/2MEQ1yJ";
+  //console.log('user:', user)
+  let imageAsUrl = "";
   /////
 
   /////FOR IMAGE UPLOAD TO GOOGLE BUCKET
@@ -36,43 +36,14 @@ function CreateStory(props) {
     event,
     storyId,
     promptId,
+    user,
     title,
     imageAsUrl
   ) {
-
-    if (useRobot.current.checked){
-      db.collection("StoryDatabase")
-      .add({
-        id: storyId,
-        dateCreated: new Date(),
-        lastModified: new Date(),
-        inTurn: "storify.io@gmail.com",
-        title: title,
-        likes: 0,
-        author: user.displayName,
-        authorUserId: user.id,
-        emails: [user.email, "storify.io@gmail.com"],
-        isPrompt: true,
-        featuredStory: false,
-        maxEntries: maxEntries.current.value,
-        maxUsers: Number(maxCollaborators.current.value) + 1,
-        entries: [promptId],
-        useRobotAsPlayer: useRobot.current.checked,
-        imageUrl: imageAsUrl,
-        genre: storyGenre.current.value,
-        timeLimit: deadline.current.value,
-        lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
-        isPrivate: isPrivate.current.checked
-      })
-      .then(function () {
-        // console.log("Document successfully written!");
-      })
-      .catch(function (error) {
-        console.error("Error writing document: ", error);
-      });
-    } else {
-      db.collection("StoryDatabase")
+    if (imageAsUrl === "") {
+      imageAsUrl = "https://bit.ly/2MEQ1yJ";
+    }
+    db.collection("StoryDatabase")
       .add({
         id: storyId,
         dateCreated: new Date(),
@@ -82,9 +53,8 @@ function CreateStory(props) {
         likes: 0,
         author: user.displayName,
         authorUserId: user.id,
-        emails: [user.email],
+        emails: [],
         isPrompt: true,
-        featuredStory: false,
         maxEntries: maxEntries.current.value,
         maxUsers: maxCollaborators.current.value,
         entries: [promptId],
@@ -92,17 +62,13 @@ function CreateStory(props) {
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
-        lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
-        isPrivate: isPrivate.current.checked
       })
       .then(function () {
-        console.log("Document successfully written!");
+        //console.log("Document successfully written!");
       })
       .catch(function (error) {
         console.error("Error writing document: ", error);
       });
-    }
   }
 
   ////For IMAGE UPLOAD TO GOOGLE BUCKET///
@@ -120,11 +86,11 @@ function CreateStory(props) {
       "state_changed",
       (snapShot) => {
         //takes a snap shot of the process as it is happening
-        // console.log("Snapshot", snapShot);
+        //console.log("Snapshot", snapShot);
       },
       (err) => {
         //catches the errors
-        console.error("err", err);
+        console.log("err", err);
       },
       () => {
         // gets the functions from storage references the image storage in firebase by the children
@@ -145,7 +111,6 @@ function CreateStory(props) {
   const storyId = uuidv4();
   const titleEl = useRef();
   const useRobot = useRef(false);
-  const isPrivate = useRef(false);
   const maxEntries = useRef(1);
   const maxCollaborators = useRef(1);
   const storyGenre = useRef("Other");
@@ -163,14 +128,13 @@ function CreateStory(props) {
         "Entries should be greater than or equal to number of collaborators"
       );
     } else {
-      //Verify if AI robot will participate
       saveToEntries(storyId, inputEl.current.value, promptId, user);
       saveToUserStories(user.email, storyId)
       saveToStories(
         inputEl.current.value,
         storyId,
         promptId,
-        // user,
+        user,
         titleEl.current.value,
         imageAsUrl
       );
@@ -220,19 +184,6 @@ function CreateStory(props) {
               </label>
             </div>
 
-            <div className="form-check">
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value=""
-                id="defaultCheck1"
-                ref={isPrivate}
-              />
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Make this story private?
-              </label>
-            </div>
-
             <div>
               <label className="form-check-label" htmlFor="defaultCheck1">
                 Max number of Entries?
@@ -247,7 +198,7 @@ function CreateStory(props) {
             </div>
             <div>
               <label className="form-check-label" htmlFor="defaultCheck1">
-                Max number of Human Collaborators?
+                Max number of Collaborators?
               </label>
               <input
                 className="form-control"
@@ -294,6 +245,7 @@ function CreateStory(props) {
                 <option>Other</option>
               </select>
             </div>
+
             <button
               id="entry-input"
               onClick={onButtonClick}

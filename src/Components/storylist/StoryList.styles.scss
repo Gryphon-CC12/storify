@@ -1,18 +1,102 @@
-.display-story {
-    margin-bottom: 200px;
-}
-
-#select-genre {
-    color: #B1B1B8;
-    font-size: 1em;
-}
-
-#select-dropdown {
-    color: #B1B1B8;
+.filter-wrapper {
     font-size: 0.8em;
+    font-family: 'Roboto', serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin: 2% 3% 3% 20px;
+    transition: all ease .3s;
+    width: auto;
+
 }
 
-.MenuItem {
-    color: red;
+label {
+    padding-right: 10px;
 }
 
+select {
+    font-family: 'Roboto', serif;
+    border: none;
+    background-color: inherit;
+}
+
+.filter-button {
+    font-family: 'Roboto', serif;
+    font-size: 1.1em;
+    padding: 10px;
+    padding-left: 20px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    width: auto;
+}
+
+.hvr-sweep-to-right {
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-transform: perspective(1px) translateZ(0);
+    transform: perspective(1px) translateZ(0);
+    position: relative;
+    -webkit-transition-property: color;
+    transition-property: color;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+  }
+  .hvr-sweep-to-right:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(255, 255, 255);
+    -webkit-transform: scaleX(0);
+    transform: scaleX(0);
+    -webkit-transform-origin: 0 50%;
+    transform-origin: 0 50%;
+    -webkit-transition-property: transform;
+    transition-property: transform;
+    -webkit-transition-duration: 0.3s;
+    transition-duration: 0.3s;
+    -webkit-transition-timing-function: ease-out;
+    transition-timing-function: ease-out;
+  }
+
+  .hvr-sweep-to-right:hover:before, 
+  .hvr-sweep-to-right:focus:before, 
+  .hvr-sweep-to-right:active:before {
+    -webkit-transform: scaleX(1);
+    transform: scaleX(1);
+    box-shadow: 0px 3px 9px rgba(0,0,0,0.12), 
+    0px 3px 18px rgba(0,0,0,0.08);
+  }
+
+.select-wrapper {
+    display: none;
+    transition: all ease-in-out .3s;
+    padding: 10px 0 20px 0;
+    background-color: rgb(255, 255, 255);
+}
+
+.selects {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selects > div {
+    margin-left: 10%;
+}
+
+@media only screen and (max-width: 600px) {
+    .filter-wrapper {
+        flex-direction: column;
+    }
+
+    .filter-button {
+        margin-bottom: 5%;
+    }
+
+}
