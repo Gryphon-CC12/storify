@@ -7,6 +7,7 @@ import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import "./DisplayStory.styles.scss";
 import heartIcon from '../../assets/heart.svg'
+import threeDotsVertical from '../../assets/dots-vertical.svg'
 import deleteOneStory from "../../utils/deleteOneStory";
 import Grid from "@material-ui/core/Grid";
 import moment from 'moment';
@@ -383,13 +384,29 @@ function DisplayStory(props) {
     setNoOfUsersState(currentUsers);
   }
   
-  const renderDeleteButton = () => {
+  const renderOptionsDropDown = () => {
+     
+    
     return (
-      <button className="btn btn-danger btn-sm" onClick={handleDeleteStory}>
-        X
-      </button>
+       <div class="dropleft"> 
+        <button class="dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+          <img src={threeDotsVertical} alt="menu button"></img>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <li className="dropdown-item danger" onClick={handleDeleteStory}>Delete Story</li>
+        </ul>
+      </div>
     );
   };
+
+  const showHideDropDown = () => {
+    const dropDownEl = document.querySelector(".dropdown-menu")
+    if (dropDownEl.show === true) {
+      dropDownEl.show = false;
+    } else {
+      dropDownEl.show = false;;
+    }
+  }
 
   const displayPlayerNumbers = () => {
     // prompt writer automatically joins the story so there will never be less than 1 user participating.
@@ -430,19 +447,8 @@ function DisplayStory(props) {
   return (
     <div className="display-story-component container" key={uuidv4()}>
       <div className="prompt-details-grid-container">
-        <div className="ds-title">
-          <h1>{title}</h1>
-        </div>
-        <div className="ds-image">
-          <img
-            className="display-image"
-            key={uuidv4()}
-            alt="user-uploaded story artwork"
-            src={imageURL}
-          />
-        </div>
-        <div className="ds-options">
-          <TwitterShareButton
+        <div className="ds-social-media">
+        <TwitterShareButton
             url={"https://www.storifyapp.com/displaystory/" + story_id}
             title={title}
             className="Demo__some-network__share-button"
@@ -485,9 +491,21 @@ function DisplayStory(props) {
           >
             <LineIcon size={32} round />
           </LineShareButton>
-
+        </div>
+        <div className="ds-title">
+          <h1>{title}</h1>
+        </div>
+        <div className="ds-image">
+          <img
+            className="display-image"
+            key={uuidv4()}
+            alt="user-uploaded story artwork"
+            src={imageURL}
+          />
+        </div>
+        <div className="ds-options">
           {user.email === authorEmail || user.admin === true
-            ? renderDeleteButton()
+            ? renderOptionsDropDown()
             : ""}
         </div>
       </div>
