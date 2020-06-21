@@ -59,6 +59,15 @@ const useStyles = makeStyles(() => ({
   },
   drawerPaper: {
     width: drawerWidth,
+    color: "rgb(50, 121, 109)",
+    textDecoration: "none",
+    fontSize: "20px",
+  },
+  listItem: {
+    color: "rgb(50, 121, 109)",
+    fontFamily: "Roboto",
+    fontSize: "20px",
+    fontWeight: "800",
   },
   drawerHeader: {
     display: "flex",
@@ -181,7 +190,7 @@ export default function Navbar() {
           <Divider />
           <List>
             <Link className="side-link" to="/profile" onClick={handleDrawerClose}>
-              <ListItem button key="profile">
+              <ListItem button key="profile" className={classes.listItem}>
                 <ListItemIcon>
                   {" "}
                   <AccountCircleIcon />{" "}
@@ -190,29 +199,8 @@ export default function Navbar() {
               </ListItem>
             </Link>
 
-            {/* <Link className="side-link" to=""> */}
-            {/* <ListItem button key="stories" onClick={handleDrawerClose}>
-              <ListItemIcon>
-                {" "}
-                <BorderColorIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="My Stories" />
-            </ListItem> */}
-            {/* </Link> */}
-
-
-            {/* <Link className="side-link" to=""> */}            
-            {/* <ListItem button key="entries" onClick={handleDrawerClose}>
-              <ListItemIcon>
-                {" "}
-                <ListAlt />{" "}
-              </ListItemIcon>
-              <ListItemText primary="My Entries" />
-            </ListItem> */}
-            {/* </Link> */}
-
             <Link className="side-link" to="/createstory">
-              <ListItem button key="create" onClick={handleDrawerClose}>
+              <ListItem button key="create" onClick={handleDrawerClose} className={classes.listItem}>
                 <ListItemIcon>
                   {" "}
                   <PostAddIcon />{" "}
@@ -220,41 +208,30 @@ export default function Navbar() {
                 <ListItemText primary="Create A Story" />
               </ListItem>
             </Link>
-          {/* </List> */}
 
           <Divider />
 
           <Link className="side-link" to="/featuredstory">               
-            <ListItem button key="create" onClick={handleDrawerClose}>                 
+            <ListItem button key="create" onClick={handleDrawerClose} className={classes.listItem}>                 
             <ListItemIcon>                   
               {" "}                   
               <PostAddIcon />{" "}                 
             </ListItemIcon>                 
-            <ListItemText primary="Featured Story" />               
+            <ListItemText primary="Featured" />               
             </ListItem>             
           </Link>
 
-
-          {/* <List className="side-link" to="/featuredstory">   
-            <ListItem button key="liked" onClick={handleDrawerClose}>
-              <ListItemIcon>
-                {" "}
-                <FavoriteIcon />{" "}
-              </ListItemIcon>
-              <ListItemText primary="Featured Stories" />
-            </ListItem> */}
-
             <Link className="side-link" to="/about">
-              <ListItem button key="about" onClick={handleDrawerClose}>
+              <ListItem button key="about" onClick={handleDrawerClose} className={classes.listItem}>
                 <ListItemIcon>
                   {" "}
                   <InfoIcon />{" "}
                 </ListItemIcon>
-                <ListItemText primary="About Storify" />
+                <ListItemText primary="About" />
               </ListItem>
             </Link>
 
-            <ListItem button key="logout" onClick={handleDrawerClose}>
+            <ListItem button key="logout" onClick={handleDrawerClose} className={classes.listItem}>
               <ListItemIcon>
                 {" "}
                 <ExitToAppIcon />{" "}

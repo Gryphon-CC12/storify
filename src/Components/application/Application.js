@@ -1,9 +1,5 @@
 import React, { useContext } from "react";
 import { Switch, Route } from "react-router-dom";
-// import firebase from "../../firebaseConfig";
-import { ThemeProvider } from "@material-ui/core/styles";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import theme from "../../theme";
 import Navbar from "../navbar/Navbar.js";
 import ProfilePage from "../profilepage/ProfilePage";
 import FeaturedStory from "../../Components/featuredstory/FeaturedStory";
@@ -21,19 +17,18 @@ function Application() {
   const user = useContext(UserContext);
   
   // return userLocal ? (
-    return user ? (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Navbar />
-      <Switch>
-        <Route exact path="/" component={StoryList} />
-        <Route exact path="/profile" component={ProfilePage} />
-        <Route exact path="/about" component={About} />
-        <Route exact path="/displaystory/:id" component={DisplayStory} />
-        <Route exact path="/createstory" component={CreateStory} />
-        <Route exact path="/featuredstory" component={FeaturedStory} />
-      </Switch>
-    </ThemeProvider>
+  return user ? (
+      <>
+        <Navbar />
+        <Switch>
+          <Route exact path="/" component={StoryList} />
+          <Route exact path="/profile" component={ProfilePage} />
+          <Route exact path="/about" component={About} />
+          <Route exact path="/displaystory/:id" component={DisplayStory} />
+          <Route exact path="/createstory" component={CreateStory} />
+          <Route exact path="/featuredstory" component={FeaturedStory} />
+        </Switch>
+      </>
   ) : (
     <Switch>
       <Route exact path="/signup" component={SignUp} />
