@@ -9,6 +9,11 @@
   background-color: #ffffff;
   padding: 0 5% 5% 5%;
   margin-bottom: 8%;
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
 }
 
 .header {
@@ -51,12 +56,9 @@ ul {
 
 li {
   margin-bottom: 10px;
+
 }
 
-a {
-  color: inherit;
-  text-decoration: underline;
-}
 
 .styled {
   color: #1282A2;
