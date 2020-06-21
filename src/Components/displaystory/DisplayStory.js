@@ -388,32 +388,19 @@ function DisplayStory(props) {
      
     
     return (
-       <div class="dropleft"> 
-        <button class="dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+       <div className="dropleft"> 
+        <button className="dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
           <img src={threeDotsVertical} alt="menu button"></img>
         </button>
-        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+        <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
           <li className="dropdown-item danger" onClick={handleDeleteStory}>Delete Story</li>
         </ul>
       </div>
     );
   };
 
-  const showHideDropDown = () => {
-    const dropDownEl = document.querySelector(".dropdown-menu")
-    if (dropDownEl.show === true) {
-      dropDownEl.show = false;
-    } else {
-      dropDownEl.show = false;;
-    }
-  }
-
   const displayPlayerNumbers = () => {
     // prompt writer automatically joins the story so there will never be less than 1 user participating.
-    let noOfUsersString;
-    noOfUsersState > 1
-      ? (noOfUsersString = `${noOfUsersState} authors are`)
-      : (noOfUsersString = `${noOfUsersState} author is`);
     
     const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
     const entriesRemaining = maxNoOfEntries - currentEntries;
@@ -423,23 +410,35 @@ function DisplayStory(props) {
 
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (
-        <>
-          <div className="ds-author2">
+        <div className="ds-story-stats">
+          <p className="ds-last-author-warning">
             This is the last entry, wrap up the story!
-          </div>
-          <p>
-            {noOfUsersString} currently participating in this Story! | Next entry deadline is: {unixDate} <br />
           </p>
-        </>
+          <p className="ds-currently-participating">
+            Authors participating: {noOfUsersState}
+          </p>
+          <p className="ds-next-entry-deadline">
+            Next entry deadline: {unixDate}
+          </p>
+        </div>
       );
     } else {
       return (
-        <p>
-          {noOfUsersString} currently participating in this Story!
-          <br />
-          Spots remaining: {authorSpotsRemaining} | Entries remaining:{" "}
-          {entriesRemaining} |  Next entry deadline is: {unixDate}
-        </p>
+        <div className="ds-story-stats">
+          <p className="ds-currently-participating">
+            Authors participating: {noOfUsersState}
+          </p>
+          <p className="ds-spots-remaining">
+            Spots remaining: {authorSpotsRemaining}
+          </p>
+          <p className="ds-entries-remaining">
+          Entries remaining:{" "}
+            {entriesRemaining}
+          </p>
+          <p className="ds-next-entry-deadline">
+            Next entry deadline: {unixDate}
+          </p>
+        </div>
       );
     }
   };
@@ -534,7 +533,7 @@ function DisplayStory(props) {
         );
       })}
 
-      <div className="container-fluid g-0">
+      <div className="container-fluid g-0 stats-container">
         
         {displayPlayerNumbers()}
 
@@ -544,13 +543,13 @@ function DisplayStory(props) {
             isMaxEntries
               ?
               (
-                <div className="ds-author2">
-                  <p key={uuidv4()}>This Story has completed</p>
+                <div className="ds-story-stats">
+                  <p key={uuidv4()} className="ds-story-complete">Story Complete!</p>
                 </div>
               )
               : isUserInTurn ?
                 (
-                <Grid item xs={12} lg={12}>
+                <div className="ds-story-stats">
                   <p>This story has {numOfEntries - numOfEntry} entries left</p>
                     {!isSubmitted
                       ?
@@ -565,39 +564,42 @@ function DisplayStory(props) {
                       (
                         ""
                       )}
-                </Grid>
+                </div>
                 )
                 :
                 (
                   <>
-                    <p key={uuidv4()}>
                       {userInTurn
                         ?
-                        (
-                          <p key={uuidv4()}>Currently {userInTurnName}'s turn!</p>
+                      (
+                        <div className="ds-story-stats">
+                          <p key={uuidv4()} className="ds-current-turn">Currently {userInTurnName}'s turn!</p>
+                        </div>
                         )
                         :
-                        (
+                      (
+                        <div className="ds-story-stats">
                           "Waiting for players!"
-                        )}
-                    </p>
-                    <br />{" "}
+                          </div>
+                          )}
                   </>
                 )
           )
           : isMaxContributors
             ? (
-                <p key={uuidv4()}>This Story has Max Contributor</p>
+                <p key={uuidv4()} className="ds-story-full ds-story-stats">This Story is full.</p>
             )
             :
             (
-              <button
-                className="btn btn-dark"
-                key={uuidv4()}
-                onClick={() => addToContributors(user.email, storyArr[0].story_id)}
-              >
-                Join the Story
-              </button>
+              <div className="btn-wrapper">
+                <button
+                  className="join-story-btn btn-sm"
+                  key={uuidv4()}
+                  onClick={() => addToContributors(user.email, storyArr[0].story_id)}
+                >
+                    Join the Story
+                </button>
+              </div>
               )}
       </div>
     </div>
