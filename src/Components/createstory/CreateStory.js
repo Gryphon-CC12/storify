@@ -20,6 +20,17 @@ function CreateStory(props) {
   ////For google image upload
   // const allInputs = {imgUrl: ''}
   // const [imageAsFile, setImageAsFile] = useState('')
+  const inputEl = useRef();
+  const promptId = uuidv4();
+  const storyId = uuidv4();
+  const titleEl = useRef();
+  const useRobot = useRef(false);
+  const isPrivate = useRef(false);
+  const fileName = useRef(false);
+  const maxEntries = useRef(1);
+  const maxCollaborators = useRef(1);
+  const storyGenre = useRef("Other");
+  const deadline = useRef("5 minutes");
   const user = useContext(UserContext);
   let imageAsUrl = "https://bit.ly/2MEQ1yJ";
   /////
@@ -108,6 +119,13 @@ function CreateStory(props) {
 
   ////For IMAGE UPLOAD TO GOOGLE BUCKET///
   const handleFireBaseUpload = (arenderSync) => {
+
+    const renderFileName = () => {
+      document.querySelector("#file-name").innerText = fileName.current.value.substring(12) 
+    }
+    renderFileName();
+
+
     arenderSync.preventDefault();
     const image = arenderSync.target.files[0];
     // async magic goes here...
@@ -140,17 +158,6 @@ function CreateStory(props) {
       }
     );
   };
-
-  const inputEl = useRef();
-  const promptId = uuidv4();
-  const storyId = uuidv4();
-  const titleEl = useRef();
-  const useRobot = useRef(false);
-  const isPrivate = useRef(false);
-  const maxEntries = useRef(1);
-  const maxCollaborators = useRef(1);
-  const storyGenre = useRef("Other");
-  const deadline = useRef("5 minutes");
 
   const onButtonClick = (event) => {
     event.preventDefault();
@@ -187,7 +194,6 @@ function CreateStory(props) {
       robotWarningEl.style.display = "none";
     }
   }
-
 
   return (
     <>
@@ -348,11 +354,12 @@ function CreateStory(props) {
                 <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
                 <div className="form-file">
                   <label htmlFor="image-input" className="form-file-label">
-                    <span className="form-file-text text-truncate"></span>
+                    <span id="file-name" className="form-file-text text-truncate"></span>
                     <span className="form-file-button">Browse</span>
                   </label>
                   <input
                     type="file"
+                    ref={fileName}
                     className="form-file-input"
                     id="image-input"
                     onChange={handleFireBaseUpload} 
