@@ -492,18 +492,6 @@ function DisplayStory(props) {
         </div>
       </div>
 
-      {storyArr.map((item) => {
-        return (
-          <div className="entry-grid-container" key={uuidv4()}>
-            <div className="ds-text">
-              {item.text.map((paragraph) => {
-                return <p key={uuidv4()}>{paragraph}</p>;
-              })}
-            </div>
-          </div>
-        )}
-      )}
-
       {storyArr.map((item) => { 
         return (
           <div className="entry-grid-container" key={uuidv4()}>
