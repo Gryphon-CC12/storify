@@ -350,7 +350,7 @@ function CreateStory(props) {
               </div> 
   {/* OPTIONS EMD */}
                 
-              <div className="col-12">
+              <div className="col-12 g-0">
                 <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
                 <div className="form-file">
                   <label htmlFor="image-input" className="form-file-label">
