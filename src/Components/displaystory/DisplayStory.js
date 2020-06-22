@@ -9,7 +9,6 @@ import "./DisplayStory.styles.scss";
 import heartIcon from "../../assets/heart.svg";
 import threeDotsVertical from "../../assets/dots-vertical.svg";
 import deleteOneStory from "../../utils/deleteOneStory";
-import Grid from "@material-ui/core/Grid";
 import moment from "moment";
 import {
   EmailShareButton,
@@ -52,6 +51,7 @@ function DisplayStory(props) {
   const [isUserInTurn, setIsUserInTurn] = useState(false);
   const [likes, setLikes] = useState([]);
   const [deadlineSec, setDeadlineSec] = useState(0);
+  const [storyCreatedDate, setStoryCreatedDate] = useState(0);
 
   useEffect(() => {
     fetchEntriesForStory(props.match.params.id, user.email);
@@ -60,8 +60,12 @@ function DisplayStory(props) {
     checkMaxEntries(user.email, props.match.params.id);
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
-    getCurrentNumberOfParticipants(props.match.params.id);
   }, [user.email, props.match.params.id]);
+
+  function setIsSubmittedFunc(vis, val) {
+    setIsSubmitted(vis);
+    setNumOfEntry(val);
+  }
 
   useEffect(() => {
     checkMaxEntries(user.email, props.match.params.id);
@@ -86,7 +90,11 @@ function DisplayStory(props) {
           setTitle(doc.data().title);
           let emails = doc.data().emails;
           authorEmail = emails[0];
-
+          let dateCreated = doc.data().dateCreated;
+          //console.log('dateCreated', dateCreated);
+          setStoryCreatedDate(dateCreated.seconds);
+          //console.log('dateCreated moment', moment.unix(storyCreatedDate).fromNow());
+          // moment.unix(1454521239279/1000).format("DD MMM YYYY hh:mm a")
           let currentTimeLimit = doc.data().timeLimit;
           let currentLastModified = doc.data().lastModified.seconds;
           let currentEndingTime = 0;
@@ -172,9 +180,9 @@ function DisplayStory(props) {
 
   const updateLikeState = (entryId, operation) => {
     let newLikes = [...likes];
-    if (likes.length > 0) {
-      for (let i = 0; i < likes.length; i++) {
-        if (likes[i].entryId === entryId) {
+    if (newLikes.length > 0) {
+      for (let i = 0; i < newLikes.length; i++) {
+        if (newLikes[i].entryId === entryId) {
           if (operation == "inc") {
             newLikes[i].likes += 1;
           } else if (operation == "dec") {
@@ -202,29 +210,32 @@ function DisplayStory(props) {
       .where("email", "==", user_email)
       .get()
       .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
           if (!doc.data().likedEntries.includes(entryId)) {
-            db.collection("users")
+            await db
+              .collection("users")
               .doc(doc.id)
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayUnion(entryId),
               });
-            db.collection("Entries")
+            await db
+              .collection("Entries")
               .where("id", "==", entryId)
               .get()
               .then(function (querySnapshot) {
-                querySnapshot.forEach(function (doc) {
-                  db.collection("Entries")
+                querySnapshot.forEach(async function (doc) {
+                  await db
+                    .collection("Entries")
                     .doc(doc.id)
                     .update({
                       likes: firebase.firestore.FieldValue.increment(1),
                     });
+                  updateLikeState(entryId, "inc");
                 });
-                updateLikeState(entryId, "inc");
               });
-            setLikes(likes + 1);
 
-            db.collection("StoryDatabase")
+            await db
+              .collection("StoryDatabase")
               .where("id", "==", storyId)
               .get()
               .then(function (querySnapshot) {
@@ -237,14 +248,16 @@ function DisplayStory(props) {
                 });
               });
           } else {
-            db.collection("users")
+            await db
+              .collection("users")
               .doc(doc.id)
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayRemove(
                   entryId
                 ),
               });
-            db.collection("Entries")
+            await db
+              .collection("Entries")
               .where("id", "==", entryId)
               .get()
               .then(function (querySnapshot) {
@@ -254,12 +267,12 @@ function DisplayStory(props) {
                     .update({
                       likes: firebase.firestore.FieldValue.increment(-1),
                     });
+                  updateLikeState(entryId, "dec");
                 });
-                updateLikeState(entryId, "dec");
               });
-            setLikes(likes - 1);
 
-            db.collection("StoryDatabase")
+            await db
+              .collection("StoryDatabase")
               .where("id", "==", storyId)
               .get()
               .then(function (querySnapshot) {
@@ -307,6 +320,7 @@ function DisplayStory(props) {
     let maxUsers = data.docs[0].data().maxUsers; //fetch max Users limit from database
     setMaxNoOfUsersState(maxUsers);
     let currentUsers = data.docs[0].data().emails.length; //fetch current user number of story from database
+    setNoOfUsersState(currentUsers);
 
     if (currentUsers < maxUsers) {
       //if current users is not maxed set the state accordingly
@@ -471,8 +485,11 @@ function DisplayStory(props) {
   const displayPlayerNumbers = () => {
     // prompt writer automatically joins the story so there will never be less than 1 user participating.
 
-    const authorSpotsRemaining = maxNoOfUsersState - noOfUsersState;
-    const entriesRemaining = maxNoOfEntries - currentEntries;
+    const authorSpotsRemaining = Math.max(
+      0,
+      maxNoOfUsersState - noOfUsersState
+    );
+    const entriesRemaining = Math.max(0, maxNoOfEntries - currentEntries);
 
     let unixDate = moment.unix(deadlineSec)._d.toString();
     //console.log("imageURL",imageURL)
@@ -480,6 +497,9 @@ function DisplayStory(props) {
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (
         <div className="ds-story-stats">
+          <p className="ds-date-created">
+            Story created: {moment.unix(storyCreatedDate).fromNow()}
+          </p>
           <p className="ds-last-author-warning">
             This is the last entry, wrap up the story!
           </p>
@@ -494,6 +514,9 @@ function DisplayStory(props) {
     } else {
       return (
         <div className="ds-story-stats">
+          <p className="ds-date-created">
+            Story created: {moment.unix(storyCreatedDate).fromNow()}
+          </p>
           <p className="ds-currently-participating">
             Authors participating: {noOfUsersState}
           </p>
@@ -592,7 +615,7 @@ function DisplayStory(props) {
                 <span
                   id="likes"
                   onClick={() =>
-                    addLike(item.entry_id, item.story_id, item.user_email)
+                    addLike(item.entry_id, item.story_id, user.email)
                   }
                 >
                   {getLikes(item.entry_id) + " "}

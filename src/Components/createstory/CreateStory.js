@@ -66,15 +66,15 @@ function CreateStory(props) {
         emails: [user.email, "storify.io@gmail.com"],
         isPrompt: true,
         featuredStory: false,
-        maxEntries: maxEntries.current.value,
-        maxUsers: Number(maxCollaborators.current.value) + 1,
+        maxEntries: Math.max(1, maxEntries.current.value),
+        maxUsers: Math.max(2, Number(maxCollaborators.current.value) + 1),
         entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isCompleted: Number(maxEntries.current.value) - 1 <= 0,
         isPrivate: isPrivate.current.checked
       })
       .then(function () {
@@ -97,15 +97,15 @@ function CreateStory(props) {
         emails: [user.email],
         isPrompt: true,
         featuredStory: false,
-        maxEntries: maxEntries.current.value,
-        maxUsers: maxCollaborators.current.value,
+        maxEntries: Math.max(1, maxEntries.current.value),
+        maxUsers: Math.max(1, maxCollaborators.current.value),
         entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isCompleted: Number(maxEntries.current.value) - 1 <= 0,
         isPrivate: isPrivate.current.checked
       })
       .then(function () {
@@ -267,7 +267,7 @@ function CreateStory(props) {
                     />
                   </div>
                     <p id="robot-warning">
-                    Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
+                    Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a target="_blank" rel="noopener noreferrer" href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
                     </p>
                 </div>
 
@@ -350,7 +350,7 @@ function CreateStory(props) {
               </div> 
   {/* OPTIONS EMD */}
                 
-              <div className="col-12">
+              <div className="col-12 g-0">
                 <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
                 <div className="form-file">
                   <label htmlFor="image-input" className="form-file-label">

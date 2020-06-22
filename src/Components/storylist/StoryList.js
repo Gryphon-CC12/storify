@@ -20,16 +20,8 @@ function StoryList() {
   const storyLike = useRef("");
 
   useEffect(() => {
-    retrieveAllStoriesByGenre(genre);
-  }, [genre])
-
-  useEffect(() => {
-    retrieveAllStoriesByLikes(like);
-  }, [like]);
-
-  useEffect(() => {
-    retrieveAllStoriesByCompletion(completion);
-  }, [completion])
+    retrieveStoriesByAllFilters(completion, genre, like);
+  }, [completion, genre, like])
 
   const selectGenre = (event) => {
     setGenre(event.target.value)
@@ -41,67 +33,78 @@ function StoryList() {
     setLike(event.target.value)
   }
 
-    const retrieveAllStoriesByGenre = async (genre) => {
-      const data = await db
-        .collection("StoryDatabase")
-        .where("isPrivate", "==", false)
-        .orderBy('dateCreated', 'desc')
-        .get();
+  const retrieveStoriesByAllFilters = async (completion, genre, like) => {
+
+    //console.log("completion, genre, like", completion, genre, like)
+    let isCompleted;
+    if (completion == "Finished") {
+      isCompleted = true;
+    } else if (completion == "Unfinished") {
+      isCompleted = false;
+    }
+
+    let byLikes;
+    if (like === "By Newest" || like === undefined) {
+      byLikes = "dateCreated";
+    } else {
+      byLikes = "likes";
+    }
+    //console.log("isCompleted, genre, byLikes before", isCompleted, genre, byLikes)
+
+
+    if (completion == "All" || completion == undefined) {
       if (genre === "All" || genre === undefined) {
-      setStories([]);
-      setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
-    } else {
-      const data = await db
+        setStories([]);
+        const data = await db
         .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
+        .orderBy(byLikes, 'desc')
+        .get();
+        //console.log("data iscomp=all, genre=All", data)
+
+        setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      } else {
+        setStories([]);
+        const data = await db
+        .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
         .where("genre", "==", genre)
-        .where("isPrivate", "==", false)
-        .orderBy('dateCreated', 'desc')
+        .orderBy(byLikes, 'desc')
         .get();
-      setStories([]);
-      setStories((stories) =>
-        stories.concat(data.docs.map((doc) => doc.data()))
-      );
-    }
-  };
+        //console.log("data iscomp=all, genre=genre", data)
 
-  const retrieveAllStoriesByLikes = async (genre) => {
-    if (genre === "By Newest" || genre === undefined) {
-      const data = await db
-        .collection("StoryDatabase")
-        .where("isPrivate", "==", false)
-        .orderBy("dateCreated", "desc")
-        .get();
-      setStories([]);
-      setStories((stories) =>
-        stories.concat(data.docs.map((doc) => doc.data()))
-      );
+        setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      }
     } else {
-      const data = await db
+      //console.log("isCompleted, genre, byLikes before2", isCompleted, genre, byLikes)
+
+      if (genre === "All" || genre === undefined) {
+        setStories([]);
+        const data = await db
         .collection("StoryDatabase")
         .where("isPrivate", "==", false)
-        .orderBy("likes", "desc")
+        .where('isCompleted', "==", isCompleted)
+        .orderBy(byLikes, 'desc')
         .get();
-      setStories([]);
-      setStories((stories) =>
-        stories.concat(data.docs.map((doc) => doc.data()))
-      );
-    }
-  };
+        //console.log("data iscomp=true/false, genre=All", data)
+        
+        setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      } else {
+        //console.log("isCompleted, genre, byLikes after", isCompleted, genre, byLikes)
 
-  const retrieveAllStoriesByCompletion = async (completion) => {
-    if (completion === "All" || completion === undefined) {
-      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).orderBy('dateCreated', 'desc').get();
-      setStoriesComp([]);
-      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-    } else if (completion == "Finished") {
-      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).where('isCompleted', "==", true).orderBy("dateCreated", "desc").get();    
-      setStoriesComp([]);
-      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-  } else if (completion == "Unfinished") {
-      const data = await db.collection('StoryDatabase').where("isPrivate", "==", false).where('isCompleted', "==", false).orderBy("dateCreated", "desc").get();
-      setStoriesComp([]);
-      setStoriesComp(storiesComp => storiesComp.concat(data.docs.map((doc) => doc.data())));
-  }
+        const data = await db
+        .collection("StoryDatabase")
+        .where("isPrivate", "==", false)
+        .where("genre", "==", genre)
+        .where('isCompleted', "==", isCompleted)
+        .orderBy(byLikes, 'desc')
+        .get();
+        //console.log("data iscomp=true/false, genre=genre", data)
+        setStories([]);
+
+        setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
+      }
+    }
   };
   
   const handleFilterButtonClick = () => {
@@ -183,8 +186,8 @@ function StoryList() {
                     ref={storyCompletion}
                   >
                     <option value={"All"}>All</option>
-                    <option value={"Finished"}>Finished Stories</option>
-                    <option value={"Unfinished"}>Unfinished Stories</option>
+                    <option value={"Finished"}>Finished</option>
+                    <option value={"Unfinished"}>Unfinished</option>
                   </select>
                 </form>
               </div>
@@ -197,22 +200,13 @@ function StoryList() {
           <div className="g-0">
 
             {
-              completion != "All" ?
-              storiesComp.map((story) => {
+              stories.map((story) => {
                 return (
-                  <div className="container-fluid g-0 story-preview-component" key={uuidv4()}>
+                  <div className="container-fluid g-0" key={uuidv4()}>
                     <StoryPreview storyProp={story.id} />
                   </div>
                 );
               })
-              :
-                stories.map((story) => {
-                  return (
-                    <div className="container-fluid g-0" key={uuidv4()}>
-                      <StoryPreview storyProp={story.id} />
-                    </div>
-                  );
-                })
             }
           </div>
         </div>
