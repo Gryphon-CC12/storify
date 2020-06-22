@@ -66,15 +66,15 @@ function CreateStory(props) {
         emails: [user.email, "storify.io@gmail.com"],
         isPrompt: true,
         featuredStory: false,
-        maxEntries: maxEntries.current.value,
-        maxUsers: Number(maxCollaborators.current.value) + 1,
+        maxEntries: Math.max(1, maxEntries.current.value),
+        maxUsers: Math.max(2, Number(maxCollaborators.current.value) + 1),
         entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isCompleted: Number(maxEntries.current.value) - 1 <= 0,
         isPrivate: isPrivate.current.checked
       })
       .then(function () {
@@ -97,15 +97,15 @@ function CreateStory(props) {
         emails: [user.email],
         isPrompt: true,
         featuredStory: false,
-        maxEntries: maxEntries.current.value,
-        maxUsers: maxCollaborators.current.value,
+        maxEntries: Math.max(1, maxEntries.current.value),
+        maxUsers: Math.max(1, maxCollaborators.current.value),
         entries: [promptId],
         useRobotAsPlayer: useRobot.current.checked,
         imageUrl: imageAsUrl,
         genre: storyGenre.current.value,
         timeLimit: deadline.current.value,
         lastAuthor: user.email,
-        isCompleted: Number(maxEntries.current.value) - 1 == 0,
+        isCompleted: Number(maxEntries.current.value) - 1 <= 0,
         isPrivate: isPrivate.current.checked
       })
       .then(function () {
