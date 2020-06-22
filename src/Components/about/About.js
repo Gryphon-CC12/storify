@@ -57,7 +57,7 @@ function About() {
           <h3>Collaborating in Others' Stories</h3> 
             <ul>
               <li>
-                Joining:<br/>You can join and collaborate any Story provided there are still empty collaborator slots. Stories that have empty slots will have a 'Join the Story' button at the bottom of the Story's page. Once you join, you will be added to the collaborator list and when it becomes your turn, you'll receive an email notification stating when you should submit your entry by. (The deadline is decided by the Story creator.) 
+                Joining:<br/>You can join and collaborate any Story provided there are still empty collaborator slots. Stories that have empty slots will have a 'Join the Story' button at the bottom of the Story's page. Once you join, you will be added to the collaborator list and when it becomes your turn, you'll receive an email notification stating when you should submit your entry by. (The deadline is decided by the Story creator.) Please note, to prevent automatic email spamming you will only receive an email after a human submitted entry but not after Robo-Writer entries.
               </li>
               <li>
                 Story Flow:<br/>Keep in mind that once you submit an entry, it cannot be changed. This is done so the flow of the story is not altered, particularly after other users have continued on from where your original entry left off at.
@@ -87,8 +87,7 @@ function About() {
       The creators: <a href="https://github.com/aizhanti">Aizhan, </a><a href="https://github.com/phuonggg">Phuong, </a><a href="https://github.com/pollyj">Polly, </a><a href="https://github.com/CarlosIUSalazar">Carlos, </a>
     </footer>
     </div>
-    
-    
+  
   ); 
 }
 
