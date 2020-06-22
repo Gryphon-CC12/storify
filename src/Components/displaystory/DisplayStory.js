@@ -601,10 +601,7 @@ function DisplayStory(props) {
                 return <p key={uuidv4()}>{paragraph}</p>;
               })}
             </div>
-              {/* <div>  */}
-                <div className="ds-entry-created">
-                  {item.entry_date}
-                </div>
+
             <div className="ds-author">
               {item.author}
               <div className="ds-likes">
@@ -622,6 +619,9 @@ function DisplayStory(props) {
                   />{" "}
                   <br />
                 </span>
+              </div>
+              <div className="ds-entry-created">
+                  {item.entry_date}
               </div>
             </div>
           </div>

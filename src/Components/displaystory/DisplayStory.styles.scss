@@ -132,18 +132,22 @@
     font-weight: bold;
  }
 
- .bi-heart-fill {
-     margin-bottom: 2px;
- }
-
 .ds-author { 
     font-size: 1em;
     grid-area: ds-author;
     text-align: end;
-    color: rgb(104, 148, 160);
+    color: rgb(161, 168, 168);
     font-family: 'Pacifico', cursive;
-    padding-top: 30px;
+    padding-top: 20px;
     padding-right: 30px;
+ }
+
+ .ds-entry-created {
+    font-family: 'Roboto Slab', serif;
+    font-size: 0.6em;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 20px;
  }
 
  .ds-last-author-warning { 
@@ -154,6 +158,7 @@
     text-align: center;
     color: #1282A2;
     font-family: 'Roboto', serif;
+    
  }
 
 .ds-story-stats {
