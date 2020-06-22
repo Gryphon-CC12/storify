@@ -9,7 +9,6 @@ import "./DisplayStory.styles.scss";
 import heartIcon from '../../assets/heart.svg'
 import threeDotsVertical from '../../assets/dots-vertical.svg'
 import deleteOneStory from "../../utils/deleteOneStory";
-import Grid from "@material-ui/core/Grid";
 import moment from 'moment';
 import {
   EmailShareButton,
