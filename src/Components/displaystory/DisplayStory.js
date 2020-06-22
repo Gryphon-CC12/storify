@@ -90,9 +90,9 @@ function DisplayStory(props) {
           let emails = doc.data().emails;
           authorEmail = emails[0];
           let dateCreated = doc.data().dateCreated;
-          console.log('dateCreated', dateCreated);
+          //console.log('dateCreated', dateCreated);
           setStoryCreatedDate(dateCreated.seconds)
-          console.log('dateCreated moment', moment.unix(storyCreatedDate).fromNow());
+          //console.log('dateCreated moment', moment.unix(storyCreatedDate).fromNow());
           // moment.unix(1454521239279/1000).format("DD MMM YYYY hh:mm a")
           let currentTimeLimit = doc.data().timeLimit;
           let currentLastModified = doc.data().lastModified.seconds;
