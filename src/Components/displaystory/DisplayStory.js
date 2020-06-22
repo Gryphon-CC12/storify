@@ -6,10 +6,10 @@ import AddEntry from "../addentry/AddEntry";
 import { v4 as uuidv4 } from "uuid";
 import { UserContext } from "../../providers/UserProvider";
 import "./DisplayStory.styles.scss";
-import heartIcon from '../../assets/heart.svg'
-import threeDotsVertical from '../../assets/dots-vertical.svg'
+import heartIcon from "../../assets/heart.svg";
+import threeDotsVertical from "../../assets/dots-vertical.svg";
 import deleteOneStory from "../../utils/deleteOneStory";
-import moment from 'moment';
+import moment from "moment";
 import {
   EmailShareButton,
   FacebookShareButton,
@@ -32,7 +32,9 @@ function DisplayStory(props) {
   const story_id = props.match.params.id;
 
   const [storyArr, setStoryArr] = useState([]);
-  const [imageURL, setImageURL] = useState("https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2Fdefault.jpg?alt=media&token=234b347d-e761-465d-8004-e914ef8d0360");
+  const [imageURL, setImageURL] = useState(
+    "https://firebasestorage.googleapis.com/v0/b/seniorgryphon-df706.appspot.com/o/images%2Fdefault.jpg?alt=media&token=234b347d-e761-465d-8004-e914ef8d0360"
+  );
   const [title, setTitle] = useState("");
   const [isContributor, setIsContributor] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false); //makes textarea disappear after clicking submit entry in addEntry
@@ -59,7 +61,7 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id);
     // checkAuthor(user.email, props.match.params.id)
   }, [user.email, props.match.params.id]);
-  
+
   function setIsSubmittedFunc(vis, val) {
     setIsSubmitted(vis);
     setNumOfEntry(val);
@@ -69,7 +71,6 @@ function DisplayStory(props) {
     checkMaxEntries(user.email, props.match.params.id);
     checkTurns(user.email, props.match.params.id);
   }, [storyArr]);
-  
 
   function setIsSubmittedFunc(vis, val) {
     setIsSubmitted(vis);
@@ -91,7 +92,7 @@ function DisplayStory(props) {
           authorEmail = emails[0];
           let dateCreated = doc.data().dateCreated;
           //console.log('dateCreated', dateCreated);
-          setStoryCreatedDate(dateCreated.seconds)
+          setStoryCreatedDate(dateCreated.seconds);
           //console.log('dateCreated moment', moment.unix(storyCreatedDate).fromNow());
           // moment.unix(1454521239279/1000).format("DD MMM YYYY hh:mm a")
           let currentTimeLimit = doc.data().timeLimit;
@@ -125,7 +126,6 @@ function DisplayStory(props) {
 
           //setUnixDate(unixDate => unixDate.concat(moment.unix(currentEndingTime)._d));
           setDeadlineSec(currentEndingTime);
-
         });
         return idsArray[0];
       })
@@ -191,7 +191,7 @@ function DisplayStory(props) {
           setLikes(newLikes);
         }
       }
-    } 
+    }
   };
 
   // READ FROM DB ///
@@ -212,17 +212,20 @@ function DisplayStory(props) {
       .then((querySnapshot) => {
         querySnapshot.forEach(async (doc) => {
           if (!doc.data().likedEntries.includes(entryId)) {
-            await db.collection("users")
+            await db
+              .collection("users")
               .doc(doc.id)
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayUnion(entryId),
               });
-            await db.collection("Entries")
+            await db
+              .collection("Entries")
               .where("id", "==", entryId)
               .get()
               .then(function (querySnapshot) {
                 querySnapshot.forEach(async function (doc) {
-                  await db.collection("Entries")
+                  await db
+                    .collection("Entries")
                     .doc(doc.id)
                     .update({
                       likes: firebase.firestore.FieldValue.increment(1),
@@ -231,7 +234,8 @@ function DisplayStory(props) {
                 });
               });
 
-            await db.collection("StoryDatabase")
+            await db
+              .collection("StoryDatabase")
               .where("id", "==", storyId)
               .get()
               .then(function (querySnapshot) {
@@ -244,14 +248,16 @@ function DisplayStory(props) {
                 });
               });
           } else {
-            await db.collection("users")
+            await db
+              .collection("users")
               .doc(doc.id)
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayRemove(
                   entryId
                 ),
               });
-            await db.collection("Entries")
+            await db
+              .collection("Entries")
               .where("id", "==", entryId)
               .get()
               .then(function (querySnapshot) {
@@ -261,11 +267,12 @@ function DisplayStory(props) {
                     .update({
                       likes: firebase.firestore.FieldValue.increment(-1),
                     });
-                    updateLikeState(entryId, "dec");
+                  updateLikeState(entryId, "dec");
                 });
               });
 
-            await db.collection("StoryDatabase")
+            await db
+              .collection("StoryDatabase")
               .where("id", "==", storyId)
               .get()
               .then(function (querySnapshot) {
@@ -381,16 +388,95 @@ function DisplayStory(props) {
     props.history.push("/");
   }
 
+  async function getCurrentNumberOfParticipants(storyId) {
+    const data = await db
+      .collection("StoryDatabase")
+      .where("id", "==", storyId)
+      .get();
+    let currentUsers = data.docs[0].data().emails.length;
+    setNoOfUsersState(currentUsers);
+  }
+
+  async function featureOneStory(storyIdToDelete, userEmail) {
+    // console.log("IDDDDDD ", storyIdToDelete);
+
+    await db
+      .collection("StoryDatabase")
+      .where("id", "==", storyIdToDelete)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+          db.collection("StoryDatabase").doc(doc.id).update({
+            featuredStory: true,
+          });
+        });
+      });
+
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
+  }
+
+  async function unfeatureOneStory(storyIdToDelete, userEmail) {
+    // console.log("IDDDDDD ", storyIdToDelete);
+
+    await db
+      .collection("StoryDatabase")
+      .where("id", "==", storyIdToDelete)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          //let maxUsers = db.collection("StoryDatabase").doc(doc.maxUsers);
+          db.collection("StoryDatabase").doc(doc.id).update({
+            featuredStory: false,
+          });
+        });
+      });
+
+    setTimeout(() => {
+      window.location.reload(false);
+    }, 1000);
+  }
+
+  async function handleFeatureStory(e) {
+    e.preventDefault();
+    console.log("PROPS ID ", props.match.params.id);
+    await featureOneStory(props.match.params.id, user.email);
+
+    props.history.push("/");
+  }
+
+  async function handleUnfeatureStory(e) {
+    e.preventDefault();
+    console.log("PROPS ID ", props.match.params.id);
+    await unfeatureOneStory(props.match.params.id, user.email);
+
+    props.history.push("/");
+  }
+
   const renderOptionsDropDown = () => {
-     
-    
     return (
-       <div className="dropleft"> 
-        <button className="dropdown-btn" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-expanded="false">
+      <div className="dropleft">
+        <button
+          className="dropdown-btn"
+          type="button"
+          id="dropdownMenuButton"
+          data-toggle="dropdown"
+          aria-expanded="false"
+        >
           <img src={threeDotsVertical} alt="menu button"></img>
         </button>
         <ul className="dropdown-menu" aria-labelledby="dropdownMenuButton">
-          <li className="dropdown-item danger" onClick={handleDeleteStory}>Delete Story</li>
+          <li className="dropdown-item danger" onClick={handleDeleteStory}>
+            Delete Story
+          </li>
+          <li className="dropdown-item danger" onClick={handleFeatureStory}>
+            Feature Story
+          </li>
+          <li className="dropdown-item danger" onClick={handleUnfeatureStory}>
+            Unfeature Story
+          </li>
         </ul>
       </div>
     );
@@ -398,11 +484,14 @@ function DisplayStory(props) {
 
   const displayPlayerNumbers = () => {
     // prompt writer automatically joins the story so there will never be less than 1 user participating.
-    
-    const authorSpotsRemaining = Math.max(0, maxNoOfUsersState - noOfUsersState);
+
+    const authorSpotsRemaining = Math.max(
+      0,
+      maxNoOfUsersState - noOfUsersState
+    );
     const entriesRemaining = Math.max(0, maxNoOfEntries - currentEntries);
 
-    let unixDate = moment.unix(deadlineSec)._d.toString()
+    let unixDate = moment.unix(deadlineSec)._d.toString();
     //console.log("imageURL",imageURL)
 
     if (entriesRemaining == 1 && isSubmitted == false) {
@@ -435,8 +524,7 @@ function DisplayStory(props) {
             Spots remaining: {authorSpotsRemaining}
           </p>
           <p className="ds-entries-remaining">
-          Entries remaining:{" "}
-            {entriesRemaining}
+            Entries remaining: {entriesRemaining}
           </p>
           <p className="ds-next-entry-deadline">
             Next entry deadline: {unixDate}
@@ -450,7 +538,7 @@ function DisplayStory(props) {
     <div className="display-story-component container" key={uuidv4()}>
       <div className="prompt-details-grid-container">
         <div className="ds-social-media">
-        <TwitterShareButton
+          <TwitterShareButton
             url={"https://www.storifyapp.com/displaystory/" + story_id}
             title={title}
             className="Demo__some-network__share-button"
@@ -512,24 +600,32 @@ function DisplayStory(props) {
         </div>
       </div>
 
-      {storyArr.map((item) => { 
+      {storyArr.map((item) => {
         return (
           <div className="entry-grid-container" key={uuidv4()}>
             <div className="ds-text">
-              {item.text.map(paragraph => {
-                  return (
-                    <p key={uuidv4()}>{paragraph}</p>
-                  )
-                })}
+              {item.text.map((paragraph) => {
+                return <p key={uuidv4()}>{paragraph}</p>;
+              })}
             </div>
-            
+
             <div className="ds-author">
               {item.author}
               <div className="ds-likes">
-                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, user.email)}>
-                    {getLikes(item.entry_id) + " "}
-                  <img src={heartIcon} alt="heart icon" className="heart icon" /> <br />
-              </span>
+                <span
+                  id="likes"
+                  onClick={() =>
+                    addLike(item.entry_id, item.story_id, user.email)
+                  }
+                >
+                  {getLikes(item.entry_id) + " "}
+                  <img
+                    src={heartIcon}
+                    alt="heart icon"
+                    className="heart icon"
+                  />{" "}
+                  <br />
+                </span>
               </div>
             </div>
           </div>
@@ -537,73 +633,58 @@ function DisplayStory(props) {
       })}
 
       <div className="container-fluid g-0 stats-container">
-        
         {displayPlayerNumbers()}
 
-        {isContributor
-          ?
-          (
-            isMaxEntries
-              ?
-              (
-                <div className="ds-story-stats">
-                  <p key={uuidv4()} className="ds-story-complete">Story Complete!</p>
-                </div>
-              )
-              : isUserInTurn ?
-                (
-                <div className="ds-story-stats">
-                  <p>This story has {numOfEntries - numOfEntry} entries left</p>
-                    {!isSubmitted
-                      ?
-                      (
-                        <AddEntry
-                          setIsSubmittedFunc={setIsSubmittedFunc}
-                          setStoryArr={setStoryArr}
-                          id={props.match.params.id}
-                        />
-                      )
-                      :
-                      (
-                        ""
-                      )}
-                </div>
-                )
-                :
-                (
-                  <>
-                      {userInTurn
-                        ?
-                      (
-                        <div className="ds-story-stats">
-                          <p key={uuidv4()} className="ds-current-turn">Currently {userInTurnName}'s turn!</p>
-                        </div>
-                        )
-                        :
-                      (
-                        <div className="ds-story-stats">
-                          "Waiting for players!"
-                          </div>
-                          )}
-                  </>
-                )
-          )
-          : isMaxContributors
-            ? (
-                <p key={uuidv4()} className="ds-story-full ds-story-stats">This Story is full.</p>
-            )
-            :
-            (
-              <div className="btn-wrapper">
-                <button
-                  className="join-story-btn btn-sm"
-                  key={uuidv4()}
-                  onClick={() => addToContributors(user.email, storyArr[0].story_id)}
-                >
-                    Join the Story
-                </button>
-              </div>
+        {isContributor ? (
+          isMaxEntries ? (
+            <div className="ds-story-stats">
+              <p key={uuidv4()} className="ds-story-complete">
+                Story Complete!
+              </p>
+            </div>
+          ) : isUserInTurn ? (
+            <div className="ds-story-stats">
+              <p>This story has {numOfEntries - numOfEntry} entries left</p>
+              {!isSubmitted ? (
+                <AddEntry
+                  setIsSubmittedFunc={setIsSubmittedFunc}
+                  setStoryArr={setStoryArr}
+                  id={props.match.params.id}
+                />
+              ) : (
+                ""
               )}
+            </div>
+          ) : (
+            <>
+              {userInTurn ? (
+                <div className="ds-story-stats">
+                  <p key={uuidv4()} className="ds-current-turn">
+                    Currently {userInTurnName}'s turn!
+                  </p>
+                </div>
+              ) : (
+                <div className="ds-story-stats">"Waiting for players!"</div>
+              )}
+            </>
+          )
+        ) : isMaxContributors ? (
+          <p key={uuidv4()} className="ds-story-full ds-story-stats">
+            This Story is full.
+          </p>
+        ) : (
+          <div className="btn-wrapper">
+            <button
+              className="join-story-btn btn-sm"
+              key={uuidv4()}
+              onClick={() =>
+                addToContributors(user.email, storyArr[0].story_id)
+              }
+            >
+              Join the Story
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
