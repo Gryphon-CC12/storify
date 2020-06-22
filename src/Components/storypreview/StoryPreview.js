@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import "./StoryPreview.styles.scss";
 import firebase from "../../firebaseConfig";
 import heartIcon from '../../assets/heart.svg'
+import moment from 'moment';
+
 const db = firebase.firestore();
 
 function StoryPreview(props) {
@@ -16,6 +18,8 @@ function StoryPreview(props) {
   const [currentCollab, setCurrentCollab] = useState(0);
   const [maxEntries, setMaxEntries] = useState(0);
   const [currentEntries, setCurrentEntries] = useState(0);
+  const [storyCreatedDate, setStoryCreatedDate] = useState(0);
+
 
   async function fetchFirstEntryForStory(id) {
     try {
@@ -34,6 +38,7 @@ function StoryPreview(props) {
             setMaxEntries(doc.data().maxEntries);
             setCurrentEntries(doc.data().entries.length);
             ids_array.push(doc.data().entries);
+            setStoryCreatedDate(doc.data().dateCreated.seconds)
           });
           return ids_array[0][0];
         })
@@ -103,6 +108,7 @@ function StoryPreview(props) {
             {currentEntries} / {maxEntries} entries
           </div>
           <div className="sp-genre">{genre}</div>
+          <div className="sp-date-created">{moment.unix(storyCreatedDate).fromNow()}</div>
         </div>
       </Link>
     </div>

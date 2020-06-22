@@ -1,60 +1,94 @@
-.links {
-    margin-top: 5%;
-    margin-bottom: 5%;
-    font-size: 0.9em;
-    color: white;
-    text-align: center;
-    width: 100%;
-}
+// html {
+//     background-color: #1282A2;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     height: 100%;
+// }
 
-.links:hover {
-    color: black;
-}
-
-#wrapper {
-    margin-top: 5%;
-}
-
-#title {
-    color: black;
-    text-align: center;
-}
-
-#storify {
-    color: #1282A2;
-    font-family: 'Pacifico', cursive;
-}
-
-#signin-btn {
-    margin-top: 5%;
-}
-
-#white {
-    background-color: white;
+.signin-wrapper {
+    background-color: #FAFAFA;
     display: flex;
-    width: 80%;
-    align-self: center;
-    margin: auto;
-    justify-content: center;
-}
-
-#google-signin {
-    display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
+    font-family: 'Roboto', serif;
+    padding: 10% 5%;
+    
+    .content-wrapper {
+        background-color: #ffffff;
+        padding: 5%;
+        box-shadow: 5px 5px 5px rgb(172, 172, 172);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    h1, p {
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    
+    .tagline {
+        margin-bottom: 20%;
+        font-family: 'Roboto Slab', serif;
+    }
+    
+    .styled {
+        color: #1282A2;
+        font-family: 'Pacifico', cursive;
+    }
+    
+    .google-signin {
+        width: fit-content;
+        box-shadow: 5px 5px 5px rgb(172, 172, 172);
+        margin-bottom: 5%;
+    }
 }
 
-#email-signin {
-    color: black;
-    margin-top: 5%;
-    margin-left: 0%;
-    display: flex;
-    flex-direction: column;
-    text-align: center;
+@media only screen and (max-width: 600px) {
+    .content-wrapper {
+        width: 100%;
+        margin-top: 10%;
+    }
 }
 
-#sign-in {
-    width: 100%;
-    justify-content: start;
-}
+// .links {
+//     margin-top: 5%;
+//     margin-bottom: 5%;
+//     font-size: 0.9em;
+//     color: white;
+//     text-align: center;
+//     width: 100%;
+// }
+
+// .links:hover {
+//     color: black;
+// }
+
+// #signin-btn {
+//     margin-top: 5%;
+// }
+
+// #white {
+//     background-color: white;
+//     display: flex;
+//     width: 80%;
+//     align-self: center;
+//     margin: auto;
+//     justify-content: center;
+// }
+
+// #email-signin {
+//     color: black;
+//     margin-top: 5%;
+//     margin-left: 0%;
+//     display: flex;
+//     flex-direction: column;
+//     text-align: center;
+// }
+
+// #sign-in {
+//     width: 100%;
+//     justify-content: start;
+// }

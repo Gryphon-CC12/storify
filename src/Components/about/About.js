@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import rightChevron from '../../assets/rightChevron.svg'
+import heartIcon from '../../assets/heart.svg'
 import "./About.styles.scss";
 
 function About() {
@@ -57,7 +58,7 @@ function About() {
           <h3>Collaborating in Others' Stories</h3> 
             <ul>
               <li>
-                Joining:<br/>You can join and collaborate any Story provided there are still empty collaborator slots. Stories that have empty slots will have a 'Join the Story' button at the bottom of the Story's page. Once you join, you will be added to the collaborator list and when it becomes your turn, you'll receive an email notification stating when you should submit your entry by. (The deadline is decided by the Story creator.) 
+                Joining:<br/>You can join and collaborate any Story provided there are still empty collaborator slots. Stories that have empty slots will have a 'Join the Story' button at the bottom of the Story's page. Once you join, you will be added to the collaborator list and when it becomes your turn, you'll receive an email notification stating when you should submit your entry by. (The deadline is decided by the Story creator.) Please note, to prevent automatic email spamming you will only receive an email after a human submitted entry but not after Robo-Writer entries.
               </li>
               <li>
                 Story Flow:<br/>Keep in mind that once you submit an entry, it cannot be changed. This is done so the flow of the story is not altered, particularly after other users have continued on from where your original entry left off at.
@@ -83,8 +84,14 @@ function About() {
             </p>
           </div>
         </div>
+        <footer>
+        Storify was created with <img src={heartIcon} alt="heart icon" /> by <a target="_blank" rel="noopener noreferrer" href="https://github.com/aizhanti">Aizhan Imankulova</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/phuonggg">Phuong Tran</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/pollyj">Polly Sutcliffe</a>, and <a target="_blank" rel="noopener noreferrer" href="https://github.com/CarlosIUSalazar">Carlos Salazar</a>.
+        <br />
+        <br/>
+        Want to check out the original code? Noticed an issue? Head over to the <a target="_blank" rel="noopener noreferrer" href="https://github.com/Gryphon-CC12/storify">GitHub repository</a> and say hi or open an issue! :)
+        </footer>
     </div>
-    
+  
   ); 
 }
 

@@ -36,8 +36,8 @@ function AddEntry(props) {
             
             let currentEnries = await doc.data().entries.length;
             let maxEnries = await doc.data().maxEntries;
-            
-            await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) == 0 });
+
+            await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) <= 1 });
           }
           
           // let currentInTurn = await doc.data().inTurn;
@@ -85,9 +85,9 @@ function AddEntry(props) {
       //REACTIVATE BEFORE PRODUCTION
       emailjs.send(service_id, template_id, template_params, user_id)
         .then(function (response) {
-          console.log('SUCCESS!', response.status, response.text);
+          // console.log('SUCCESS!', response.status, response.text);
         }, function (error) {
-          console.log('FAILED...', error);
+          // console.log('FAILED...', error);
         });
     }
   }
@@ -143,6 +143,7 @@ function AddEntry(props) {
               aria-label="empty textarea"
               ref={inputEl}
               rows='15'
+              required
               spellCheck='true'
               placeholder="Keep in mind once you submit your entry you can't change it for story coherence purposes. Read Storify rules in 'About' page."
             />

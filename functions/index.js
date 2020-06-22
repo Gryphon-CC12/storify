@@ -162,11 +162,10 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       let maxEntries = await doc.data().maxEntries;
       let currentTimeLimit = doc.data().timeLimit;
       let title = doc.data().title;
-      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEntries) - Number(currentEnries) == 0 });
+      await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEntries) - Number(currentEnries) <= 1 });
       
       let currentInTurn = await doc.data().inTurn; 
       let allEmails = await doc.data().emails;
-      
       let nextInTurn = ""
       for (let i = 0; i < allEmails.length; i++){
         if (allEmails[i] === currentInTurn){
@@ -207,9 +206,9 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
   
     await emailjs.send(service_id, template_id, template_params, user_id)
       .then(function(response) {
-          console.log('SUCCESS!', response.status, response.text);
+          // console.log('SUCCESS!', response.status, response.text);
       }, function(error) {
-          console.log('FAILED...', error);
+          // console.log('FAILED...', error);
       });
   }
 

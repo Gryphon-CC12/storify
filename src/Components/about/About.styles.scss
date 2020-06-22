@@ -59,7 +59,6 @@ li {
 
 }
 
-
 .styled {
   color: #1282A2;
   font-family: 'Pacifico', cursive;
@@ -72,10 +71,26 @@ li {
   font-size: 1.8em;
 }
 
+.disclaimer-heading {
+  padding: 10px 0;
+}
+
 .disclaimer-box {
   border: 2px solid rgb(187, 132, 132);
   border-radius: 5px;
   padding: 0 3% 3% 3%;
   background-color: rgb(252, 245, 245);
   font-size: 0.8em;
+}
+
+footer {
+  margin-top: 10%;
+  margin-bottom: 10%;
+  font-size: 0.8em;
+  text-align: center;
+
+  a {
+    color: black;
+    text-decoration: underline;
+  }
 }
