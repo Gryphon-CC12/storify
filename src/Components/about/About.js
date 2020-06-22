@@ -83,7 +83,11 @@ function About() {
             </p>
           </div>
         </div>
+        <footer>
+      The creators: <a href="https://github.com/aizhanti">Aizhan, </a><a href="https://github.com/phuonggg">Phuong, </a><a href="https://github.com/pollyj">Polly, </a><a href="https://github.com/CarlosIUSalazar">Carlos, </a>
+    </footer>
     </div>
+    
     
   ); 
 }
