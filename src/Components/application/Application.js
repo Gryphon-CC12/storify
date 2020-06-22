@@ -31,9 +31,9 @@ function Application() {
       </>
   ) : (
     <Switch>
-      <Route exact path="/signup" component={SignUp} />
+      {/* <Route exact path="/signup" component={SignUp} /> */}
       <Route exact path="/" component={SignIn} />
-      <Route path="/passwordreset" component={PasswordReset} />
+      {/* <Route path="/passwordreset" component={PasswordReset} /> */}
     </Switch>
   );
 }
