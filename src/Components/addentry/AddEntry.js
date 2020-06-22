@@ -36,8 +36,11 @@ function AddEntry(props) {
             
             let currentEnries = await doc.data().entries.length;
             let maxEnries = await doc.data().maxEntries;
+
+            console.log('"isCompleted": Number(maxEnries) - Number(currentEnries)  <= 1', Number(maxEnries) - Number(currentEnries) <= 1);
             
-            await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) == 0 });
+            
+            await db.collection("StoryDatabase").doc(doc.id).update({"isCompleted": Number(maxEnries) - Number(currentEnries) <= 1 });
           }
           
           // let currentInTurn = await doc.data().inTurn;
