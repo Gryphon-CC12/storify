@@ -267,7 +267,7 @@ function CreateStory(props) {
                     />
                   </div>
                     <p id="robot-warning">
-                    Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
+                    Heads up! The AI's responses can't be controlled and it can get a bit cheeky sometimes.<br/>Make sure you <a target="_blank" rel="noopener noreferrer" href="https://www.storifyapp.com/about">read our disclaimer</a> before choosing to use this feature.
                     </p>
                 </div>
 
@@ -350,7 +350,7 @@ function CreateStory(props) {
               </div> 
   {/* OPTIONS EMD */}
                 
-              <div className="col-12">
+              <div className="col-12 g-0">
                 <p className='image-label'>Image <span style={{ fontSize: "smaller" }}>(optional)</span>:</p>
                 <div className="form-file">
                   <label htmlFor="image-input" className="form-file-label">

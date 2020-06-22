@@ -7,9 +7,9 @@ import StoryList from "../storylist/StoryList";
 import About from "../about/About";
 import DisplayStory from "../displaystory/DisplayStory";
 import CreateStory from "../createstory/CreateStory";
-import SignUp from "../signup/SignUp";
+// import SignUp from "../signup/SignUp";
 import SignIn from "../signin/SignIn";
-import PasswordReset from "../passwordreset/PasswordReset";
+// import PasswordReset from "../passwordreset/PasswordReset";
 import { UserContext } from "../../providers/UserProvider";
 // const userLocal = JSON.parse(localStorage.getItem('userToken'));
 
@@ -31,9 +31,9 @@ function Application() {
       </>
   ) : (
     <Switch>
-      <Route exact path="/signup" component={SignUp} />
+      {/* <Route exact path="/signup" component={SignUp} /> */}
       <Route exact path="/" component={SignIn} />
-      <Route path="/passwordreset" component={PasswordReset} />
+      {/* <Route path="/passwordreset" component={PasswordReset} /> */}
     </Switch>
   );
 }
