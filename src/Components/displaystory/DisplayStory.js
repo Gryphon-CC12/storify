@@ -173,9 +173,9 @@ function DisplayStory(props) {
 
   const updateLikeState = (entryId, operation) => {
     let newLikes = [...likes];
-    if (likes.length > 0) {
-      for (let i = 0; i < likes.length; i++) {
-        if (likes[i].entryId === entryId) {
+    if (newLikes.length > 0) {
+      for (let i = 0; i < newLikes.length; i++) {
+        if (newLikes[i].entryId === entryId) {
           if (operation == "inc") {
             newLikes[i].likes += 1;
           } else if (operation == "dec") {
@@ -184,7 +184,7 @@ function DisplayStory(props) {
           setLikes(newLikes);
         }
       }
-    }
+    } 
   };
 
   // READ FROM DB ///
@@ -203,29 +203,29 @@ function DisplayStory(props) {
       .where("email", "==", user_email)
       .get()
       .then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
+        querySnapshot.forEach(async (doc) => {
           if (!doc.data().likedEntries.includes(entryId)) {
-            db.collection("users")
+            await db.collection("users")
               .doc(doc.id)
               .update({
                 likedEntries: firebase.firestore.FieldValue.arrayUnion(entryId),
               });
-            db.collection("Entries")
+            await db.collection("Entries")
               .where("id", "==", entryId)
               .get()
               .then(function (querySnapshot) {
-                querySnapshot.forEach(function (doc) {
-                  db.collection("Entries")
+                querySnapshot.forEach(async function (doc) {
+                  await db.collection("Entries")
                     .doc(doc.id)
                     .update({
                       likes: firebase.firestore.FieldValue.increment(1),
                     });
+                  updateLikeState(entryId, "inc");
+                  // setLikes(likes + 1);
                 });
-                updateLikeState(entryId, "inc");
               });
-            setLikes(likes + 1);
 
-            db.collection("StoryDatabase")
+            await db.collection("StoryDatabase")
               .where("id", "==", storyId)
               .get()
               .then(function (querySnapshot) {
@@ -258,7 +258,7 @@ function DisplayStory(props) {
                 });
                 updateLikeState(entryId, "dec");
               });
-            setLikes(likes - 1);
+            // setLikes(likes - 1);
 
             db.collection("StoryDatabase")
               .where("id", "==", storyId)
@@ -523,7 +523,7 @@ function DisplayStory(props) {
             <div className="ds-author">
               {item.author}
               <div className="ds-likes">
-                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, item.user_email)}>
+                <span id="likes" onClick={() => addLike(item.entry_id, item.story_id, user.email)}>
                     {getLikes(item.entry_id) + " "}
                   <img src={heartIcon} alt="heart icon" className="heart icon" /> <br />
               </span>
