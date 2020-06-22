@@ -53,6 +53,7 @@ function DisplayStory(props) {
   const [deadlineSec, setDeadlineSec] = useState(0);
   const [storyCreatedDate, setStoryCreatedDate] = useState(0);
 
+
   useEffect(() => {
     fetchEntriesForStory(props.match.params.id, user.email);
     fetchImageURL(props.match.params.id);
@@ -142,6 +143,7 @@ function DisplayStory(props) {
                 let thisLikes = doc.data().likes;
                 let entryId = doc.data().id;
                 let userEmail = doc.data().email;
+                let createdDate = doc.data().date;
                 setStoryArr((storyArr) =>
                   storyArr.concat([
                     {
@@ -151,6 +153,7 @@ function DisplayStory(props) {
                       entry_id: entryId,
                       story_id: storyId,
                       user_email: userEmail,
+                      entry_date: moment.unix(createdDate.seconds).fromNow()
                     },
                   ])
                 );
@@ -608,7 +611,10 @@ function DisplayStory(props) {
                 return <p key={uuidv4()}>{paragraph}</p>;
               })}
             </div>
-
+              {/* <div>  */}
+                <div className="ds-entry-created">
+                  {item.entry_date}
+                </div>
             <div className="ds-author">
               {item.author}
               <div className="ds-likes">
