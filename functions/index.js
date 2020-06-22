@@ -47,19 +47,28 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
           //console.log("Working with new schema of latest author")
           let last_entry_id = doc.data().entries[doc.data().entries.length - 1] 
           const last_entry_data = await db.collection('Entries').where('id', '==', last_entry_id).get();
-          let last_entry_text_list = last_entry_data.docs[0].data().text.split('. ');
+          let last_entry = last_entry_data.docs[0].data().text.toString('utf8').replace('"', '\"');
+          // console.log("last_entry", last_entry);
+          let last_entry_text_list = last_entry.split('. ');
+          // console.log("last_entry_text_list", last_entry_text_list);
           let last_entry_clean =  last_entry_text_list.map(sent => sent.trim());
           let last_entry_text = last_entry_clean.slice(Math.max(0, last_entry_clean.length-3)).join(". ");
+          let last_enty_uri = encodeURI(last_entry_text);
+          // console.log("last_enty_uri", last_enty_uri);
           let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
           let robot_user = robot_data.docs[0].data();
-          fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_entry_text)
+          fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_enty_uri)
           .then(response => {
             return response.json()
           })
             .then(async output=>{
+              // console.log("output.result", output.result)
               let entry_id = uuidv4()
               let trimmed_output = output.result.trim();
-              await saveToEntries(story_id, trimmed_output, entry_id, robot_user);
+              let trimmed_output_arr = trimmed_output.split(/\n/g);
+              let unique_output = [...new Set(trimmed_output_arr)].join("\n"); 
+              // console.log("unique_output", unique_output)
+              await saveToEntries(story_id, unique_output, entry_id, robot_user);
               await saveToUserEntries(robot_user.email, entry_id, story_id)
               await pushToStory(story_id, entry_id, robot_user, currentTimeLimit); 
           })
@@ -183,11 +192,9 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
       if (nextInTurn != "storify.io@gmail.com") {
         await sendEmailToNextUser(title, story_id, nextInTurn, nextUserName, currentTimeLimit)
       }
-
 })
 })
 }
-
 
   async function sendEmailToNextUser(title, story_id, author, nextUserName, storyTimeLimit) {
     //   //////  SEND EMAIL  ////
