@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from 'react-router-dom'
 import rightChevron from '../../assets/rightChevron.svg'
+import heartIcon from '../../assets/heart.svg'
 import "./About.styles.scss";
 
 function About() {
@@ -84,8 +85,11 @@ function About() {
           </div>
         </div>
         <footer>
-      The creators: <a href="https://github.com/aizhanti">Aizhan, </a><a href="https://github.com/phuonggg">Phuong, </a><a href="https://github.com/pollyj">Polly, </a><a href="https://github.com/CarlosIUSalazar">Carlos, </a>
-    </footer>
+        Storify was created with <img src={heartIcon} alt="heart icon" /> by <a target="_blank" rel="noopener noreferrer" href="https://github.com/aizhanti">Aizhan Imankulova</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/phuonggg">Phuong Tran</a>, <a target="_blank" rel="noopener noreferrer" href="https://github.com/pollyj">Polly Sutcliffe</a>, and <a target="_blank" rel="noopener noreferrer" href="https://github.com/CarlosIUSalazar">Carlos Salazar</a>.
+        <br />
+        <br/>
+        Want to check out the original code? Noticed an issue? Head over to the <a target="_blank" rel="noopener noreferrer" href="https://github.com/Gryphon-CC12/storify">GitHub repository</a> and say hi or open an issue! :)
+        </footer>
     </div>
     
     
