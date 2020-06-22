@@ -2,46 +2,16 @@ import React, { useState, useEffect, useContext } from "react";
 import "./FeaturedStory.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
-import { v4 as uuidv4 } from "uuid";
-import CssBaseline from "@material-ui/core/CssBaseline";
-import Container from "@material-ui/core/Container";
-import { makeStyles } from "@material-ui/core/styles";
-import Grid from "@material-ui/core/Grid";
-import threeDotsVertical from "../../assets/dots-vertical.svg";
-import deleteOneStory from "../../utils/deleteOneStory";
-import { UserContext } from "../../providers/UserProvider";
 
 const db = firebase.firestore();
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(2),
-    textAlign: "center",
-    color: theme.palette.text.secondary,
-  },
-  formControl: {
-    margin: theme.spacing(1),
-    minWidth: 120,
-  },
-  selectEmpty: {
-    marginTop: theme.spacing(2),
-  },
-}));
 
-let authorEmail;
+// let authorEmail;
 
-function FeaturedStory(props) {
-  const user = useContext(UserContext);
+function FeaturedStory() {
   const [stories, setStories] = useState([]);
-  const classes = useStyles();
   const [genre, setGenre] = useState("All");
-  // const storyGenre = useRef("");
-  // const [like, setLike] = useState("By Newest");
-  // const storyLike = useRef("");
-  // console.log("PROP, ", props);
+
   useEffect(() => {
     retrieveAllStories(genre);
   }, [genre]);

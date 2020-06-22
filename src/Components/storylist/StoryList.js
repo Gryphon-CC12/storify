@@ -11,7 +11,7 @@ const db = firebase.firestore();
 
 function StoryList() {
   const [stories, setStories] = useState([]);
-  const [storiesComp, setStoriesComp] = useState([]);
+  // const [storiesComp, setStoriesComp] = useState([]);
   const [genre, setGenre] = useState("All");
   const storyGenre = useRef("");
   const storyCompletion = useRef("");
@@ -35,7 +35,6 @@ function StoryList() {
 
   const retrieveStoriesByAllFilters = async (completion, genre, like) => {
 
-    //console.log("completion, genre, like", completion, genre, like)
     let isCompleted;
     if (completion == "Finished") {
       isCompleted = true;
@@ -49,7 +48,6 @@ function StoryList() {
     } else {
       byLikes = "likes";
     }
-    //console.log("isCompleted, genre, byLikes before", isCompleted, genre, byLikes)
 
 
     if (completion == "All" || completion == undefined) {
@@ -60,7 +58,6 @@ function StoryList() {
         .where("isPrivate", "==", false)
         .orderBy(byLikes, 'desc')
         .get();
-        //console.log("data iscomp=all, genre=All", data)
 
         setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
       } else {
@@ -71,12 +68,10 @@ function StoryList() {
         .where("genre", "==", genre)
         .orderBy(byLikes, 'desc')
         .get();
-        //console.log("data iscomp=all, genre=genre", data)
 
         setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
       }
     } else {
-      //console.log("isCompleted, genre, byLikes before2", isCompleted, genre, byLikes)
 
       if (genre === "All" || genre === undefined) {
         setStories([]);
@@ -86,11 +81,9 @@ function StoryList() {
         .where('isCompleted', "==", isCompleted)
         .orderBy(byLikes, 'desc')
         .get();
-        //console.log("data iscomp=true/false, genre=All", data)
         
         setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));
       } else {
-        //console.log("isCompleted, genre, byLikes after", isCompleted, genre, byLikes)
 
         const data = await db
         .collection("StoryDatabase")
@@ -99,7 +92,6 @@ function StoryList() {
         .where('isCompleted', "==", isCompleted)
         .orderBy(byLikes, 'desc')
         .get();
-        //console.log("data iscomp=true/false, genre=genre", data)
         setStories([]);
 
         setStories(stories => stories.concat(data.docs.map((doc) => doc.data())));

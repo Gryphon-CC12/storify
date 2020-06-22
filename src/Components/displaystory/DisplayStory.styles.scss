@@ -6,29 +6,29 @@
 .prompt-details-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1.5fr 1fr;
-    grid-template-rows: 0.2fr 0.2fr 1fr 0.3fr;
+    grid-template-rows: 0.2fr 0.2fr 1fr;
     gap: 1px 1px;
     grid-template-areas: 
         "ds-social-media . . ds-options"
         "ds-image ds-image ds-title ds-title" 
-        "ds-image ds-image . ."
-        "ds-image ds-image . .";
-    padding-bottom: 5%;
+        "ds-image ds-image . ds-date-created";
+    padding-bottom: 3%;
 }
 
 .ds-social-media {
     grid-area: ds-social-media;
     display: flex;
     justify-content: flex-start;
+    padding-bottom: 10px;
 }
   
 .ds-title { 
     grid-area: ds-title;
     margin-left: 5%;
-    font-size: 2em;
+    font-size: 1.5em;
 }
 
-.ds-title::first-letter {
+.ds-title > h1::first-letter {
     text-transform: uppercase;
 }
 
@@ -39,6 +39,18 @@
 .display-image {
     max-width: 100%;
     max-height: 100%;
+}
+
+.ds-date-created {
+    grid-area: ds-date-created;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #6894A0;
+    padding-right: 3%;
 }
 
 .dropleft {
@@ -100,6 +112,7 @@
 
 .ds-text > p {
     margin: 3% 0;
+    word-wrap: break-word; //TODO not ideal but will do for now, may cause line breaks to appear in weird places
 }
 
 .ds-text::first-letter {
@@ -163,4 +176,34 @@
 .btn-wrapper {
     display: flex;
     justify-content: center;
+    margin-bottom: 5%;
+}
+
+@media only screen and (max-width: 800px) {
+    .prompt-details-grid-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto auto auto auto;
+        gap: 1px 1px;
+        grid-template-areas: 
+            "ds-social-media ds-options"
+            ". ds-date-created"
+            "ds-image ds-image" 
+            "ds-title ds-title";
+        padding-bottom: 5%;
+    }
+
+    .ds-social-media {
+        padding: 10px 0;
+    }
+
+    .ds-image {
+        max-width: 100%;
+        padding: 10px 0;
+    }
+
+    .ds-title {
+        font-size: 1em;
+    }
+
 }
