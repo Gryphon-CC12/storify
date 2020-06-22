@@ -86,9 +86,7 @@ function DisplayStory(props) {
           let emails = doc.data().emails;
           authorEmail = emails[0];
           let dateCreated = doc.data().dateCreated;
-          console.log('dateCreated', dateCreated);
           setStoryCreatedDate(dateCreated.seconds)
-          console.log('dateCreated moment', moment.unix(storyCreatedDate).fromNow());
           // moment.unix(1454521239279/1000).format("DD MMM YYYY hh:mm a")
           let currentTimeLimit = doc.data().timeLimit;
           let currentLastModified = doc.data().lastModified.seconds;
@@ -399,14 +397,10 @@ function DisplayStory(props) {
     const entriesRemaining = Math.max(0, maxNoOfEntries - currentEntries);
 
     let unixDate = moment.unix(deadlineSec)._d.toString()
-    //console.log("imageURL",imageURL)
 
     if (entriesRemaining == 1 && isSubmitted == false) {
       return (
         <div className="ds-story-stats">
-          <p className="ds-date-created">
-            Story created: {moment.unix(storyCreatedDate).fromNow()}
-          </p>
           <p className="ds-last-author-warning">
             This is the last entry, wrap up the story!
           </p>
@@ -421,9 +415,6 @@ function DisplayStory(props) {
     } else {
       return (
         <div className="ds-story-stats">
-          <p className="ds-date-created">
-            Story created: {moment.unix(storyCreatedDate).fromNow()}
-          </p>
           <p className="ds-currently-participating">
             Authors participating: {noOfUsersState}
           </p>
@@ -500,6 +491,9 @@ function DisplayStory(props) {
             alt="user-uploaded story artwork"
             src={imageURL}
           />
+        </div>
+        <div className="ds-date-created">
+            <p>{moment.unix(storyCreatedDate).fromNow()}</p>
         </div>
         <div className="ds-options">
           {user.email === authorEmail || user.admin === true

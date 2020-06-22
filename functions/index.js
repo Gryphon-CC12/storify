@@ -206,9 +206,9 @@ async function pushToStory(story_id, entry_id, author, currentTimeLimit) {
   
     await emailjs.send(service_id, template_id, template_params, user_id)
       .then(function(response) {
-          console.log('SUCCESS!', response.status, response.text);
+          // console.log('SUCCESS!', response.status, response.text);
       }, function(error) {
-          console.log('FAILED...', error);
+          // console.log('FAILED...', error);
       });
   }
 

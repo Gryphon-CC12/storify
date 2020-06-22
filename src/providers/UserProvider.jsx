@@ -12,7 +12,6 @@ class UserProvider extends Component {
     auth.onAuthStateChanged(async userAuth => {
       const user = await generateUserDocument(userAuth);      
       this.setState({ user });
-      //console.log("user in UserProvider", user)
     });
   };
   render() {

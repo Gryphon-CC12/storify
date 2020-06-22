@@ -14,9 +14,9 @@ export default function saveToEntries(storyId, event, id, user) {
         userId: user.id
     })
     .then(function () {
-        console.log("Document successfully written!");
+        // console.log("Document successfully written!");
     })
     .catch(function (error) {
-        console.error("Error writing document: ", error);
+        // console.error("Error writing document: ", error);
     });
 }
