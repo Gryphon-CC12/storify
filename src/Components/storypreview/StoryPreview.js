@@ -108,8 +108,8 @@ function StoryPreview(props) {
             {currentEntries} / {maxEntries} entries
           </div>
           <div className="sp-genre">{genre}</div>
+          <div className="sp-date-created">{moment.unix(storyCreatedDate).fromNow()}</div>
         </div>
-        <div className="sp-dateCreated">{moment.unix(storyCreatedDate).fromNow()}</div>
       </Link>
     </div>
   );

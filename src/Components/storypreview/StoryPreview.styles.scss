@@ -7,13 +7,13 @@
   font-family: "Roboto Slab", serif;
   color: rgb(50, 121, 109);
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1.3fr 0.7fr 0.7fr 0.7fr 0.7fr 0.7fr;
   grid-template-rows: 0.8fr 2.5fr 0.2fr;
   gap: 1px 1px;
   grid-template-areas:
-    "sp-image sp-title sp-title sp-title sp-author"
-    "sp-image sp-preview-text sp-preview-text sp-preview-text sp-preview-text"
-    ". sp-genre sp-collab sp-entries sp-likes";
+    "sp-image sp-title sp-title sp-title sp-title sp-author"
+    "sp-image sp-preview-text sp-preview-text sp-preview-text sp-preview-text sp-preview-text"
+    ". sp-genre sp-collab sp-entries sp-likes sp-date-created";
   margin-bottom: 2%;
   padding: 2%;
   padding-top: 1%;
@@ -85,12 +85,20 @@
 .sp-genre,
 .sp-likes,
 .sp-collab,
-.sp-entries {
+.sp-entries,
+.sp-date-created {
   font-size: 0.8em;
   text-transform: uppercase;
   font-weight: 500;
   color: rgb(140, 182, 175);
-  padding-left: 15%;
+  padding-left: 10%;
+  text-align: center;
+}
+
+.sp-date-created {
+  grid-area: sp-date-created;
+  color: rgb(176, 180, 180);
+  font-size: 0.7em;
 }
 
 .sp-heart-icon {
@@ -103,7 +111,7 @@
   .sp-grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 3fr 1fr auto 1fr 0.3fr 0.3fr;
+    grid-template-rows: 3fr 1fr auto 1fr 0.3fr 0.3fr 0.3fr;
     gap: 1px 1px;
     grid-template-areas:
       "sp-image sp-image"
@@ -111,13 +119,13 @@
       "sp-preview-text sp-preview-text"
       "sp-author sp-author"
       "sp-genre sp-likes"
-      "sp-collab sp-entries";
+      "sp-collab sp-entries"
+      "sp-date-created sp-date-created";
     padding: 4%;
     margin-bottom: 5%;
   }
 
   .sp-image {
-    grid-area: sp-image;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -125,12 +133,7 @@
   }
 
   .sp-title {
-    grid-area: sp-title;
     margin-top: 0%;
-  }
-
-  .sp-preview-text {
-    grid-area: sp-preview-text;
   }
 
   .sp-author {
@@ -147,15 +150,17 @@
     font-size: 1em;
   }
 
-  .sp-genre {
-    grid-area: sp-genre;
+  .sp-genre,
+  .sp-likes,
+  .sp-collab,
+  .sp-entries,
+  .sp-date-created {
+  font-size: 0.7em;
+  padding-left: 10px;
   }
 
-  .sp-likes {
-    grid-area: sp-likes;
-  }
-
-  .sp-collab {
-    grid-area: sp-collab;
+  .sp-date-created {
+    color: rgb(176, 180, 180);
+    padding-top: 10px;
   }
 }
