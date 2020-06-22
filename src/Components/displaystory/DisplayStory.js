@@ -60,6 +60,10 @@ function DisplayStory(props) {
     // checkAuthor(user.email, props.match.params.id)
   }, [user.email, props.match.params.id]);
   
+  function setIsSubmittedFunc(vis, val) {
+    setIsSubmitted(vis);
+    setNumOfEntry(val);
+  }
 
   useEffect(() => {
     checkMaxEntries(user.email, props.match.params.id);
