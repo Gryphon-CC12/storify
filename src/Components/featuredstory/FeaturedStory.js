@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import "./FeaturedStory.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
@@ -7,6 +7,9 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Container from "@material-ui/core/Container";
 import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
+import threeDotsVertical from "../../assets/dots-vertical.svg";
+import deleteOneStory from "../../utils/deleteOneStory";
+import { UserContext } from "../../providers/UserProvider";
 
 const db = firebase.firestore();
 
@@ -28,14 +31,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function FeaturedStory() {
+let authorEmail;
+
+function FeaturedStory(props) {
+  const user = useContext(UserContext);
   const [stories, setStories] = useState([]);
   const classes = useStyles();
   const [genre, setGenre] = useState("All");
   // const storyGenre = useRef("");
   // const [like, setLike] = useState("By Newest");
   // const storyLike = useRef("");
-
+  // console.log("PROP, ", props);
   useEffect(() => {
     retrieveAllStories(genre);
   }, [genre]);
@@ -75,87 +81,19 @@ function FeaturedStory() {
     }
   };
 
-  // const retrieveAllStoriesByLikes = async (genre) => {
-  //   if (genre === "By Newest" || genre === undefined) {
-  //     const data = await db
-  //       .collection("StoryDatabase")
-  //       .orderBy("dateCreated")
-  //       .get();
-  //     setStories([]);
-  //     setStories((stories) =>
-  //       stories.concat(data.docs.map((doc) => doc.data()))
-  //     );
-  //   } else {
-  //     const data = await db
-  //       .collection("StoryDatabase")
-  //       .orderBy("likes", "desc")
-  //       .get();
-  //     setStories([]);
-  //     setStories((stories) =>
-  //       stories.concat(data.docs.map((doc) => doc.data()))
-  //     );
-  //   }
-  // };
-
   return (
     <div className="display-story">
-      <CssBaseline />
+      <div className="container">
+        <div className="row">
+          <div className="greeting">Featured Story</div>
 
-      <Container maxWidth="lg" className={classes.root}>
-        <br />
-        <h3 style={{ color: "grey" }}> Featured Story </h3>
-        <br />
-        <Grid container spacing={3}>
-          {/* <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-genre">Story Genres</InputLabel>
-              <Select
-                labelId="select-genre"
-                id="select-dropdown"
-                value={genre}
-                onChange={selectGenre}
-                ref={storyGenre}
-              >
-                <MenuItem value={"All"}>All</MenuItem>
-                <MenuItem value={"Crime"}>Crime</MenuItem>
-                <MenuItem value={"Fan Fiction"}>Fan Fiction</MenuItem>
-                <MenuItem value={"Fantasy"}>Fantasy</MenuItem>
-                <MenuItem value={"Historical"}>Historical</MenuItem>
-                <MenuItem value={"Horror"}>Horror</MenuItem>
-                <MenuItem value={"Humor"}>Humor</MenuItem>
-                <MenuItem value={"Romance"}>Romance</MenuItem>
-                <MenuItem value={"Sci-fi"}>Sci-fi</MenuItem>
-                <MenuItem value={"Thriller"}>Thriller</MenuItem>
-                <MenuItem value={"Other"}>Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-
-          <Grid item xs={6}>
-            <FormControl className={classes.formControl}>
-              <InputLabel id="select-genre">Filter Stories</InputLabel>
-              <Select
-                labelId="select-genre"
-                id="select-dropdown"
-                value={like}
-                onChange={selectLike}
-                ref={storyLike}
-              >
-                <MenuItem value={"By Newest"}>By Newest</MenuItem>
-                <MenuItem value={"Most Liked"}>By Likes</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid> */}
-
-          {stories.map((story) => {
-            return (
-              <Grid container item xs={6} key={uuidv4()}>
-                <StoryPreview storyProp={story.id} />
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Container>
+          <div>
+            {stories.map((story) => {
+              return <StoryPreview storyProp={story.id} />;
+            })}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
