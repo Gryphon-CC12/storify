@@ -6,6 +6,7 @@ import UserProvider from "./providers/UserProvider";
 import history from './history.js'
 import { v4 as uuidv4 } from "uuid";
 import firebase from "./firebaseConfig";
+import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary"
 
 function App() {
 
@@ -34,11 +35,13 @@ function App() {
   
   
   return (
+   <ErrorBoundary> 
     <UserProvider>
       <Router history={history} key={uuidv4()}>
         <Application />
       </Router>
     </UserProvider>
+    </ErrorBoundary>
   );
 }
 
