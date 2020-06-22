@@ -73,10 +73,10 @@ function DisplayStory(props) {
     checkTurns(user.email, props.match.params.id);
   }, [storyArr]);
 
-  function setIsSubmittedFunc(vis, val) {
-    setIsSubmitted(vis);
-    setNumOfEntry(val);
-  }
+  // function setIsSubmittedFunc(vis, val) {
+  //   setIsSubmitted(vis);
+  //   setNumOfEntry(val);
+  // }
 
   let authorEmail; // TODO somehow couldn't use useState to update this; needs to be fixed later
   function fetchEntriesForStory(storyId, userEmail) {
@@ -389,14 +389,14 @@ function DisplayStory(props) {
     props.history.push("/");
   }
 
-  async function getCurrentNumberOfParticipants(storyId) {
-    const data = await db
-      .collection("StoryDatabase")
-      .where("id", "==", storyId)
-      .get();
-    let currentUsers = data.docs[0].data().emails.length;
-    setNoOfUsersState(currentUsers);
-  }
+  // async function getCurrentNumberOfParticipants(storyId) {
+  //   const data = await db
+  //     .collection("StoryDatabase")
+  //     .where("id", "==", storyId)
+  //     .get();
+  //   let currentUsers = data.docs[0].data().emails.length;
+  //   setNoOfUsersState(currentUsers);
+  // }
 
   async function featureOneStory(storyIdToDelete, userEmail) {
 

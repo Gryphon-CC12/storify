@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import "./FeaturedStory.styles.scss";
 import StoryPreview from "../storypreview/StoryPreview";
 import firebase from "../../firebaseConfig";
