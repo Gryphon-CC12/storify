@@ -47,13 +47,11 @@ function App() {
   
   
   return (
-  //  <ErrorBoundary> 
     <UserProvider>
       <Router history={history} key={uuidv4()}>
         <Application />
       </Router>
     </UserProvider>
-    //</ErrorBoundary>
   );
 }
 
