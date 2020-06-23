@@ -32,4 +32,4 @@ Robowriter Machine Learning:
 ## Running on your local environment:
 1. Clone or fork the repo.
 2. Run yarn install or npm install to install the necessary packages.
-3. (coming soon)
+
