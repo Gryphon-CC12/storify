@@ -16,12 +16,15 @@ Frontend:
 * Sass
 
 Backend:
-* Python
-* Flask
 * Firebase & Firestore
+* Amazon Amplify
+* EmailJS
 
 Robowriter Machine Learning:
-* (coming soon)
+* Apache
+* Flask
+* OpenAI
+* Amazon EC2
 
 ------
 
