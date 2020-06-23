@@ -5,7 +5,7 @@
 Storify is a story-writing platform where you can create stories by collaborating with other authors and our lovable Robowriter AI!
 Check it out for yourself at [storifyapp.com](https://www.storifyapp.com)!
 
-![screenshot of app](https://github.com/Gryphon-CC12/storify/blob/master/images/ss.png?raw=true)
+![Screen Shot 2020-06-23 at 15 00 03](https://user-images.githubusercontent.com/52077647/85366568-95086800-b562-11ea-93bf-4b87aeb2c277.png)
 
 ## Technologies
 Frontend:
