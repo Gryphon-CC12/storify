@@ -12,29 +12,6 @@ const signInWithGoogle = () => {
 
 
 const SignIn = () => {
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  // eslint-disable-next-line no-unused-vars
-  // const [error, setError] = useState(null);
-  
-  // const signInWithEmailAndPasswordHandler = (event, email, password) => {
-  //   event.preventDefault();
-  //   auth.signInWithEmailAndPassword(email, password).catch(error => {
-  //     setError("Error signing in with password and email!");
-  //     console.error("Error signing in with password and email", error);
-  //   });
-  // };
-
-  // const onChangeHandler = (event) => {
-  //     const {name, value} = event.target;
-
-  //     if(name === 'userEmail') {
-  //         setEmail(value);
-  //     }
-  //     else if(name === 'userPassword'){
-  //       setPassword(value);
-  //     }
-  // };
 
   return (
     <div className="container-fluid signin-wrapper">
@@ -49,7 +26,7 @@ const SignIn = () => {
           <GoogleButton
             className="google-btn"
             size="medium"
-            onClick={signInWithGoogle()}
+            onClick={signInWithGoogle}
           />
       </div>
     </div>

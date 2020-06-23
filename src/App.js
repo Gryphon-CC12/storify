@@ -8,8 +8,20 @@ import { v4 as uuidv4 } from "uuid";
 import firebase from "./firebaseConfig";
 import ErrorBoundary from "./Components/ErrorBoundary/ErrorBoundary"
 
+//let last_enty_uri = '"Yes...." the cat said, feeling out of shape and not quite what he used to be. "Well how about I tell you one of the stories of a hit I had. Maybe then youll believe me... Back in June of 2001 I had been assigned to remove a high profile target, however things werent going to be that easy...';
 function App() {
 
+
+// setInterval(callAPI(), 60000);
+// function callAPI() {
+// fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_enty_uri)
+//           .then(response => {
+//             return response.json()
+//           })
+//             .then(async output=>{
+//               console.log("output.result", output.result)
+//           })
+//         }
   const [userState, setUserState] = useState(true);
   useEffect(() => {
 
@@ -35,13 +47,13 @@ function App() {
   
   
   return (
-   <ErrorBoundary> 
+  //  <ErrorBoundary> 
     <UserProvider>
       <Router history={history} key={uuidv4()}>
         <Application />
       </Router>
     </UserProvider>
-    </ErrorBoundary>
+    //</ErrorBoundary>
   );
 }
 

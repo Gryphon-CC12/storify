@@ -74,10 +74,10 @@ function AddEntry(props) {
         "reply_to": "storify.io@gmail.com",
         "from_name": "Storify Team",
         "to_name": nextUserName,
-        "time_limit": storyTimeLimit,
-        "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3> <br></br> <h4>Visit https://www.storifyapp.com/displaystory/" + story_id + "</h4>")
+        "link": "<a href='https://www.storifyapp.com/displaystory/" + story_id + "'>here</a>",
+        "message_html": ("<h3>It's your turn to create! You have " + storyTimeLimit + " to add your entry in story titled: '"+title+"'.</h3>")
       }
-      
+
       let service_id = "storify_io_gmail_com";
       let template_id = "storifytest";
       let user_id = "user_70NWDG8bnJ3Vr3RmVjtBT";

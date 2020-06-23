@@ -72,6 +72,21 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
               await saveToUserEntries(robot_user.email, entry_id, story_id)
               await pushToStory(story_id, entry_id, robot_user, currentTimeLimit); 
           })
+        } else {
+          let nextInTurn = ""
+          for (let i = 0; i < allEmails.length; i++){
+            if (allEmails[i] === currentInTurn){
+              if (i + 1 >= allEmails.length){
+                nextInTurn = allEmails[0]
+              } else {
+                nextInTurn = allEmails[i + 1]
+              }
+            }
+          }
+          await db.collection("StoryDatabase").doc(doc.id).update({ "inTurn": nextInTurn });
+          await db.collection("StoryDatabase").doc(doc.id).update({ "lastModified": new Date() });
+          const userData = await db.collection('users').where('email', '==', nextInTurn).get();
+          nextUserName = userData.docs[0].data().displayName;
         }
   
         switch (currentTimeLimit) {
