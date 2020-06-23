@@ -7,7 +7,42 @@ import { v4 as uuidv4 } from "uuid";
 import rightChevron from '../../assets/rightChevron.svg'
 import downChevron from '../../assets/downChevron.svg'
 
+
 const db = firebase.firestore();
+
+
+// setInterval(function(){ callAPI(); }, 60000);
+// let last_enty_uri = '"Yes...." the cat said, feeling out of shape and not quite what he used to be. "Well how about I tell you one of the stories of a hit I had. Maybe then youll believe me... Back in June of 2001 I had been assigned to remove a high profile target, however things werent going to be that easy...';
+  
+// function callAPI() {
+// fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_enty_uri)
+//           .then(response => {
+//             return response.json()
+//           })
+//             .then(async output=>{
+//               console.log("output.result", output.result)
+//               // let entry_id = uuidv4()
+//               // let trimmed_output = output.result.trim();
+//               // let trimmed_output_arr = trimmed_output.split(/\n/g);
+//               // let unique_output = [...new Set(trimmed_output_arr)].join("\n"); 
+//               // console.log("unique_output", unique_output)
+//               // await saveToEntries(story_id, unique_output, entry_id, robot_user);
+//               // await saveToUserEntries(robot_user.email, entry_id, story_id)
+//               // await pushToStory(story_id, entry_id, robot_user, currentTimeLimit); 
+//           })
+//         }
+
+
+
+
+
+
+
+
+
+
+
+
 
 function StoryList() {
   const [stories, setStories] = useState([]);
