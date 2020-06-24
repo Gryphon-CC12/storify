@@ -45,7 +45,7 @@ Check it out for yourself at [storifyapp.com](https://www.storifyapp.com)!
 You'll need to hook up a database and set up the AI model separately.  
 If you're interested in that, please research how to do it online.*
 1. Clone or fork the repo.
-2. Run yarn install or npm install to install the necessary packages.
+2. Run `yarn install` or `npm install` to install the necessary packages.
 
 ------
 
