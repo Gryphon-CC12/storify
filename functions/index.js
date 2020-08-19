@@ -12,8 +12,10 @@ const functions = require('firebase-functions');
 
 // The Firebase Admin SDK to access Cloud Firestore.
 const admin = require('firebase-admin');
-admin.initializeApp();
 const db = firebase.firestore();
+const deepai = require('deepai');
+admin.initializeApp();
+console.log("deepai", deepai)
 
 exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(async (context) => {
     // console.log('This will be run every 1 minutes! with Google function');
@@ -53,26 +55,49 @@ exports.scheduledFunction = functions.pubsub.schedule('every 1 minutes').onRun(a
           // console.log("last_entry_text_list", last_entry_text_list);
           let last_entry_clean =  last_entry_text_list.map(sent => sent.trim());
           let last_entry_text = last_entry_clean.slice(Math.max(0, last_entry_clean.length-3)).join(". ");
-          let last_enty_uri = encodeURI(last_entry_text);
+          // let last_enty_uri = encodeURI(last_entry_text);
+          let last_enty_uri = last_entry_text;
           // console.log("last_enty_uri", last_enty_uri);
           let robot_data = await db.collection('users').where('email', '==', 'storify.io@gmail.com').get();
           let robot_user = robot_data.docs[0].data();
-          fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_enty_uri)
-          .then(response => {
-            return response.json()
-          })
+          // ************
+          // fetch("http://ec2-3-115-72-145.ap-northeast-1.compute.amazonaws.com/generate/" + last_enty_uri)
+          // .then(response => {
+          //   return response.json()
+          // })    
+          // *************
+          let resp = 'initial val';
+          // deepai.setApiKey('85b4427e-815e-4efd-99e2-de892b8f2d22');
+          // async function callAPI() {
+          //     console.log("inside callAPI",last_enty_uri)
+          //     resp = await deepai.callStandardApi("text-generator", {
+          //             text: last_enty_uri,
+          //     });
+          //     console.log("OuTpUt", resp.output);
+          // }
+          // callAPI();
+          deepai.setApiKey('85b4427e-815e-4efd-99e2-de892b8f2d22');
+          // async function callAPI() {
+              // console.log("inside callAPI",last_enty_uri)
+          deepai.callStandardApi("text-generator", {
+                      text: last_enty_uri,
+              })
+          // Below is original
             .then(async output=>{
+              output = output.output;
+              console.log("OuTPut AfTeR tHeN", output)
               // console.log("output.result", output.result)
               let entry_id = uuidv4()
-              let trimmed_output = output.result.trim();
-              let trimmed_output_arr = trimmed_output.split(/\n/g);
+              let trimmed_output = output.trim();
+              let trimmed_output_arr = trimmed_output.split(/\n/g).slice(1,);
               let unique_output = [...new Set(trimmed_output_arr)].join("\n"); 
               // console.log("unique_output", unique_output)
               await saveToEntries(story_id, unique_output, entry_id, robot_user);
               await saveToUserEntries(robot_user.email, entry_id, story_id)
               await pushToStory(story_id, entry_id, robot_user, currentTimeLimit); 
           })
-        } else {
+
+         } else {
           let nextInTurn = ""
           for (let i = 0; i < allEmails.length; i++){
             if (allEmails[i] === currentInTurn){

@@ -12,6 +12,7 @@
     "node": "10"
   },
   "dependencies": {
+    "deepai": "^1.0.15",
     "emailjs-com": "^2.4.1",
     "firebase": "^7.15.0",
     "firebase-admin": "^8.10.0",
