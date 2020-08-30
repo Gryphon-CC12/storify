@@ -29,14 +29,14 @@ Check it out for yourself at [storifyapp.com](https://www.storifyapp.com)!
   
 **Backend:**
 * Firebase & Firestore
-* Amazon Amplify
+* AWS Amplify
 * EmailJS  
   
 **Robowriter Machine Learning:**
 * Apache / Ubuntu
 * Flask / Python
 * OpenAI / PyTorch
-* Amazon EC2
+* AWS EC2
 
 
 
